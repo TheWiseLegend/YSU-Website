@@ -1,0 +1,131 @@
+<!-- src/app/pages/gallery-detail/gallery-detail.component.html -->
+<app-page-header *ngIf="album" [titleFirst]="'ألبوم'" [titleSecond]="' الصور'"></app-page-header>
+
+<!-- Not Found State -->
+<ng-container *ngIf="notFound">
+  <div class="container">
+    <div class="not-found">
+      <h2>عفواً، لم يتم العثور على الألبوم المطلوب</h2>
+      <p>يبدو أن الألبوم الذي تبحث عنه غير موجود أو تم حذفه.</p>
+      <a routerLink="/gallery" class="back-btn">العودة لمعرض الصور</a>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Loading State -->
+<ng-container *ngIf="isLoading">
+  <div class="container">
+    <div class="loading-album">
+      <div class="spinner"></div>
+      <p>جاري تحميل الألبوم...</p>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Error State -->
+<ng-container *ngIf="errorMessage && !isLoading && !notFound">
+  <div class="container">
+    <div class="album-error">
+      <p>{{ errorMessage }}</p>
+      <a routerLink="/gallery" class="back-btn">العودة لمعرض الصور</a>
+    </div>
+  </div>
+</ng-container>
+
+<div class="container" *ngIf="album && !isLoading">  
+  <div class="album-header">
+    <h1 class="album-title">{{ album.title }}</h1>
+    <div class="album-meta">
+      <div class="album-date">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>{{ album.createdAt | date:'longDate':'':'ar' }}</span>
+      </div>
+      <div class="album-count">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>{{ album.images.length }} صورة</span>
+      </div>
+    </div>
+    <p class="album-description" *ngIf="album.description">{{ album.description }}</p>
+  </div>
+  
+  <div class="album-content">
+    <!-- Image Grid -->
+    <div class="gallery-grid">
+      <div class="gallery-item" *ngFor="let image of album.images; let i = index">
+        <div class="image-container" (click)="openLightbox(i)">
+          <img [src]="image.url" [alt]="album.title + ' - صورة ' + (i+1)" loading="lazy">
+          <div class="image-overlay">
+            <div class="zoom-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 21L16.65 16.65" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11 8V14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 11H14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Images Placeholder -->
+    <div class="no-images" *ngIf="album.images.length === 0">
+      <div class="empty-state">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21 15L16 10L5 21" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>لا توجد صور في هذا الألبوم</h3>
+        <p>سيتم إضافة الصور قريباً.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox" *ngIf="showLightbox" (click)="closeLightbox($event)">
+    <div class="lightbox-content">
+      <img [src]="album.images[currentImageIndex].url" [alt]="album.title + ' - صورة ' + (currentImageIndex+1)">
+      
+      <!-- Navigation Controls -->
+      <button class="lightbox-nav prev" (click)="prevImage($event)" *ngIf="album.images.length > 1">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 19L8 12L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      
+      <button class="lightbox-nav next" (click)="nextImage($event)" *ngIf="album.images.length > 1">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 5L16 12L9 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      
+      <!-- Close Button -->
+      <button class="lightbox-close" (click)="closeLightbox($event)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      
+      <!-- Image Counter -->
+      <div class="lightbox-counter">
+        {{ currentImageIndex + 1 }}/{{ album.images.length }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="action-buttons">
+    <a routerLink="/gallery" class="back-btn">العودة لمعرض الصور</a>
+  </div>
+</div>

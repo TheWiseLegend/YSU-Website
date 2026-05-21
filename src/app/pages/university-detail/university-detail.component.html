@@ -1,0 +1,182 @@
+<!-- University Not Found Message -->
+<div *ngIf="notFound" class="container">
+    <div class="not-found">
+      <h2>الجامعة غير متوفرة</h2>
+      <p>عذراً، لم نتمكن من العثور على معلومات الجامعة المطلوبة.</p>
+      <a routerLink="/universities" class="back-btn">العودة لقائمة الجامعات</a>
+    </div>
+  </div>
+  
+  <!-- University Details -->
+  <div *ngIf="selectedUniversity">
+    <!-- Page Header -->
+    <app-page-header titleFirst="الجامعات" titleSecond=" الماليزية"></app-page-header>
+  
+    <div class="container">
+      <!-- University Header Section -->
+      <section class="university-header">
+        <div class="university-identity">
+          <div class="university-logo">
+            <img [src]="selectedUniversity.logo" [alt]="selectedUniversity.name">
+          </div>
+          <div class="university-names">
+            <h1>{{ selectedUniversity.name }}</h1>
+            <h2>{{ selectedUniversity.englishName }}</h2>
+            <div class="university-meta">
+              <span class="university-type">{{ selectedUniversity.type }}</span>
+              <span class="university-location">{{ selectedUniversity.location.city }}، {{ selectedUniversity.location.state }}</span>
+              <a [href]="selectedUniversity.website" target="_blank" class="university-website">زيارة الموقع الرسمي</a>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Overview Section -->
+      <section class="university-overview">
+        <h2 class="section-title">نبذة عن الجامعة</h2>
+        <div class="section-content">
+          <div class="overview-description">
+            <h3>الوصف</h3>
+            <p>{{ selectedUniversity.description }}</p>
+          </div>
+          <div class="overview-history">
+            <h3>تاريخ الجامعة</h3>
+            <p>{{ selectedUniversity.history }}</p>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Special Points Section -->
+      <section class="university-special-points">
+        <h2 class="section-title">لماذا هذه الجامعة؟</h2>
+        <div class="section-content">
+          <div class="points-list">
+            <h3>مميزات الجامعة</h3>
+            <ul>
+              <li *ngFor="let point of selectedUniversity.specialPoints">{{ point }}</li>
+            </ul>
+          </div>
+  
+          <div *ngIf="selectedUniversity.awards && selectedUniversity.awards.length > 0" class="awards-list">
+            <h3>الجوائز والتقديرات</h3>
+            <ul>
+              <li *ngFor="let award of selectedUniversity.awards">{{ award }}</li>
+            </ul>
+          </div>
+  
+          <div *ngIf="selectedUniversity.successStories && selectedUniversity.successStories.length > 0" class="success-stories">
+            <h3>قصص نجاح</h3>
+            <ul>
+              <li *ngFor="let story of selectedUniversity.successStories">{{ story }}</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Academic Information Section -->
+      <section class="university-academic">
+        <h2 class="section-title">المعلومات الأكاديمية</h2>
+        <div class="section-content">
+          <div class="faculties">
+            <h3>الكليات</h3>
+            <ul>
+              <li *ngFor="let faculty of selectedUniversity.faculties">{{ faculty }}</li>
+            </ul>
+          </div>
+  
+          <div class="languages">
+            <h3>لغات الدراسة</h3>
+            <ul>
+              <li *ngFor="let language of selectedUniversity.languages">{{ language }}</li>
+            </ul>
+          </div>
+  
+          <div class="courses">
+            <h3>التخصصات والرسوم الدراسية (سنوياً)</h3>
+            <table class="courses-table">
+              <thead>
+                <tr>
+                  <th>التخصص</th>
+                  <th>الرسوم (رينجت ماليزي)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let course of selectedUniversity.courses">
+                  <td>{{ course.name }}</td>
+                  <td>{{ course.fee.toLocaleString() }} RM</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Statistics Section -->
+      <section class="university-statistics">
+        <h2 class="section-title">إحصائيات الجامعة</h2>
+        <div class="section-content">
+          <div class="stats-grid">
+            <div class="stat-item" *ngIf="selectedUniversity.totalStudents">
+              <h3>إجمالي الطلاب</h3>
+              <p>{{ selectedUniversity.totalStudents.toLocaleString() }}</p>
+            </div>
+            <div class="stat-item" *ngIf="selectedUniversity.internationalStudents">
+              <h3>الطلاب الدوليين</h3>
+              <p>{{ selectedUniversity.internationalStudents.toLocaleString() }}</p>
+            </div>
+            <div class="stat-item" *ngIf="selectedUniversity.facultyCount">
+              <h3>أعضاء هيئة التدريس</h3>
+              <p>{{ selectedUniversity.facultyCount.toLocaleString() }}</p>
+            </div>
+            <div class="stat-item" *ngIf="selectedUniversity.studentToTeacherRatio">
+              <h3>نسبة الطلاب للمدرسين</h3>
+              <p>{{ selectedUniversity.studentToTeacherRatio }}</p>
+            </div>
+            <div class="stat-item" *ngIf="selectedUniversity.graduateEmploymentRate">
+              <h3>معدل توظيف الخريجين</h3>
+              <p>{{ selectedUniversity.graduateEmploymentRate }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Ranking & Recognition Section -->
+      <section class="university-ranking">
+        <h2 class="section-title">التصنيف والاعتمادات</h2>
+        <div class="section-content">
+          <div class="ranking">
+            <h3>التصنيف</h3>
+            <div class="ranking-details">
+              <div *ngIf="selectedUniversity.ranking.malaysia" class="ranking-item">
+                <span class="ranking-label">التصنيف في ماليزيا:</span>
+                <span class="ranking-value">#{{ selectedUniversity.ranking.malaysia }}</span>
+              </div>
+              <div *ngIf="selectedUniversity.ranking.world" class="ranking-item">
+                <span class="ranking-label">التصنيف العالمي:</span>
+                <span class="ranking-value">#{{ selectedUniversity.ranking.world }}</span>
+              </div>
+            </div>
+          </div>
+  
+          <div *ngIf="selectedUniversity.accreditations && selectedUniversity.accreditations.length > 0" class="accreditations">
+            <h3>الاعتمادات</h3>
+            <ul>
+              <li *ngFor="let accreditation of selectedUniversity.accreditations">{{ accreditation }}</li>
+            </ul>
+          </div>
+  
+          <div *ngIf="selectedUniversity.affiliations && selectedUniversity.affiliations.length > 0" class="affiliations">
+            <h3>الارتباطات والشراكات</h3>
+            <ul>
+              <li *ngFor="let affiliation of selectedUniversity.affiliations">{{ affiliation }}</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Back Button -->
+      <div class="action-buttons">
+        <a routerLink="/universities" class="back-btn">العودة لقائمة الجامعات</a>
+      </div>
+    </div>
+  </div>

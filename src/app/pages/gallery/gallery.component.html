@@ -1,0 +1,50 @@
+<!-- src/app/pages/gallery/gallery.component.html -->
+<app-page-header titleFirst="معرض" titleSecond=" الصور"></app-page-header>
+
+<div class="container">
+  <section class="gallery-section">
+    <div class="section-header">
+      <h2>ألبومات الصور</h2>
+      <div class="section-underline"></div>
+      <p class="section-description">
+        نعرض هنا مجموعة من الصور لفعاليات وأنشطة اتحاد الطلبة اليمنيين في ماليزيا
+      </p>
+    </div>
+    
+    <!-- Loading State -->
+    <div class="loading-albums" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>جاري تحميل الألبومات...</p>
+    </div>
+    
+    <!-- Error State -->
+    <div class="albums-error" *ngIf="errorMessage && !isLoading">
+      <p>{{ errorMessage }}</p>
+    </div>
+    
+    <!-- No Albums State -->
+    <div class="no-albums" *ngIf="albums.length === 0 && !isLoading && !errorMessage">
+      <p>لا توجد ألبومات متاحة في الوقت الحالي</p>
+    </div>
+    
+    <!-- Albums Grid -->
+    <div class="albums-grid" *ngIf="albums.length > 0 && !isLoading">
+      <div class="album-item" *ngFor="let album of albums">
+        <a [routerLink]="['/gallery', album.id]" class="album-card">
+          <div class="album-image">
+            <img [src]="album.mainImage" [alt]="album.title">
+          </div>
+          <div class="album-content">
+            <h3 class="album-title">{{ album.title }}</h3>
+            <div class="album-meta">
+              <span class="images-count">{{ album.images.length }} صورة</span>
+            </div>
+          </div>
+        </a>
+        <div class="hover-overlay">
+          <span class="view-album-btn">عرض الألبوم</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,33 @@
+<!-- src/app/admin/admin-login/admin-login.component.html -->
+<div class="admin-login-container">
+    <img class="logo" src="/logo/ysu_logo.webp" alt="اتحاد الطلبة اليمنيين في ماليزيا" />
+    <div class="login-form">
+      <h1 class="login-title">تسجيل دخول</h1>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <div class="form-group">
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="form-control"
+            placeholder="كلمة المرور"
+            [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            [disabled]="isSubmitting"
+          >
+          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+            الرجاء إدخال كلمة المرور
+          </div>
+        </div>
+        
+        <button type="submit" class="login-btn" [disabled]="loginForm.invalid || isSubmitting">
+          {{ isSubmitting ? 'جاري التحقق...' : 'تسجيل الدخول' }}
+        </button>
+        
+        <!-- Error message -->
+        <div class="error-message server-error" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+      </form>
+    </div>
+  </div>

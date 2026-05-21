@@ -1,0 +1,44 @@
+<app-page-header titleFirst="الجامعات" titleSecond=" الماليزية"></app-page-header>
+
+<div class="universities-page">
+  <div class="container">
+    <!-- Introduction Section -->
+    <div class="intro-section">
+      <h2>استكشف الجامعات الماليزية</h2>
+      <div class="section-underline"></div>
+      <p class="intro-text">
+        تعد ماليزيا وجهة تعليمية متميزة للطلاب اليمنيين، حيث تضم العديد من الجامعات المرموقة التي توفر برامج أكاديمية متنوعة بمعايير دولية.
+        استخدم أدوات البحث المتقدمة للعثور على الجامعة المناسبة لتخصصك وميزانيتك.
+      </p>
+    </div>
+
+    <div class="content-container">
+      <!-- Filter Section -->
+      <div class="filter-container">
+        <app-university-filter (filtersChanged)="onFiltersChanged($event)"></app-university-filter>
+      </div>
+
+      <!-- University Cards Grid -->
+      <div class="university-grid">
+        <ng-container *ngIf="filteredUniversities.length > 0">
+          <app-university-card
+            *ngFor="let uni of filteredUniversities"
+            [university]="uni">
+          </app-university-card>
+        </ng-container>
+        
+        <!-- No Results Message -->
+        <div *ngIf="filteredUniversities.length === 0" class="no-results">
+          <div class="no-results-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 13C10.5523 13 11 12.5523 11 12C11 11.4477 10.5523 11 10 11C9.44772 11 9 11.4477 9 12C9 12.5523 9.44772 13 10 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 12H19.5L17.5 20L14 4L11 20L8.5 12H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>لا توجد نتائج</h3>
+          <p>لم نتمكن من العثور على جامعات تطابق معايير البحث. يرجى تعديل المعايير والمحاولة مرة أخرى.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

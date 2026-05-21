@@ -1,0 +1,55 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Tajawal', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    direction: rtl;
+    text-align: justify;
+  }
+  
+  /* Container */
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+  
+  /* Main theme colors */
+  :root {
+    --primary-color: #5174b9; 
+    --secondary-color: #2d3e5f; 
+    --text-color: #333333;
+    --light-gray: #f0f4f9;
+    --border-color: #d8e0ed;
+  }
+  
+  /* Import RTL font */
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  // Prevent content layout shifts
+  img[loading="lazy"] {
+    min-height: 1px;
+  }
+
+@media (max-width: 991px) {
+  .navbar .nav-links.active ul li a {
+    color: #333 !important;
+    background-color: #fff !important;
+    
+    &:hover, &.active {
+      color: #5174b9 !important;
+      background-color: rgba(81, 116, 185, 0.1) !important;
+    }
+  }
+}

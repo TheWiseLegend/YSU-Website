@@ -1,0 +1,99 @@
+.university-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  &:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  img {
+    height: 160px;
+    width: 100%;
+    object-fit: contain;
+    padding: 20px;
+    background-color: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  h3 {
+    font-size: 1.3rem;
+    color: var(--secondary-color);
+    margin: 0;
+    padding: 20px 20px 10px;
+    line-height: 1.4;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  p {
+    color: #555;
+    margin: 0;
+    padding: 0 20px 10px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    
+    &.location {
+      color: #666;
+      
+      svg {
+        margin-left: 5px;
+        color: var(--primary-color);
+      }
+    }
+    
+    &.details {
+      padding-bottom: 15px;
+      margin-bottom: 10px;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+      display: flex;
+      justify-content: space-between;
+      
+      .university-type {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+      }
+      
+      .fee {
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+    }
+  }
+  
+  .details-button {
+    margin: 0 20px 20px;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+    box-shadow: 0 4px 15px rgba(81, 116, 185, 0.2);
+    display: flex;
+    align-items: center;
+    
+    &:hover {
+      background-color: darken(#5174b9, 8%);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(81, 116, 185, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}

@@ -1,0 +1,114 @@
+<!-- src/app/pages/events/events.component.html -->
+<app-page-header titleFirst="فعاليات" titleSecond=" الإتحاد"></app-page-header>
+
+<div class="container">
+  <!-- Loading State -->
+  <div class="loading-events" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>جاري تحميل الفعاليات...</p>
+  </div>
+  
+  <!-- Error State -->
+  <div class="events-error" *ngIf="errorMessage && !isLoading">
+    <p>{{ errorMessage }}</p>
+  </div>
+  
+  <!-- No Events State -->
+  <div class="no-events" *ngIf="events.length === 0 && !isLoading && !errorMessage">
+    <p>لا توجد فعاليات متاحة في الوقت الحالي</p>
+  </div>
+
+  <!-- Events Content -->
+  <div class="events-content" *ngIf="events.length > 0 && !isLoading">
+    <!-- Upcoming Events Section -->
+    <section class="upcoming-events" *ngIf="upcomingEvents.length > 0">
+      <div class="section-header">
+        <h2>الفعاليات القادمة</h2>
+        <div class="section-underline"></div>
+      </div>
+      
+      <div class="events-grid">
+        <div class="event-card" *ngFor="let event of upcomingEvents">
+          <!-- Add router link here to the event detail page -->
+          <a [routerLink]="['/events', event.id]" class="event-link">
+            <div class="event-image">
+              <app-optimized-image [src]="event.imageUrl" [alt]="event.title" [height]="240"></app-optimized-image>
+              <div class="event-date">
+                <span class="day">{{formatDay(event.date)}}</span>
+                <span class="month">{{formatMonth(event.date)}}</span>
+              </div>
+            </div>
+            <div class="event-content">
+              <h3 class="event-title">{{event.title}}</h3>
+              <div class="event-meta">
+                <div class="event-location">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 22C16 18 20 14.4183 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 14.4183 8 18 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{event.location}}</span>
+                </div>
+                <div class="event-full-date">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{formatDate(event.date)}}</span>
+                </div>
+              </div>
+              <p class="event-description">{{event.description}}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Past Events Section -->
+    <section class="past-events" *ngIf="pastEvents.length > 0">
+      <div class="section-header">
+        <h2>الفعاليات السابقة</h2>
+        <div class="section-underline"></div>
+      </div>
+      
+      <div class="events-grid">
+        <div class="event-card past" *ngFor="let event of pastEvents">
+          <!-- Add router link here for past events as well -->
+          <a [routerLink]="['/events', event.id]" class="event-link">
+            <div class="event-image">
+              <app-optimized-image [src]="event.imageUrl" [alt]="event.title" [height]="240"></app-optimized-image>
+              <div class="event-date">
+                <span class="day">{{formatDay(event.date)}}</span>
+                <span class="month">{{formatMonth(event.date)}}</span>
+              </div>
+              <div class="event-badge">انتهى</div>
+            </div>
+            <div class="event-content">
+              <h3 class="event-title">{{event.title}}</h3>
+              <div class="event-meta">
+                <div class="event-location">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 22C16 18 20 14.4183 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 14.4183 8 18 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{event.location}}</span>
+                </div>
+                <div class="event-full-date">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{formatDate(event.date)}}</span>
+                </div>
+              </div>
+              <p class="event-description">{{event.description}}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

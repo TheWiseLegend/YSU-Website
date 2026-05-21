@@ -1,0 +1,50 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="/logo/ysu_logo_cropped.webp" alt="YSU Malaysia" />
+    </div>
+
+    <h1 class="auth-title">تسجيل الدخول</h1>
+    <p class="auth-subtitle">مرحباً بك في بوابة العضوية</p>
+
+    <div class="error-message" *ngIf="errorMessage">
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>البريد الإلكتروني</label>
+        <input
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="example@email.com"
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="••••••••"
+          [disabled]="isLoading"
+        />
+      </div>
+
+      <button type="submit" class="auth-btn" [disabled]="isLoading">
+        <span *ngIf="!isLoading">تسجيل الدخول</span>
+        <span *ngIf="isLoading" class="spinner"></span>
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      ليس لديك حساب؟
+      <a routerLink="/membership/signup">إنشاء حساب جديد</a>
+    </p>
+
+    <a routerLink="/home" class="back-home">← العودة للموقع</a>
+  </div>
+</div>

@@ -1,0 +1,244 @@
+<!-- src/app/admin/admin-panel/branches/branches.component.html -->
+<div class="admin-branches">
+  <div class="branches-header">
+    <h2>إدارة فروع الاتحاد</h2>
+    <button class="add-btn" (click)="toggleForm()">
+      {{ showForm ? 'إلغاء' : 'إضافة فرع جديد' }}
+    </button>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- Branch Form -->
+  <div class="branch-form-container" *ngIf="showForm">
+    <form [formGroup]="branchForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="universityName">اسم الجامعة</label>
+        <input 
+          id="universityName" 
+          type="text" 
+          formControlName="universityName"
+          class="form-control"
+          placeholder="أدخل اسم الجامعة">
+        <div class="error-message" *ngIf="branchForm.get('universityName')?.invalid && branchForm.get('universityName')?.touched">
+          اسم الجامعة مطلوب
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="city">المدينة</label>
+        <input 
+          id="city" 
+          type="text" 
+          formControlName="city"
+          class="form-control"
+          placeholder="أدخل اسم المدينة">
+        <div class="error-message" *ngIf="branchForm.get('city')?.invalid && branchForm.get('city')?.touched">
+          المدينة مطلوبة
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="address">العنوان</label>
+        <input 
+          id="address" 
+          type="text" 
+          formControlName="address"
+          class="form-control"
+          placeholder="أدخل عنوان الفرع">
+        <div class="error-message" *ngIf="branchForm.get('address')?.invalid && branchForm.get('address')?.touched">
+          العنوان مطلوب
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">رقم الهاتف</label>
+        <input 
+          id="phone" 
+          type="text" 
+          formControlName="phone"
+          class="form-control"
+          placeholder="+60 123456789">
+        <div class="error-message" *ngIf="branchForm.get('phone')?.invalid && branchForm.get('phone')?.touched">
+          رقم الهاتف مطلوب
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="establishedAt">تاريخ التأسيس</label>
+        <input 
+          id="establishedAt" 
+          type="date" 
+          formControlName="establishedAt"
+          class="form-control">
+        <div class="error-message" *ngIf="branchForm.get('establishedAt')?.invalid && branchForm.get('establishedAt')?.touched">
+          تاريخ التأسيس مطلوب
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">وصف الفرع</label>
+        <textarea 
+          id="description" 
+          formControlName="description"
+          class="form-control"
+          rows="4"
+          placeholder="أدخل وصف الفرع"></textarea>
+        <div class="error-message" *ngIf="branchForm.get('description')?.invalid && branchForm.get('description')?.touched">
+          وصف الفرع مطلوب
+        </div>
+      </div>
+
+      <!-- Optional social links -->
+      <div class="form-group">
+        <label for="email">البريد الإلكتروني </label>
+        <input 
+          id="email" 
+          type="email" 
+          formControlName="email"
+          class="form-control"
+          placeholder="example@email.com">
+        <div class="error-message" *ngIf="branchForm.get('email')?.invalid && branchForm.get('email')?.touched && branchForm.get('email')?.errors?.['email']">
+          يرجى إدخال بريد إلكتروني صحيح
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="facebook">رابط الفيسبوك</label>
+        <input 
+          id="facebook" 
+          type="text" 
+          formControlName="facebook"
+          class="form-control"
+          placeholder="https://facebook.com/...">
+      </div>
+
+      <div class="form-group">
+        <label for="instagram">رابط الانستغرام</label>
+        <input 
+          id="instagram" 
+          type="text" 
+          formControlName="instagram"
+          class="form-control"
+          placeholder="https://instagram.com/...">
+      </div>
+
+      <div class="form-group">
+        <label for="linkedin">رابط لينكد إن</label>
+        <input 
+          id="linkedin" 
+          type="text" 
+          formControlName="linkedin"
+          class="form-control"
+          placeholder="https://linkedin.com/in/...">
+      </div>
+
+      <div class="form-group">
+        <label>صورة الفرع</label>
+        <div class="image-upload">
+          <input 
+            type="file" 
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            #imageInput
+            style="display: none">
+          
+          <button type="button" class="upload-btn" (click)="imageInput.click()">
+            اختر صورة
+          </button>
+          
+          <button 
+            type="button" 
+            class="upload-confirm-btn" 
+            (click)="uploadImage()"
+            [disabled]="!selectedFile || isUploading">
+            {{ isUploading ? 'جاري الرفع...' : 'رفع الصورة' }}
+          </button>
+        </div>
+
+        <div class="image-preview" *ngIf="imagePreview">
+          <img [src]="imagePreview" alt="معاينة صورة الفرع">
+        </div>
+        
+        <div class="error-message" *ngIf="branchForm.get('imageUrl')?.invalid && branchForm.get('imageUrl')?.touched">
+          صورة الفرع مطلوبة
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="branchForm.invalid || isSubmitting">
+          {{ isEditing ? 'تحديث' : 'حفظ' }}
+        </button>
+        <button type="button" class="cancel-btn" (click)="toggleForm()">
+          إلغاء
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Branches List -->
+  <div class="branches-list">
+    <div class="loading" *ngIf="isLoading">جاري التحميل...</div>
+    
+    <table class="branches-table" *ngIf="!isLoading && branches.length > 0">
+      <thead>
+        <tr>
+          <th>الصورة</th>
+          <th>الجامعة</th>
+          <th>المدينة</th>
+          <th>الهاتف</th>
+          <th>تاريخ التأسيس</th>
+          <th>الإجراءات</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let branch of branches">
+          <td>
+            <img [src]="branch.imageUrl" [alt]="branch.universityName" class="branch-thumbnail">
+          </td>
+          <td>{{ branch.universityName }}</td>
+          <td>{{ branch.city }}</td>
+          <td>{{ branch.phone }}</td>
+          <td>{{ formatDate(branch.establishedAt) }}</td>
+          <td>
+            <button class="edit-btn" (click)="editBranch(branch)">تعديل</button>
+            <button class="delete-btn" (click)="confirmDeleteBranch(branch.id)">حذف</button>
+          </td>
+          <td>
+            <a [routerLink]="['/admin-panel/branches', branch.id]" class="view-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              عرض
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="no-branches" *ngIf="!isLoading && branches.length === 0">
+      <p>لا توجد فروع حالياً</p>
+    </div>
+  </div>
+  
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteConfirmation">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>تأكيد الحذف</h3>
+      </div>
+      <div class="modal-body">
+        <p>هل أنت متأكد من حذف هذا الفرع؟</p>
+        <p class="warning">هذا الإجراء لا يمكن التراجع عنه.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel-btn" (click)="cancelDelete()">إلغاء</button>
+        <button class="confirm-delete-btn" (click)="deleteBranch()">تأكيد الحذف</button>
+      </div>
+    </div>
+  </div>
+</div>

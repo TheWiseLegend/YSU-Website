@@ -1,0 +1,226 @@
+/* src/app/pages/events/events.component.scss */
+.container {
+    padding: 40px 0;
+  }
+  
+  /* Loading spinner */
+  .loading-events {
+    text-align: center;
+    padding: 60px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+  
+  .spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #5174b9;
+    animation: spin 1s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Error state */
+  .events-error {
+    text-align: center;
+    padding: 40px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+  
+  /* No events state */
+  .no-events {
+    text-align: center;
+    padding: 60px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 20px 0;
+    color: #6c757d;
+  }
+  
+  /* Section styling */
+  .section-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .section-header h2 {
+    color: #333;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+  
+  .section-underline {
+    height: 4px;
+    width: 80px;
+    background-color: #5174b9;
+    margin: 0 auto;
+  }
+  
+  /* Events grid */
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+  }
+  
+  /* Event card styling */
+  .event-card {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+  
+  .event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .event-image {
+    position: relative;
+    height: 240px;
+    overflow: hidden;
+  }
+  
+  .event-date {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #5174b9;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 15px;
+    text-align: center;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    min-width: 60px;
+  }
+  
+  .day {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  
+  .month {
+    font-size: 14px;
+  }
+  
+  .event-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: rgba(220, 53, 69, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .event-content {
+    padding: 25px;
+  }
+  
+  .event-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+    line-height: 1.4;
+  }
+  
+  .event-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: #666;
+  }
+  
+  .event-location, .event-full-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+  
+  .event-location svg, .event-full-date svg {
+    color: #5174b9;
+  }
+  
+  .event-description {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Past events styling */
+  .past-events {
+    margin-top: 60px;
+  }
+  
+  .event-card.past {
+    opacity: 0.85;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .event-card.past .event-date {
+    background-color: #6c757d;
+  }
+  
+  .event-card.past .event-title {
+    color: #555;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .events-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .event-content {
+      padding: 20px 15px;
+    }
+  } 
+
+  /* In events.component.scss */
+.event-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.event-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+}

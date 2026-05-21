@@ -1,0 +1,184 @@
+<!-- src/app/admin/admin-panel/union-team/union-team.component.html -->
+<div class="admin-union-team">
+    <div class="union-team-header">
+      <h2>إدارة أعضاء فريق الاتحاد</h2>
+      <button class="add-btn" (click)="toggleForm()">
+        {{ showForm ? 'إلغاء' : 'إضافة عضو جديد' }}
+      </button>
+    </div>
+  
+    <!-- Success/Error Messages -->
+    <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  
+    <!-- Team Member Form -->
+    <div class="member-form-container" *ngIf="showForm">
+      <form [formGroup]="memberForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="name">الاسم</label>
+          <input 
+            id="name" 
+            type="text" 
+            formControlName="name"
+            class="form-control"
+            placeholder="أدخل اسم العضو">
+        </div>
+  
+        <div class="form-group">
+          <label for="position">المنصب</label>
+          <input 
+            id="position" 
+            type="text" 
+            formControlName="position"
+            class="form-control"
+            placeholder="أدخل منصب العضو">
+        </div>
+  
+        <div class="form-group">
+          <label for="type">الفئة</label>
+          <select 
+            id="type" 
+            formControlName="type"
+            class="form-control">
+            <option value="">اختر الفئة</option>
+            <option *ngFor="let type of memberTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="period">الفترة</label>
+          <input 
+            id="period" 
+            type="text" 
+            formControlName="period"
+            class="form-control"
+            placeholder="2025-2026">
+        </div>
+  
+        <div class="form-group">
+          <label>الصورة</label>
+          <div class="image-upload">
+            <input 
+              type="file" 
+              (change)="onFileSelected($event)"
+              accept="image/*"
+              #imageInput
+              style="display: none">
+            
+            <button type="button" class="upload-btn" (click)="imageInput.click()">
+              اختر صورة
+            </button>
+            
+            <button 
+              type="button" 
+              class="upload-confirm-btn" 
+              (click)="uploadImage()"
+              [disabled]="!selectedFile || isUploading">
+              {{ isUploading ? 'جاري الرفع...' : 'رفع الصورة' }}
+            </button>
+          </div>
+  
+          <div class="image-preview" *ngIf="imagePreview">
+            <img [src]="imagePreview" alt="معاينة الصورة">
+          </div>
+        </div>
+  
+        <div class="form-actions">
+          <button type="submit" class="submit-btn" [disabled]="memberForm.invalid">
+            {{ isEditing ? 'تحديث' : 'حفظ' }}
+          </button>
+          <button type="button" class="cancel-btn" (click)="toggleForm()">
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Filter Section -->
+    <div class="filters-container">
+      <div class="type-filter">
+        <label>تصفية حسب الفئة:</label>
+        <div class="filter-buttons">
+          <button 
+            class="filter-btn" 
+            [class.active]="selectedType === null" 
+            (click)="filterByType(null)">
+            الكل
+          </button>
+          <button 
+            *ngFor="let type of memberTypes" 
+            class="filter-btn" 
+            [class.active]="selectedType === type" 
+            (click)="filterByType(type)">
+            {{ type }}
+          </button>
+        </div>
+      </div>
+      
+      <div class="search-filter">
+        <label for="searchInput">بحث:</label>
+        <input 
+          id="searchInput" 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          placeholder="ابحث بالاسم أو المنصب"
+          class="search-input">
+      </div>
+    </div>
+  
+    <!-- Team Members List -->
+    <div class="members-list">
+      <div class="loading" *ngIf="isLoading">جاري التحميل...</div>
+      
+      <table class="members-table" *ngIf="!isLoading && filteredMembers.length > 0">
+        <thead>
+          <tr>
+            <th>الصورة</th>
+            <th>الاسم</th>
+            <th>المنصب</th>
+            <th>الفئة</th>
+            <th>الفترة</th>
+            <th>تاريخ الإضافة</th>
+            <th>الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of filteredMembers">
+            <td>
+              <img [src]="member.imageUrl" [alt]="member.name" class="member-thumbnail">
+            </td>
+            <td>{{ member.name }}</td>
+            <td>{{ member.position }}</td>
+            <td>{{ member.type }}</td>
+            <td>{{ member.period }}</td>
+            <td>{{ formatDate(member.createdAt) }}</td>
+            <td>
+              <button class="edit-btn" (click)="editMember(member)">تعديل</button>
+              <button class="delete-btn" (click)="confirmDeleteMember(member.id)">حذف</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <div class="no-members" *ngIf="!isLoading && filteredMembers.length === 0">
+        <p>لا يوجد أعضاء للعرض</p>
+      </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showDeleteConfirmation">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>تأكيد الحذف</h3>
+        </div>
+        <div class="modal-body">
+          <p>هل أنت متأكد من حذف هذا العضو؟</p>
+          <p class="warning">هذا الإجراء لا يمكن التراجع عنه.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="cancel-btn" (click)="cancelDelete()">إلغاء</button>
+          <button class="confirm-delete-btn" (click)="deleteMember()">تأكيد الحذف</button>
+        </div>
+      </div>
+    </div>
+  </div>

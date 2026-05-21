@@ -1,0 +1,146 @@
+<!-- src/app/admin/admin-panel/events/events.component.html -->
+<div class="admin-events">
+    <div class="events-header">
+      <h2>إدارة الفعاليات القادمة</h2>
+      <button class="add-btn" (click)="toggleForm()">
+        {{ showForm ? 'إلغاء' : 'إضافة فعالية جديدة' }}
+      </button>
+    </div>
+  
+    <!-- Success/Error Messages -->
+    <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  
+    <!-- Event Form -->
+    <div class="event-form-container" *ngIf="showForm">
+      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="title">العنوان</label>
+          <input 
+            id="title" 
+            type="text" 
+            formControlName="title"
+            class="form-control"
+            placeholder="أدخل عنوان الفعالية">
+        </div>
+  
+        <div class="form-group">
+          <label for="date">التاريخ</label>
+          <input 
+            id="date" 
+            type="date" 
+            formControlName="date"
+            class="form-control">
+        </div>
+  
+        <div class="form-group">
+          <label for="location">المكان</label>
+          <input 
+            id="location" 
+            type="text" 
+            formControlName="location"
+            class="form-control"
+            placeholder="أدخل مكان الفعالية">
+        </div>
+  
+        <div class="form-group">
+          <label for="description">الوصف</label>
+          <textarea 
+            id="description" 
+            formControlName="description"
+            class="form-control"
+            rows="5"
+            placeholder="أدخل وصف الفعالية"></textarea>
+        </div>
+  
+        <div class="form-group">
+          <label>الصورة</label>
+          <div class="image-upload">
+            <input 
+              type="file" 
+              (change)="onFileSelected($event)"
+              accept="image/*"
+              #imageInput
+              style="display: none">
+            
+            <button type="button" class="upload-btn" (click)="imageInput.click()">
+              اختر صورة
+            </button>
+            
+            <button 
+              type="button" 
+              class="upload-confirm-btn" 
+              (click)="uploadImage()"
+              [disabled]="!selectedFile || isUploading">
+              {{ isUploading ? 'جاري الرفع...' : 'رفع الصورة' }}
+            </button>
+          </div>
+  
+          <div class="image-preview" *ngIf="imagePreview">
+            <img [src]="imagePreview" alt="معاينة الصورة">
+          </div>
+        </div>
+  
+        <div class="form-actions">
+          <button type="submit" class="submit-btn" [disabled]="eventForm.invalid">
+            {{ isEditing ? 'تحديث' : 'حفظ' }}
+          </button>
+          <button type="button" class="cancel-btn" (click)="toggleForm()">
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Events List -->
+    <div class="events-list">
+      <div class="loading" *ngIf="isLoading">جاري التحميل...</div>
+      
+      <table class="events-table" *ngIf="!isLoading && eventsList.length > 0">
+        <thead>
+          <tr>
+            <th>الصورة</th>
+            <th>العنوان</th>
+            <th>التاريخ</th>
+            <th>المكان</th>
+            <th>الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let event of eventsList">
+            <td>
+              <img [src]="event.imageUrl" alt="{{ event.title }}" class="event-thumbnail">
+            </td>
+            <td>{{ event.title }}</td>
+            <td>{{ displayDate(event.date) }}</td>
+            <td>{{ event.location }}</td>
+            <td>
+              <button class="edit-btn" (click)="editEvent(event)">تعديل</button>
+              <button class="delete-btn" (click)="confirmDeleteEvent(event.id)">حذف</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <div class="no-events" *ngIf="!isLoading && eventsList.length === 0">
+        <p>لا توجد فعاليات حالياً</p>
+      </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showDeleteConfirmation">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>تأكيد الحذف</h3>
+        </div>
+        <div class="modal-body">
+          <p>هل أنت متأكد من حذف هذه الفعالية؟</p>
+          <p class="warning">هذا الإجراء لا يمكن التراجع عنه.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="cancel-btn" (click)="cancelDelete()">إلغاء</button>
+          <button class="confirm-delete-btn" (click)="deleteEvent()">تأكيد الحذف</button>
+        </div>
+      </div>
+    </div>
+  </div>

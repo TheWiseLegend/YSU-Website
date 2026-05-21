@@ -1,0 +1,36 @@
+<!-- src/app/admin/admin-panel/dashboard/dashboard.component.html -->
+<div class="admin-dashboard">
+  <h2>مرحباً في لوحة التحكم</h2>
+  
+  <!-- Loading State -->
+  <div class="loading-dashboard" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>جاري تحميل البيانات...</p>
+  </div>
+  
+  <div class="dashboard-grid" *ngIf="!isLoading">
+    <div class="dashboard-card">
+      <h3>الأخبار</h3>
+      <p class="stat">{{ newsCount }}</p>
+      <a routerLink="/admin-panel/news" class="manage-btn">إدارة</a>
+    </div>
+    
+    <div class="dashboard-card">
+      <h3>الفعاليات</h3>
+      <p class="stat">{{ eventsCount }}</p>
+      <a routerLink="/admin-panel/events" class="manage-btn">إدارة</a>
+    </div>
+    
+    <div class="dashboard-card">
+      <h3>الفروع</h3>
+      <p class="stat">{{ branchesCount }}</p>
+      <a routerLink="/admin-panel/branches" class="manage-btn">إدارة</a>
+    </div>
+    
+    <div class="dashboard-card">
+      <h3>ألبومات الصور</h3>
+      <p class="stat">{{ galleryCount }}</p>
+      <a routerLink="/admin-panel/gallery" class="manage-btn">إدارة</a>
+    </div>
+  </div>
+</div>

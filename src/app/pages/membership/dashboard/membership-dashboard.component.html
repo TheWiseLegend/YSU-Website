@@ -1,0 +1,167 @@
+<div class="dashboard" dir="rtl">
+
+  <!-- Top Bar -->
+  <header class="dashboard-header">
+    <div class="header-inner">
+      <img src="/logo/logo-wide.webp" alt="YSU" class="header-logo" />
+      <div class="header-actions">
+        <div class="settings-wrapper">
+          <button class="settings-btn" (click)="toggleSettings($event)">
+            <span class="member-avatar">{{ memberInitials }}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="settings-dropdown" *ngIf="showSettings">
+            <div class="dropdown-info">
+              <p class="dropdown-name">{{ member?.fullNameAr }}</p>
+              <p class="dropdown-id">{{ member?.membershipId }}</p>
+            </div>
+            <hr />
+            <button class="dropdown-item logout" (click)="logout()">تسجيل الخروج</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>جاري التحميل...</p>
+  </div>
+
+  <div class="dashboard-body" *ngIf="!isLoading && member">
+
+    <!-- Member Card -->
+    <section class="member-card-section">
+      <div class="member-card">
+        <div class="member-avatar-large">{{ memberInitials }}</div>
+        <div class="member-info">
+          <h2>{{ member.fullNameAr }}</h2>
+          <p class="member-id">{{ member.membershipId }}</p>
+          <span class="status-badge" [ngClass]="statusClass">{{ statusLabel }}</span>
+        </div>
+        <div class="member-expiry" *ngIf="latestApplication?.expiresAt">
+          <span class="expiry-label">تاريخ الانتهاء</span>
+          <span class="expiry-date">
+            {{ latestApplication!.expiresAt | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pending State -->
+    <section class="info-section" *ngIf="currentStatus === 'pending'">
+      <div class="pending-card">
+        <div class="pending-icon">⏳</div>
+        <h3>طلبك قيد المراجعة</h3>
+        <p>تم استلام طلبك بنجاح. سيتم إشعارك عبر البريد الإلكتروني فور الموافقة عليه.</p>
+      </div>
+    </section>
+
+    <!-- Cancelled State -->
+    <section class="info-section" *ngIf="currentStatus === 'cancelled'">
+        <div class="cancelled-card">
+            <div class="cancelled-icon">❌</div>
+            <h3>تم رفض طلبك</h3>
+            <p *ngIf="latestApplication?.cancellationReason">
+            <strong>السبب:</strong> {{ latestApplication!.cancellationReason }}
+            </p>
+            <p>يمكنك التقديم مجدداً بعد تصحيح المشكلة.</p>
+        </div>
+    </section>  
+
+    <!-- CTA for new/expired -->
+    <section class="cta-section" *ngIf="showCTA">
+      <div class="cta-card">
+        <div class="cta-icon">🎓</div>
+        <h3 *ngIf="currentStatus === 'new'">احصل على عضويتك الآن</h3>
+        <h3 *ngIf="currentStatus === 'expired'">جدد عضويتك</h3>
+        <h3 *ngIf="currentStatus === 'cancelled'">أعد التقديم للعضوية</h3>
+        <p *ngIf="currentStatus === 'new'">
+          سجل الآن للحصول على عضوية اتحاد الطلبة اليمنيين والاستمتاع بالخصومات الحصرية.
+        </p>
+        <p *ngIf="currentStatus === 'expired'">
+          انتهت صلاحية عضويتك. جدد الآن للاستمرار في الاستفادة من الخصومات.
+        </p>
+        <p *ngIf="currentStatus === 'cancelled'">
+        يمكنك إعادة التقديم بعد تصحيح البيانات أو المستندات المطلوبة.
+        </p>
+        <a routerLink="/membership/apply" class="cta-btn">
+        {{ currentStatus === 'new' ? 'التقديم للعضوية' : currentStatus === 'expired' ? 'تجديد العضوية' : 'إعادة التقديم' }}
+        </a>
+      </div>
+    </section>
+
+    <!-- Discount Places (active only) -->
+    <section class="places-section">
+      <div class="places-header">
+        <h2>الأماكن المشاركة في الخصم</h2>
+        <p>استمتع بخصومات حصرية في هذه الأماكن بعرض بطاقة عضويتك</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters-bar">
+        <div class="search-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+            <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round"/>
+          </svg>
+          <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()"
+            placeholder="ابحث عن مكان..." />
+        </div>
+
+        <select [(ngModel)]="selectedLocation" (ngModelChange)="applyFilters()">
+          <option *ngFor="let opt of locationOptions" [value]="opt.value">{{ opt.label }}</option>
+        </select>
+
+        <select [(ngModel)]="selectedType" (ngModelChange)="applyFilters()">
+          <option *ngFor="let opt of typeOptions" [value]="opt.value">{{ opt.label }}</option>
+        </select>
+
+        <button class="clear-btn" *ngIf="activeFilterCount > 0" (click)="clearFilters()">
+          مسح الفلاتر ({{ activeFilterCount }})
+        </button>
+      </div>
+
+      <!-- Results count -->
+      <p class="results-count">{{ filteredPlaces.length }} مكان</p>
+
+      <!-- Places Grid -->
+      <div class="places-grid">
+        
+        <ng-container *ngFor="let place of filteredPlaces">
+            <a [href]="place.mapsUrl" target="_blank" class="place-card">
+                <div class="place-image">
+                <img
+                    [src]="place.imageUrl"
+                    [alt]="place.name"
+                    (error)="onImageError($event, place.id)"
+                    *ngIf="!hasImageError(place.id)"
+                />
+                <div class="place-image-fallback" *ngIf="hasImageError(place.id)">
+                    {{ getTypeIcon(place.type) }}
+                </div>
+                </div>
+                <div class="place-info">
+                    <h4>{{ place.name }}</h4>
+                    <div class="place-meta">
+                        <span class="place-type">{{ getTypeIcon(place.type) }} {{ place.type }}</span>
+                        <span class="place-location" *ngIf="place.location">{{ place.location }}</span>
+                    </div>
+                    <span class="place-discount">{{ place.discount }}</span>
+                </div>
+            </a>
+            </ng-container>
+      </div>
+
+      <p class="no-results" *ngIf="filteredPlaces.length === 0">
+        لا توجد نتائج للبحث الحالي
+      </p>
+    </section>
+
+  </div>
+</div>

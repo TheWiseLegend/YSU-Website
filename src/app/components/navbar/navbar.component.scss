@@ -1,0 +1,290 @@
+// Updated navbar.component.scss with fixed membership button positioning
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  direction: rtl;
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+  
+  .navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    position: relative;
+  }
+  
+  .logo {
+    position: absolute;
+    right: 15px; 
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    
+    img {
+      height: 60px;
+      width: auto;
+    }
+  }
+
+  // Membership CTA Button - positioned on the far left
+  .membership-btn {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #5174b9;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(81, 116, 185, 0.3);
+    z-index: 10;
+    white-space: nowrap;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: #3f5a8f;
+      transform: translateY(-50%) translateY(-2px);
+      box-shadow: 0 6px 15px rgba(81, 116, 185, 0.4);
+    }
+
+    &:active {
+      transform: translateY(-50%) translateY(0px);
+    }
+  }
+  
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 21px;
+    width: 30px;
+    padding: 0;
+    z-index: 10;
+    
+    span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background-color: #333;
+      transition: all 0.3s ease;
+    }
+  }
+  
+  .nav-links {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    margin-right: 80px; // Space for logo
+    margin-left: 150px; // Space for membership button
+    
+    ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      
+      li {
+        margin: 0 10px;
+        
+        // Hide mobile-only membership link on desktop
+        &.mobile-only {
+          display: none;
+        }
+        
+        a {
+          color: #333 !important;
+          text-decoration: none;
+          font-size: 16px;
+          font-weight: 500;
+          padding: 8px 10px;
+          transition: color 0.3s ease;
+          white-space: nowrap;
+          
+          &:hover, &.active {
+            color: #5174b9 !important;
+          }
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 991px) {
+    .menu-toggle {
+      display: flex;
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .navbar-content {
+      justify-content: center;
+    }
+    
+    .logo {
+      position: static;
+      transform: none;
+      
+      img {
+        height: 50px;
+      }
+    }
+
+    // Hide membership button on mobile in navbar, show in menu
+    .membership-btn {
+      display: none;
+    }
+    
+    .nav-links {
+      position: fixed;
+      top: 80px; 
+      right: 0;
+      left: 0;
+      width: 100%;
+      max-height: 0;
+      overflow: hidden;
+      background-color: #fff !important;
+      transition: max-height 0.3s ease;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      margin-right: 0;
+      margin-left: 0;
+      
+      &.active {
+        max-height: calc(100vh - 80px); 
+      }
+      
+      ul {
+        flex-direction: column;
+        padding: 20px 0;
+        
+        li {
+          margin: 0;
+          
+          // Show mobile-only membership link on mobile
+          &.mobile-only {
+            display: block;
+            
+            a {
+              background: #5174b9 !important;
+              color: white !important;
+              font-weight: 600;
+              border-radius: 10px;
+              margin: 0 10px 10px;
+              
+              &:hover {
+                background: #3f5a8f !important;
+              }
+            }
+          }
+          
+          a {
+            display: block !important;
+            padding: 15px 20px !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+            font-size: 18px !important;
+            color: #333 !important;
+            text-decoration: none !important;
+            background-color: transparent !important;
+            
+            &:hover, &.active {
+              color: #5174b9 !important;
+              background-color: rgba(81, 116, 185, 0.1) !important;
+            }
+          }
+        }
+      }
+    }
+    
+    .nav-links.active ul li {
+      animation: fadeInRight 0.5s ease forwards;
+      opacity: 0;
+      
+      @for $i from 1 through 12 {
+        &:nth-child(#{$i}) {
+          animation-delay: $i * 0.1s;
+        }
+      }
+    }
+  }
+
+  // Smaller mobile screens
+  @media (max-width: 480px) {
+    .navbar-content {
+      height: 70px;
+    }
+
+    .logo img {
+      height: 45px;
+    }
+  }
+}
+
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Force mobile menu visibility with highest specificity */
+::ng-deep .navbar .nav-links ul li a {
+  color: #333 !important;
+}
+
+::ng-deep .navbar .nav-links.active ul li a {
+  color: #333 !important;
+  background-color: #fff !important;
+  display: block !important;
+  padding: 15px 20px !important;
+  text-decoration: none !important;
+}
+
+::ng-deep .navbar .nav-links.active ul li a:hover,
+::ng-deep .navbar .nav-links.active ul li a.active {
+  color: #5174b9 !important;
+  background-color: rgba(81, 116, 185, 0.1) !important;
+}
+
+/* Alternative approach with attribute selectors */
+[routerlink]:not([href]) {
+  color: #333 !important;
+}
+
+/* Force white background on mobile menu */
+@media (max-width: 991px) {
+  ::ng-deep .navbar .nav-links.active {
+    background-color: #ffffff !important;
+  }
+}

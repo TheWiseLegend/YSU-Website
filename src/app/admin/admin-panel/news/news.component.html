@@ -1,0 +1,132 @@
+<!-- src/app/admin/admin-panel/news/news.component.html -->
+<div class="admin-news">
+  <div class="news-header">
+    <h2>إدارة الأخبار</h2>
+    <button class="add-btn" (click)="toggleForm()">
+      {{ showForm ? 'إلغاء' : 'إضافة خبر جديد' }}
+    </button>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- News Form -->
+  <div class="news-form-container" *ngIf="showForm">
+    <form [formGroup]="newsForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="title">العنوان</label>
+        <input 
+          id="title" 
+          type="text" 
+          formControlName="title"
+          class="form-control"
+          placeholder="أدخل عنوان الخبر">
+      </div>
+
+      <div class="form-group">
+        <label for="summary">الملخص</label>
+        <textarea 
+          id="summary" 
+          formControlName="summary"
+          class="form-control"
+          rows="3"
+          placeholder="أدخل ملخص الخبر"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="content">المحتوى</label>
+        <textarea 
+          id="content" 
+          formControlName="content"
+          class="form-control"
+          rows="6"
+          placeholder="أدخل محتوى الخبر الكامل"></textarea>
+      </div>
+
+      <!-- Added Date Picker Field -->
+      <div class="form-group">
+        <label for="createdAt">تاريخ النشر</label>
+        <input 
+          id="createdAt" 
+          type="datetime-local" 
+          formControlName="createdAt"
+          class="form-control"
+          required>
+        <small class="form-help">حدد تاريخ ووقت نشر الخبر</small>
+      </div>
+
+      <div class="form-group">
+        <label>الصورة</label>
+        <div class="image-upload">
+          <input 
+            type="file" 
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            #imageInput
+            style="display: none">
+          
+          <button type="button" class="upload-btn" (click)="imageInput.click()">
+            اختر صورة
+          </button>
+          
+          <button 
+            type="button" 
+            class="upload-confirm-btn" 
+            (click)="uploadImage()"
+            [disabled]="!selectedFile || isUploading">
+            {{ isUploading ? 'جاري الرفع...' : 'رفع الصورة' }}
+          </button>
+        </div>
+
+        <div class="image-preview" *ngIf="imagePreview">
+          <img [src]="imagePreview" alt="معاينة الصورة">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="newsForm.invalid">
+          {{ isEditing ? 'تحديث' : 'حفظ' }}
+        </button>
+        <button type="button" class="cancel-btn" (click)="toggleForm()">
+          إلغاء
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- News List -->
+  <div class="news-list">
+    <div class="loading" *ngIf="isLoading">جاري التحميل...</div>
+    
+    <table class="news-table" *ngIf="!isLoading && newsList.length > 0">
+      <thead>
+        <tr>
+          <th>الصورة</th>
+          <th>العنوان</th>
+          <th>الملخص</th>
+          <th>التاريخ</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let news of newsList">
+          <td>
+            <img [src]="news.imageUrl" alt="{{ news.title }}" class="news-thumbnail">
+          </td>
+          <td>{{ news.title }}</td>
+          <td>{{ news.summary }}</td>
+          <td>{{ formatDate(news.createdAt) }}</td>
+          <td>
+            <button class="edit-btn" (click)="editNews(news)">تعديل</button>
+            <button class="delete-btn" (click)="deleteNews(news.id)">حذف</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="no-news" *ngIf="!isLoading && newsList.length === 0">
+      <p>لا توجد أخبار حالياً</p>
+    </div>
+  </div>
+</div>

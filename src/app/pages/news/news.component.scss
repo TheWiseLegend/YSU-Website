@@ -1,0 +1,101 @@
+// src/app/pages/news/news.component.scss
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 25px 15px 60px;
+  }
+  
+  .news-section {
+    margin-bottom: 2rem;
+  }
+  
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    
+    h2 {
+      color: var(--secondary-color);
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  .section-underline {
+    width: 60px;
+    height: 3px;
+    background-color: var(--primary-color);
+    border-radius: 1.5px;
+    margin: 0 auto 1.5rem;
+  }
+  
+  .section-description {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #555;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    
+    @media (max-width: 992px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+      gap: 25px;
+    }
+  }
+  
+  .news-item {
+    height: 100%;
+  }
+  
+  // Empty state styling
+  .empty-state {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-top: 2rem;
+    
+    h3 {
+      color: var(--secondary-color);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+    
+    .empty-icon {
+      font-size: 4rem;
+      color: #ccc;
+      margin-bottom: 1.5rem;
+    }
+  }
+  
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .section-header h2 {
+      font-size: 2rem;
+    }
+    
+    .section-description {
+      font-size: 1rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .section-header h2 {
+      font-size: 1.8rem;
+    }
+  }

@@ -1,0 +1,178 @@
+<div class="apply-page" dir="rtl">
+
+  <!-- Header -->
+  <header class="apply-header">
+    <div class="header-inner">
+      <a routerLink="/membership/dashboard" class="back-btn">
+        ← العودة للوحة التحكم
+      </a>
+      <img src="/logo/logo-wide.webp" alt="YSU" class="header-logo" />
+    </div>
+  </header>
+
+  <!-- Success State -->
+  <div class="success-state" *ngIf="isSubmitted">
+    <div class="success-card">
+      <div class="success-icon">✅</div>
+      <h2>تم إرسال طلبك بنجاح!</h2>
+      <p>
+        سيتم مراجعة طلبك من قِبل الاتحاد وستصلك رسالة على بريدك الإلكتروني عند الموافقة عليه.
+        <br /><br />
+        بعد الموافقة، ستصلك بطاقة العضوية خلال <strong>7 أيام عمل</strong>.
+      </p>
+      <a routerLink="/membership/dashboard" class="success-btn">العودة للوحة التحكم</a>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="apply-body" *ngIf="!isSubmitted">
+    <div class="apply-container">
+
+      <div class="page-title">
+        <h1>طلب العضوية</h1>
+        <p>يرجى ملء جميع البيانات بدقة لضمان معالجة طلبك بسرعة</p>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <form (ngSubmit)="onSubmit()">
+
+        <!-- Personal Info -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <span class="section-num">١</span> البيانات الشخصية
+          </h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>رقم جواز السفر <span class="required">*</span></label>
+              <input type="text" [(ngModel)]="passportNumber" name="passportNumber"
+                placeholder="A12345678" [disabled]="isLoading" />
+            </div>
+            <div class="form-group">
+              <label>رقم الهاتف <span class="required">*</span></label>
+              <input type="tel" [(ngModel)]="phone" name="phone"
+                placeholder="+60123456789" [disabled]="isLoading" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>الجنس <span class="required">*</span></label>
+              <select [(ngModel)]="gender" name="gender" [disabled]="isLoading">
+                <option value="">-- اختر --</option>
+                <option value="ذكر">ذكر</option>
+                <option value="أنثى">أنثى</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label>عنوان استلام البطاقة <span class="required">*</span></label>
+            <textarea [(ngModel)]="address" name="address" rows="2"
+              placeholder="العنوان الكامل لاستلام بطاقة العضوية..."
+              [disabled]="isLoading"></textarea>
+          </div>
+        </div>
+
+        <!-- Academic Info -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <span class="section-num">٢</span> البيانات الأكاديمية
+          </h3>
+
+          <div class="form-group full-width">
+            <label>الجامعة <span class="required">*</span></label>
+            <select [(ngModel)]="university" name="university" [disabled]="isLoading">
+              <option value="">-- اختر جامعتك --</option>
+              <option *ngFor="let u of universities" [value]="u">{{ u }}</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>الرقم الجامعي <span class="required">*</span></label>
+              <input type="text" [(ngModel)]="studentId" name="studentId"
+                placeholder="STU123456" [disabled]="isLoading" />
+            </div>
+            <div class="form-group">
+              <label>التخصص <span class="required">*</span></label>
+              <input type="text" [(ngModel)]="fieldOfStudy" name="fieldOfStudy"
+                placeholder="Computer Science" [disabled]="isLoading" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>السنة الدراسية <span class="required">*</span></label>
+              <select [(ngModel)]="yearOfStudy" name="yearOfStudy" [disabled]="isLoading">
+                <option [value]="null">-- اختر --</option>
+                <option *ngFor="let y of years" [value]="y">السنة {{ y }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>سنة التخرج المتوقعة <span class="required">*</span></label>
+              <select [(ngModel)]="graduationYear" name="graduationYear" [disabled]="isLoading">
+                <option [value]="null">-- اختر --</option>
+                <option *ngFor="let y of graduationYears" [value]="y">{{ y }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <span class="section-num">٣</span> الدفع والمستندات
+          </h3>
+
+          <!-- QR Code -->
+          <div class="payment-box">
+            <div class="qr-section">
+              <p class="payment-amount">رسوم العضوية: <strong>100 RM</strong></p>
+              <p class="payment-instruction">
+                قم بمسح رمز QR أدناه لإتمام عملية الدفع، ثم احتفظ بصورة الإيصال
+              </p>
+              <div class="qr-image">
+                <img src="/membership/qr_payment.png" alt="QR Code للدفع" />
+              </div>
+            </div>
+          </div>
+
+          <!-- File Uploads -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>خطاب القبول من الجامعة <span class="required">*</span></label>
+              <div class="file-upload" [class.has-file]="enrollmentLetterPreview">
+                <input type="file" id="enrollmentLetter" accept=".pdf,.jpg,.jpeg,.png"
+                  (change)="onFileChange($event, 'enrollmentLetter')" [disabled]="isLoading" />
+                <label for="enrollmentLetter" class="file-label">
+                  <span *ngIf="!enrollmentLetterPreview">📎 اختر ملف PDF أو صورة</span>
+                  <span *ngIf="enrollmentLetterPreview">✅ {{ enrollmentLetterPreview }}</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>إيصال الدفع <span class="required">*</span></label>
+              <div class="file-upload" [class.has-file]="receiptPreview">
+                <input type="file" id="receipt" accept=".pdf,.jpg,.jpeg,.png"
+                  (change)="onFileChange($event, 'receipt')" [disabled]="isLoading" />
+                <label for="receipt" class="file-label">
+                  <span *ngIf="!receiptPreview">📎 اختر ملف PDF أو صورة</span>
+                  <span *ngIf="receiptPreview">✅ {{ receiptPreview }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">إرسال الطلب</span>
+          <span *ngIf="isLoading" class="spinner"></span>
+        </button>
+
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,165 @@
+<!-- src/app/admin/admin-panel/gallery/gallery.component.html -->
+<div class="admin-gallery">
+    <div class="gallery-header">
+      <h2>إدارة معرض الصور</h2>
+      <button class="add-btn" (click)="toggleForm()">
+        {{ showForm ? 'إلغاء' : 'إضافة ألبوم جديد' }}
+      </button>
+    </div>
+  
+    <!-- Success/Error Messages -->
+    <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  
+    <!-- Album Form -->
+    <div class="album-form-container" *ngIf="showForm">
+      <form [formGroup]="albumForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="title">عنوان الألبوم</label>
+          <input 
+            id="title" 
+            type="text" 
+            formControlName="title"
+            class="form-control"
+            placeholder="أدخل عنوان الألبوم">
+        </div>
+  
+        <div class="form-group">
+          <label for="description">الوصف (اختياري)</label>
+          <textarea 
+            id="description" 
+            formControlName="description"
+            class="form-control"
+            rows="3"
+            placeholder="أدخل وصف الألبوم"></textarea>
+        </div>
+  
+        <div class="form-group">
+          <label>الصورة الرئيسية</label>
+          <div class="image-upload">
+            <input 
+              type="file" 
+              (change)="onMainFileSelected($event)"
+              accept="image/*"
+              #mainImageInput
+              style="display: none">
+            
+            <button type="button" class="upload-btn" (click)="mainImageInput.click()">
+              اختر صورة
+            </button>
+            
+            <button 
+              type="button" 
+              class="upload-confirm-btn" 
+              (click)="uploadMainImage()"
+              [disabled]="!selectedMainFile || isUploadingMain">
+              {{ isUploadingMain ? 'جاري الرفع...' : 'رفع الصورة' }}
+            </button>
+          </div>
+  
+          <div class="image-preview" *ngIf="mainImagePreview">
+            <img [src]="mainImagePreview" alt="معاينة الصورة الرئيسية">
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label>صور إضافية</label>
+          <div class="image-upload">
+            <input 
+              type="file" 
+              (change)="onFilesSelected($event)"
+              accept="image/*"
+              #imagesInput
+              style="display: none"
+              multiple>
+            
+            <button type="button" class="upload-btn" (click)="imagesInput.click()">
+              اختر صور
+            </button>
+            
+            <button 
+              type="button" 
+              class="upload-confirm-btn" 
+              (click)="uploadImages()"
+              [disabled]="selectedFiles.length === 0 || isUploading">
+              {{ isUploading ? 'جاري الرفع...' : 'رفع الصور' }}
+            </button>
+          </div>
+  
+          <!-- Preview for selected images -->
+          <div class="preview-grid" *ngIf="imagesPreviews.length > 0">
+            <div class="preview-item" *ngFor="let preview of imagesPreviews; let i = index">
+              <img [src]="preview.preview" alt="معاينة الصورة">
+              <button type="button" class="remove-preview" (click)="removePreview(i)">×</button>
+            </div>
+          </div>
+  
+          <!-- Already uploaded images -->
+          <div class="images-array" *ngIf="getImagesArray().controls.length > 0">
+            <h4>الصور المرفوعة</h4>
+            <div class="images-grid">
+              <div class="image-item" *ngFor="let imageControl of getImagesArray().controls; let i = index">
+                <img [src]="imageControl.get('url')?.value" alt="صورة الألبوم">
+                <button type="button" class="remove-image" (click)="removeImageField(i)">×</button>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="form-actions">
+          <button type="submit" class="submit-btn" [disabled]="albumForm.invalid">
+            {{ isEditing ? 'تحديث' : 'حفظ' }}
+          </button>
+          <button type="button" class="cancel-btn" (click)="toggleForm()">
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Albums List -->
+    <div class="albums-list">
+      <div class="loading" *ngIf="isLoading">جاري التحميل...</div>
+      
+      <div class="albums-grid" *ngIf="!isLoading && albums.length > 0">
+        <div class="album-card" *ngFor="let album of albums">
+          <div class="album-image">
+            <img [src]="album.mainImage" [alt]="album.title">
+          </div>
+          <div class="album-content">
+            <h3 class="album-title">{{ album.title }}</h3>
+            <p class="album-date">{{ formatDate(album.createdAt) }}</p>
+            <p class="album-description" *ngIf="album.description">{{ album.description }}</p>
+            <div class="album-stats">
+              <span class="images-count">{{ album.images.length }} صورة</span>
+            </div>
+            <div class="album-actions">
+              <button class="edit-btn" (click)="editAlbum(album)">تعديل</button>
+              <button class="delete-btn" (click)="confirmDeleteAlbum(album.id)">حذف</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="no-albums" *ngIf="!isLoading && albums.length === 0">
+        <p>لا توجد ألبومات في معرض الصور حالياً</p>
+      </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showDeleteConfirmation">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>تأكيد الحذف</h3>
+        </div>
+        <div class="modal-body">
+          <p>هل أنت متأكد من حذف هذا الألبوم؟</p>
+          <p class="warning">هذا الإجراء لا يمكن التراجع عنه وسيتم حذف جميع الصور المرتبطة بالألبوم.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="cancel-btn" (click)="cancelDelete()">إلغاء</button>
+          <button class="confirm-delete-btn" (click)="deleteAlbum()">تأكيد الحذف</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,250 @@
+// src/app/pages/gallery/gallery.component.scss
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 25px 15px 60px;
+}
+
+.gallery-section {
+  margin-bottom: 2rem;
+  padding: 20px;
+  background-color: #f7f9fc;
+  border-radius: 15px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  
+  h2 {
+    color: var(--secondary-color);
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.section-underline {
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-color);
+  border-radius: 1.5px;
+  margin: 0 auto 1.5rem;
+}
+
+.section-description {
+  max-width: 700px;
+  margin: 0 auto;
+  color: #555;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* Loading spinner */
+.loading-albums {
+  text-align: center;
+  padding: 60px;
+  background-color: #f9f9fa;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 20px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error state */
+.albums-error {
+  text-align: center;
+  padding: 40px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+/* No albums state */
+.no-albums {
+  text-align: center;
+  padding: 60px;
+  background-color: #f9f9fa;
+  border-radius: 8px;
+  margin: 20px 0;
+  color: #6c757d;
+}
+
+// Album grid
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+}
+
+.album-item {
+  height: 100%;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.album-card {
+  display: block;
+  height: 100%;
+  background-color: white; 
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(81, 116, 185, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 2;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.album-item:hover {
+  .album-card {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .album-image img {
+    transform: scale(1.05);
+  }
+  
+  .hover-overlay {
+    opacity: 1;
+  }
+}
+
+.view-album-btn {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 12px 25px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+}
+
+
+.album-image {
+  height: 220px;
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+}
+
+.album-content {
+  padding: 20px;
+}
+
+.album-title {
+  font-size: 1.3rem;
+  color: var(--secondary-color);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.album-meta {
+  margin-bottom: 12px;
+}
+
+.images-count {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: rgba(81, 116, 185, 0.1);
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  border-radius: 20px;
+}
+
+.album-description {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .section-header h2 {
+    font-size: 2rem;
+  }
+  
+  .section-description {
+    font-size: 1rem;
+  }
+  
+  .album-image {
+    height: 180px;
+  }
+}
+
+@media (max-width: 576px) {
+  .section-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .album-content {
+    padding: 15px;
+  }
+  
+  .album-title {
+    font-size: 1.2rem;
+  }
+}
+

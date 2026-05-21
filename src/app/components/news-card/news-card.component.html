@@ -1,0 +1,16 @@
+<!-- src/app/components/news-card/news-card.component.html -->
+<div class="news-card" [routerLink]="['/news', news.id]" appIntersectionLazyLoad="{{news.imageUrl}}">
+  <div class="news-image">
+    <app-optimized-image 
+      [src]="news.imageUrl" 
+      [alt]="news.title" 
+      [height]="240">
+    </app-optimized-image>
+  </div>
+  <div class="news-content">
+    <div class="news-date">{{ formatDate(news.createdAt) }}</div>
+    <h3 class="news-title">{{ news.title }}</h3>
+    <p class="news-description">{{ limitSummary(news.summary) }}</p>
+    <span class="read-more">قراءة المزيد</span>
+  </div>
+</div>

@@ -1,0 +1,229 @@
+<div class="admin-members" dir="rtl">
+
+  <div class="page-header">
+    <h2>إدارة الأعضاء</h2>
+  </div>
+
+  <!-- Messages -->
+  <div class="success-msg" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'pending'" (click)="setTab('pending')">
+      قيد المراجعة
+    </button>
+    <button [class.active]="activeTab === 'active'" (click)="setTab('active')">
+      نشط
+    </button>
+    <button [class.active]="activeTab === 'expired'" (click)="setTab('expired')">
+      منتهي
+    </button>
+    <button [class.active]="activeTab === 'all'" (click)="setTab('all')">
+      الكل
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" *ngIf="isLoading">جاري التحميل...</div>
+
+  <!-- Member Detail Modal -->
+  <div class="modal-overlay" *ngIf="selectedMember" (click)="closeDetail()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeDetail()">✕</button>
+
+      <h3 class="modal-title">تفاصيل العضو</h3>
+
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">رقم العضوية</span>
+          <span class="detail-value">{{ selectedMember.membershipId }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">الاسم بالعربية</span>
+          <span class="detail-value">{{ selectedMember.fullNameAr }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">الاسم بالإنجليزية</span>
+          <span class="detail-value">{{ selectedMember.fullNameEn }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">البريد الإلكتروني</span>
+          <span class="detail-value">{{ selectedMember.email }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">تاريخ التسجيل</span>
+          <span class="detail-value">{{ formatDate(selectedMember.createdAt) }}</span>
+        </div>
+      </div>
+
+      <ng-container *ngIf="getLatestApplication(selectedMember) as app">
+        <h4 class="modal-subtitle">بيانات الطلب</h4>
+
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">الحالة</span>
+            <span class="status-badge" [ngClass]="getStatusClass(app.status)">
+              {{ getStatusLabel(app.status) }}
+            </span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">جواز السفر</span>
+            <span class="detail-value">{{ app.passportNumber }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">الهاتف</span>
+            <span class="detail-value">{{ app.phone }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">الجنس</span>
+            <span class="detail-value">{{ app.gender }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">الجامعة</span>
+            <span class="detail-value">{{ app.university }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">الرقم الجامعي</span>
+            <span class="detail-value">{{ app.studentId }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">التخصص</span>
+            <span class="detail-value">{{ app.fieldOfStudy }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">السنة الدراسية</span>
+            <span class="detail-value">{{ app.yearOfStudy }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">سنة التخرج</span>
+            <span class="detail-value">{{ app.graduationYear }}</span>
+          </div>
+          <div class="detail-item full">
+            <span class="detail-label">عنوان الاستلام</span>
+            <span class="detail-value">{{ app.address }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">تاريخ التقديم</span>
+            <span class="detail-value">{{ formatDate(app.submittedAt) }}</span>
+          </div>
+          <div class="detail-item" *ngIf="app.approvedAt">
+            <span class="detail-label">تاريخ الموافقة</span>
+            <span class="detail-value">{{ formatDate(app.approvedAt) }}</span>
+          </div>
+          <div class="detail-item" *ngIf="app.expiresAt">
+            <span class="detail-label">تاريخ الانتهاء</span>
+            <span class="detail-value">{{ formatDate(app.expiresAt) }}</span>
+          </div>
+        </div>
+
+        <!-- Documents -->
+        <h4 class="modal-subtitle">المستندات</h4>
+        <div class="documents">
+          <a [href]="app.enrollmentLetterUrl" target="_blank" class="doc-link">
+            📄 خطاب القبول الجامعي
+          </a>
+          <a [href]="app.receiptUrl" target="_blank" class="doc-link">
+            🧾 إيصال الدفع
+          </a>
+        </div>
+
+        <!-- Approve Button -->
+        <div class="modal-actions" *ngIf="app.status === 'pending'">
+        <button
+            class="approve-btn"
+            [disabled]="isApproving"
+            (click)="approve(app.id)"
+        >
+            {{ isApproving ? 'جاري...' : 'الموافقة على العضوية ✓' }}
+        </button>
+        <button
+            class="cancel-application-btn"
+            [disabled]="isApproving"
+            (click)="openCancelModal(app.id)"
+        >
+            رفض الطلب ✕
+        </button>
+        </div>
+      </ng-container>
+
+      <p class="no-app" *ngIf="!getLatestApplication(selectedMember)">
+        لا توجد طلبات لهذا العضو
+      </p>
+    </div>
+  </div>
+
+  <!-- Members Table -->
+  <div class="members-list" *ngIf="!isLoading">
+    <table class="members-table" *ngIf="members.length > 0">
+      <thead>
+        <tr>
+          <th>رقم العضوية</th>
+          <th>الاسم</th>
+          <th>البريد الإلكتروني</th>
+          <th>الجامعة</th>
+          <th>تاريخ التقديم</th>
+          <th>الحالة</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let member of members">
+          <td>{{ member.membershipId }}</td>
+          <td>{{ member.fullNameAr }}</td>
+          <td>{{ member.email }}</td>
+          <td>{{ getLatestApplication(member)?.university ?? '—' }}</td>
+          <td>{{ formatDate(getLatestApplication(member)?.submittedAt ?? null) }}</td>
+          <td>
+            <span
+              class="status-badge"
+              [ngClass]="getStatusClass(getLatestApplication(member)?.status ?? '')"
+              *ngIf="getLatestApplication(member)"
+            >
+              {{ getStatusLabel(getLatestApplication(member)!.status) }}
+            </span>
+            <span *ngIf="!getLatestApplication(member)" class="status-badge status-new">
+              جديد
+            </span>
+          </td>
+          <td>
+            <button class="view-btn" (click)="selectMember(member)">عرض</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="no-data" *ngIf="members.length === 0">
+      <p>لا يوجد أعضاء في هذه الفئة</p>
+    </div>
+  </div>
+
+  <!-- Cancel Reason Modal -->
+    <div class="modal-overlay" *ngIf="showCancelModal" (click)="closeCancelModal()">
+    <div class="modal cancel-modal" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">رفض الطلب</h3>
+        <p class="cancel-desc">يرجى إدخال سبب الرفض، سيتم إرساله للعضو عبر البريد الإلكتروني.</p>
+
+        <div class="form-group">
+        <label>سبب الرفض</label>
+        <textarea
+            [(ngModel)]="cancelReason"
+            rows="4"
+            placeholder="مثال: إيصال الدفع غير واضح، يرجى إعادة رفع صورة واضحة..."
+        ></textarea>
+        </div>
+
+        <div class="cancel-modal-actions">
+        <button
+            class="confirm-cancel-btn"
+            [disabled]="!cancelReason.trim() || isApproving"
+            (click)="confirmCancel()"
+        >
+            {{ isApproving ? 'جاري...' : 'تأكيد الرفض' }}
+        </button>
+        <button class="dismiss-btn" (click)="closeCancelModal()">إلغاء</button>
+        </div>
+    </div>
+    </div>
+
+</div>

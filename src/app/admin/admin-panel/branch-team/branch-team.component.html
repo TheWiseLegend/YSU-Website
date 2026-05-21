@@ -1,0 +1,211 @@
+<!-- src/app/admin/admin-panel/branches/branch-team/branch-team.component.html -->
+<div class="admin-branch-team">
+  <div class="team-header">
+    <h2>إدارة فريق فرع جامعة {{ branchName }}</h2>
+    <div class="action-buttons">
+      <a [routerLink]="['/admin-panel/branches', branchId]" class="back-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        العودة للفرع
+      </a>
+      <button class="add-btn" (click)="toggleForm()">
+        {{ showForm ? 'إلغاء' : 'إضافة عضو جديد' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- Team Member Form -->
+  <div class="member-form-container" *ngIf="showForm">
+    <form [formGroup]="memberForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">الاسم</label>
+        <input 
+          id="name" 
+          type="text" 
+          formControlName="name"
+          class="form-control"
+          placeholder="أدخل اسم العضو">
+      </div>
+
+      <div class="form-group">
+        <label for="position">المنصب</label>
+        <input 
+          id="position" 
+          type="text" 
+          formControlName="position"
+          class="form-control"
+          placeholder="أدخل منصب العضو">
+      </div>
+
+      <div class="form-group">
+        <label for="type">الفئة</label>
+        <select 
+          id="type" 
+          formControlName="type"
+          class="form-control">
+          <option value="">اختر الفئة</option>
+          <option *ngFor="let type of memberTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>الصورة الشخصية</label>
+        <div class="image-upload">
+          <input 
+            type="file" 
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            #imageInput
+            style="display: none">
+          
+          <button type="button" class="upload-btn" (click)="imageInput.click()">
+            اختر صورة
+          </button>
+          
+          <button 
+            type="button" 
+            class="upload-confirm-btn" 
+            (click)="uploadImage()"
+            [disabled]="!selectedFile || isUploading">
+            {{ isUploading ? 'جاري الرفع...' : 'رفع الصورة' }}
+          </button>
+        </div>
+
+        <div class="image-preview" *ngIf="imagePreview">
+          <img [src]="imagePreview" alt="معاينة الصورة">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="memberForm.invalid">
+          {{ isEditing ? 'تحديث' : 'حفظ' }}
+        </button>
+        <button type="button" class="cancel-btn" (click)="toggleForm()">
+          إلغاء
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Team Members Display -->
+  <div class="team-members-display">
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>جاري تحميل أعضاء الفريق...</p>
+    </div>
+    
+    <!-- No members state -->
+    <div class="no-members" *ngIf="!isLoading && teamMembers.length === 0">
+      <p>لا يوجد أعضاء في فريق هذا الفرع حالياً</p>
+      <button class="add-first-btn" (click)="toggleForm()">إضافة عضو جديد</button>
+    </div>
+    
+  <!-- Members Display -->
+  <div class="members-content" *ngIf="!isLoading && teamMembers.length > 0">
+    <!-- Administrative Team Section -->
+    <div class="administrative-section" *ngIf="getAdministrativeMembers().length > 0">
+      <h3 class="section-title">الهيئة التنفيذية</h3>
+      
+      <!-- Administrative Leadership -->
+      <div class="leadership-section" *ngIf="hasAdministrativeLeaders()">
+        <div class="leadership-row">
+          <div class="member-card leadership" *ngFor="let member of getAdministrativeLeaders()">
+            <div class="member-image">
+              <img [src]="member.imageUrl" [alt]="member.name">
+            </div>
+            <div class="member-info">
+              <h4 class="member-name">{{ member.name }}</h4>
+              <div class="member-role">{{ member.position }}</div>
+              <div class="member-actions">
+                <button class="edit-btn" (click)="editMember(member)">تعديل</button>
+                <button class="delete-btn" (click)="confirmDeleteMember(member.id)">حذف</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Other Administrative Members -->
+      <div class="members-grid">
+        <div class="member-card" *ngFor="let member of getAdministrativeOtherMembers()">
+          <div class="member-image">
+            <img [src]="member.imageUrl" [alt]="member.name">
+          </div>
+          <div class="member-info">
+            <h4 class="member-name">{{ member.name }}</h4>
+            <div class="member-role">{{ member.position }}</div>
+            <div class="member-actions">
+              <button class="edit-btn" (click)="editMember(member)">تعديل</button>
+              <button class="delete-btn" (click)="confirmDeleteMember(member.id)">حذف</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Supervisory Team Section -->
+    <div class="supervisory-section" *ngIf="getSupervisoryMembers().length > 0">
+      <h3 class="section-title">لجنة الرقابة والتفتيش</h3>
+      
+      <!-- Supervisory Leadership -->
+      <div class="leadership-section" *ngIf="hasSupervisoryLeaders()">
+        <div class="leadership-row">
+          <div class="member-card leadership" *ngFor="let member of getSupervisoryLeaders()">
+            <div class="member-image">
+              <img [src]="member.imageUrl" [alt]="member.name">
+            </div>
+            <div class="member-info">
+              <h4 class="member-name">{{ member.name }}</h4>
+              <div class="member-role">{{ member.position }}</div>
+              <div class="member-actions">
+                <button class="edit-btn" (click)="editMember(member)">تعديل</button>
+                <button class="delete-btn" (click)="confirmDeleteMember(member.id)">حذف</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Other Supervisory Members -->
+      <div class="members-grid">
+        <div class="member-card" *ngFor="let member of getSupervisoryOtherMembers()">
+          <div class="member-image">
+            <img [src]="member.imageUrl" [alt]="member.name">
+          </div>
+          <div class="member-info">
+            <h4 class="member-name">{{ member.name }}</h4>
+            <div class="member-role">{{ member.position }}</div>
+            <div class="member-actions">
+              <button class="edit-btn" (click)="editMember(member)">تعديل</button>
+              <button class="delete-btn" (click)="confirmDeleteMember(member.id)">حذف</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+  
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteConfirmation">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>تأكيد الحذف</h3>
+      </div>
+      <div class="modal-body">
+        <p>هل أنت متأكد من حذف هذا العضو من فريق الفرع؟</p>
+        <p class="warning">هذا الإجراء لا يمكن التراجع عنه.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel-btn" (click)="cancelDelete()">إلغاء</button>
+        <button class="confirm-delete-btn" (click)="deleteMember()">تأكيد الحذف</button>
+      </div>
+    </div>
+  </div>
+</div>
+```

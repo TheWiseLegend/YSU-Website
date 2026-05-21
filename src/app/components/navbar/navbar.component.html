@@ -1,0 +1,42 @@
+<!-- src/app/components/navbar/navbar.component.html -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-content">
+
+      <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle mobile menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="logo">
+        <a routerLink="/">
+          <img src="/logo/ysu_logo_cropped.webp" alt="اتحاد الطلبة اليمنيين في ماليزيا" />
+        </a>
+      </div>
+      
+      <div class="nav-links" [class.active]="isMenuOpen">
+        <ul>
+          <!-- Membership link for mobile only (first item) -->
+          <li class="mobile-only"><a routerLink="/membership" routerLinkActive="active" (click)="isMenuOpen = false">العضوية</a></li>
+          
+          <!-- Regular navigation links -->
+          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMenuOpen = false">الرئيسية</a></li>
+          <li><a routerLink="/student-guide" routerLinkActive="active" (click)="isMenuOpen = false">دليل الطالب</a></li>
+          <li><a routerLink="/universities" routerLinkActive="active" (click)="isMenuOpen = false">الجامعات</a></li>
+          <li><a routerLink="/news" routerLinkActive="active" (click)="isMenuOpen = false">أخبار الإتحاد</a></li>
+          <li><a routerLink="/branches" routerLinkActive="active" (click)="isMenuOpen = false">الفروع</a></li>
+          <li><a routerLink="/gallery" routerLinkActive="active" (click)="isMenuOpen = false">الصور</a></li>
+          <li><a routerLink="/digital-library" routerLinkActive="active" (click)="isMenuOpen = false">المكتبة الرقمية</a></li>
+          <li><a routerLink="/about" routerLinkActive="active" (click)="isMenuOpen = false">من نحن</a></li>
+          <li><a routerLink="/contact" routerLinkActive="active" (click)="isMenuOpen = false">تواصل معنا</a></li>
+        </ul>
+      </div>
+
+      <!-- Membership CTA Button (Desktop only) -->
+      <a routerLink="/membership" class="membership-btn">
+        <span>العضوية</span>
+      </a>
+    </div>
+  </div>
+</nav>

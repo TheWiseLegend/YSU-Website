@@ -1,0 +1,23 @@
+<!-- src/app/admin/admin-panel/admin-panel.component.html -->
+<app-token-expiry-warning></app-token-expiry-warning>
+
+<div class="admin-panel">
+  <nav class="admin-nav">
+    <div class="admin-header">
+      <h1>لوحة تحكم المسؤول</h1>
+    </div>
+    <ul class="nav-links">
+      <li><a routerLink="/admin-panel/dashboard" routerLinkActive="active">الرئيسية</a></li>
+      <li><a routerLink="/admin-panel/news" routerLinkActive="active">إدارة الأخبار</a></li>
+      <li><a routerLink="/admin-panel/events" routerLinkActive="active">إدارة الفعاليات</a></li>
+      <li><a routerLink="/admin-panel/gallery" routerLinkActive="active">إدارة معرض الصور</a></li>
+      <li><a routerLink="/admin-panel/branches" routerLinkActive="active">إدارة الفروع</a></li>
+      <li><a routerLink="/admin-panel/union-team" routerLinkActive="active">إدارة الفريق</a></li>
+      <li><a routerLink="/admin-panel/members" routerLinkActive="active">إدارة الأعضاء</a></li>
+    </ul>
+  </nav>
+  
+  <main class="admin-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
