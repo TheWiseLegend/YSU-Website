@@ -31,6 +31,7 @@ import { BranchTeamComponent } from './admin/admin-panel/branch-team/branch-team
 import { AdminBranchDetailComponent } from './admin/admin-panel/branch-detail/branch-detail.component';
 import { DigitalLibraryComponent } from './pages/digital-library/digital-library.component';
 import { AdminMembersComponent } from './admin/admin-panel/members/admin-members.component';
+import { AdminVendorsComponent } from './admin/admin-panel/vendors/vendors.component';
 
 
 import { MembershipLayoutComponent } from './pages/membership/layout/membership-layout.component';
@@ -106,6 +107,7 @@ export const routes: Routes = [
       { path: 'branches/:id/team', component: BranchTeamComponent }, 
       { path: 'union-team', component: AdminUnionTeamComponent},
       { path: 'members', component: AdminMembersComponent },
+      { path: 'vendors', component: AdminVendorsComponent },
     ]
   }
 ];
