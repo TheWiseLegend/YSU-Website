@@ -1,14 +1,54 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  LucideDynamicIcon,
+  LucideUtensils,
+  LucideShoppingCart,
+  LucideGlobe,
+  LucideGraduationCap,
+  LucideCoffee,
+  LucideHeart,
+  LucideDumbbell,
+  LucideShirt,
+  LucideCar,
+  LucideStore,
+  provideLucideIcons,
+  LucideIcon,
+} from '@lucide/angular';
 import { VendorService } from '../../../services/vendor.service';
 import { UploadService } from '../../../services/upload.service';
 import { Vendor, VendorCategory } from '../../../models/vendor.model';
 
+export interface IconOption {
+  key: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+export const VENDOR_ICONS: IconOption[] = [
+  { key: 'utensils',       label: 'مطعم',      icon: LucideUtensils },
+  { key: 'shopping-cart',  label: 'بقالة',      icon: LucideShoppingCart },
+  { key: 'globe',          label: 'سياحة',      icon: LucideGlobe },
+  { key: 'graduation-cap', label: 'تعليم',      icon: LucideGraduationCap },
+  { key: 'coffee',         label: 'مقهى',       icon: LucideCoffee },
+  { key: 'heart',          label: 'صحة',        icon: LucideHeart },
+  { key: 'dumbbell',       label: 'رياضة',      icon: LucideDumbbell },
+  { key: 'shirt',          label: 'ملابس',      icon: LucideShirt },
+  { key: 'car',            label: 'مواصلات',    icon: LucideCar },
+  { key: 'store',          label: 'متجر',       icon: LucideStore },
+];
+
 @Component({
   selector: 'app-admin-vendors',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LucideDynamicIcon],
+  providers: [
+    provideLucideIcons(
+      LucideUtensils, LucideShoppingCart, LucideGlobe, LucideGraduationCap,
+      LucideCoffee, LucideHeart, LucideDumbbell, LucideShirt, LucideCar, LucideStore
+    ),
+  ],
   templateUrl: './vendors.component.html',
   styleUrls: ['./vendors.component.scss'],
 })
@@ -32,6 +72,10 @@ export class AdminVendorsComponent implements OnInit {
   isLoadingCategories = false;
   showCategoryForm = false;
 
+  // ─── Icon picker ─────────────────────────────────────────────────────────────
+  readonly availableIcons: IconOption[] = VENDOR_ICONS;
+  showIconPicker = false;
+
   // ─── Shared ──────────────────────────────────────────────────────────────────
   successMessage = '';
   errorMessage = '';
@@ -42,16 +86,17 @@ export class AdminVendorsComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.vendorForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
+      name:       ['', [Validators.required, Validators.maxLength(100)]],
       categoryId: ['', Validators.required],
-      discount: ['', [Validators.required, Validators.maxLength(100)]],
-      location: ['', Validators.maxLength(100)],
-      imageUrl: ['', Validators.maxLength(500)],
-      mapsUrl: ['', Validators.maxLength(500)],
+      discount:   ['', [Validators.required, Validators.maxLength(100)]],
+      location:   ['', Validators.maxLength(100)],
+      imageUrl:   ['', Validators.maxLength(500)],
+      mapsUrl:    ['', Validators.maxLength(500)],
     });
 
     this.categoryForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(50)]],
+      icon: [''],
     });
   }
 
@@ -79,22 +124,14 @@ export class AdminVendorsComponent implements OnInit {
   loadVendors(): void {
     this.isLoadingVendors = true;
     this.vendorService.getAll().subscribe({
-      next: (vendors) => {
-        this.vendors = vendors;
-        this.isLoadingVendors = false;
-      },
-      error: () => {
-        this.setErrorMessage('فشل في تحميل الموردين');
-        this.isLoadingVendors = false;
-      },
+      next: (vendors) => { this.vendors = vendors; this.isLoadingVendors = false; },
+      error: () => { this.setErrorMessage('فشل في تحميل الموردين'); this.isLoadingVendors = false; },
     });
   }
 
   toggleVendorForm(): void {
     this.showVendorForm = !this.showVendorForm;
-    if (!this.showVendorForm) {
-      this.resetVendorForm();
-    }
+    if (!this.showVendorForm) this.resetVendorForm();
   }
 
   resetVendorForm(): void {
@@ -110,12 +147,9 @@ export class AdminVendorsComponent implements OnInit {
     this.editingVendorId = vendor.id;
     this.showVendorForm = true;
     this.vendorForm.patchValue({
-      name: vendor.name,
-      categoryId: vendor.categoryId,
-      discount: vendor.discount,
-      location: vendor.location ?? '',
-      imageUrl: vendor.imageUrl ?? '',
-      mapsUrl: vendor.mapsUrl ?? '',
+      name: vendor.name, categoryId: vendor.categoryId,
+      discount: vendor.discount, location: vendor.location ?? '',
+      imageUrl: vendor.imageUrl ?? '', mapsUrl: vendor.mapsUrl ?? '',
     });
     this.imagePreview = vendor.imageUrl ?? null;
   }
@@ -141,51 +175,31 @@ export class AdminVendorsComponent implements OnInit {
         this.isUploading = false;
         this.selectedFile = null;
       },
-      error: () => {
-        this.setErrorMessage('فشل في رفع الصورة');
-        this.isUploading = false;
-      },
+      error: () => { this.setErrorMessage('فشل في رفع الصورة'); this.isUploading = false; },
     });
   }
 
   onVendorSubmit(): void {
     if (this.vendorForm.invalid) return;
-
     const dto = this.vendorForm.value;
 
     if (this.isEditingVendor && this.editingVendorId) {
       this.vendorService.update(this.editingVendorId, dto).subscribe({
-        next: () => {
-          this.setSuccessMessage('تم تحديث المورد بنجاح');
-          this.loadVendors();
-          this.toggleVendorForm();
-        },
+        next: () => { this.setSuccessMessage('تم تحديث المورد بنجاح'); this.loadVendors(); this.toggleVendorForm(); },
         error: () => this.setErrorMessage('فشل في تحديث المورد'),
       });
     } else {
       this.vendorService.create(dto).subscribe({
-        next: () => {
-          this.setSuccessMessage('تم إضافة المورد بنجاح');
-          this.loadVendors();
-          this.toggleVendorForm();
-        },
+        next: () => { this.setSuccessMessage('تم إضافة المورد بنجاح'); this.loadVendors(); this.toggleVendorForm(); },
         error: () => this.setErrorMessage('فشل في إضافة المورد'),
       });
     }
   }
 
   toggleVendorStatus(vendor: Vendor): void {
-    const action$ = vendor.isActive
-      ? this.vendorService.deactivate(vendor.id)
-      : this.vendorService.reactivate(vendor.id);
-
+    const action$ = vendor.isActive ? this.vendorService.deactivate(vendor.id) : this.vendorService.reactivate(vendor.id);
     action$.subscribe({
-      next: () => {
-        this.setSuccessMessage(
-          vendor.isActive ? 'تم تعطيل المورد بنجاح' : 'تم تفعيل المورد بنجاح'
-        );
-        this.loadVendors();
-      },
+      next: () => { this.setSuccessMessage(vendor.isActive ? 'تم تعطيل المورد بنجاح' : 'تم تفعيل المورد بنجاح'); this.loadVendors(); },
       error: () => this.setErrorMessage('فشل في تغيير حالة المورد'),
     });
   }
@@ -195,58 +209,57 @@ export class AdminVendorsComponent implements OnInit {
   loadCategories(): void {
     this.isLoadingCategories = true;
     this.vendorService.getCategories().subscribe({
-      next: (categories) => {
-        this.categories = categories;
-        this.isLoadingCategories = false;
-      },
-      error: () => {
-        this.setErrorMessage('فشل في تحميل الفئات');
-        this.isLoadingCategories = false;
-      },
+      next: (categories) => { this.categories = categories; this.isLoadingCategories = false; },
+      error: () => { this.setErrorMessage('فشل في تحميل الفئات'); this.isLoadingCategories = false; },
     });
   }
 
   toggleCategoryForm(): void {
     this.showCategoryForm = !this.showCategoryForm;
-    if (!this.showCategoryForm) {
-      this.resetCategoryForm();
-    }
+    if (!this.showCategoryForm) this.resetCategoryForm();
   }
 
   resetCategoryForm(): void {
     this.categoryForm.reset();
     this.isEditingCategory = false;
     this.editingCategoryId = null;
+    this.showIconPicker = false;
   }
 
   editCategory(category: VendorCategory): void {
     this.isEditingCategory = true;
     this.editingCategoryId = category.id;
     this.showCategoryForm = true;
-    this.categoryForm.patchValue({ name: category.name });
+    this.categoryForm.patchValue({ name: category.name, icon: category.icon ?? '' });
+  }
+
+  selectIcon(key: string): void {
+    this.categoryForm.patchValue({ icon: key });
+    this.showIconPicker = false;
+  }
+
+  getSelectedIconData(): LucideIcon | null {
+    const key = this.categoryForm.get('icon')?.value;
+    return this.availableIcons.find(i => i.key === key)?.icon ?? null;
+  }
+
+  getIconDataByKey(key: string | null | undefined): LucideIcon | null {
+    if (!key) return null;
+    return this.availableIcons.find(i => i.key === key)?.icon ?? null;
   }
 
   onCategorySubmit(): void {
     if (this.categoryForm.invalid) return;
-
     const dto = this.categoryForm.value;
 
     if (this.isEditingCategory && this.editingCategoryId) {
       this.vendorService.updateCategory(this.editingCategoryId, dto).subscribe({
-        next: () => {
-          this.setSuccessMessage('تم تحديث الفئة بنجاح');
-          this.loadCategories();
-          this.toggleCategoryForm();
-        },
+        next: () => { this.setSuccessMessage('تم تحديث الفئة بنجاح'); this.loadCategories(); this.toggleCategoryForm(); },
         error: () => this.setErrorMessage('فشل في تحديث الفئة'),
       });
     } else {
       this.vendorService.createCategory(dto).subscribe({
-        next: () => {
-          this.setSuccessMessage('تم إضافة الفئة بنجاح');
-          this.loadCategories();
-          this.toggleCategoryForm();
-        },
+        next: () => { this.setSuccessMessage('تم إضافة الفئة بنجاح'); this.loadCategories(); this.toggleCategoryForm(); },
         error: () => this.setErrorMessage('فشل في إضافة الفئة'),
       });
     }
@@ -256,12 +269,9 @@ export class AdminVendorsComponent implements OnInit {
     const action$ = category.isActive
       ? this.vendorService.deactivateCategory(category.id)
       : this.vendorService.reactivateCategory(category.id);
-
     action$.subscribe({
       next: () => {
-        this.setSuccessMessage(
-          category.isActive ? 'تم تعطيل الفئة بنجاح' : 'تم تفعيل الفئة بنجاح'
-        );
+        this.setSuccessMessage(category.isActive ? 'تم تعطيل الفئة بنجاح' : 'تم تفعيل الفئة بنجاح');
         this.loadVendors();
         this.loadCategories();
       },
@@ -271,11 +281,7 @@ export class AdminVendorsComponent implements OnInit {
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-  getCategoryName(categoryId: string): string {
-    return this.categories.find((c) => c.id === categoryId)?.name ?? '—';
-  }
-
   activeCategories(): VendorCategory[] {
-    return this.categories.filter((c) => c.isActive);
+    return this.categories.filter(c => c.isActive);
   }
 }

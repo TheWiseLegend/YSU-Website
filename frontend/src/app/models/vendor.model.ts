@@ -1,6 +1,7 @@
 export interface VendorCategory {
   id: string;
   name: string;
+  icon: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -24,6 +25,7 @@ export interface PublicVendor {
   id: string;
   name: string;
   categoryName: string;
+  categoryIcon: string | null;
   location: string | null;
   discount: string;
   imageUrl: string | null;
@@ -50,8 +52,10 @@ export interface UpdateVendorDto {
 
 export interface CreateCategoryDto {
   name: string;
+  icon?: string;
 }
 
 export interface UpdateCategoryDto {
   name?: string;
+  icon?: string;
 }

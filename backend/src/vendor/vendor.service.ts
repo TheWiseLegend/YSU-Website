@@ -159,6 +159,7 @@ export class VendorService {
         id: v.id,
         name: v.name,
         categoryName: v.category.name,
+        categoryIcon: v.category.icon ?? null,
         location: v.location,
         discount: v.discount,
         imageUrl: v.imageUrl,

@@ -100,12 +100,7 @@
       <tbody>
         <tr *ngFor="let vendor of vendors" [class.inactive-row]="!vendor.isActive">
           <td>
-            <img
-              *ngIf="vendor.imageUrl"
-              [src]="vendor.imageUrl"
-              alt="{{ vendor.name }}"
-              class="thumbnail"
-            />
+            <img *ngIf="vendor.imageUrl" [src]="vendor.imageUrl" alt="{{ vendor.name }}" class="thumbnail" />
             <span *ngIf="!vendor.imageUrl" class="no-image">—</span>
           </td>
           <td>{{ vendor.name }}</td>
@@ -119,12 +114,8 @@
           </td>
           <td class="actions">
             <button class="edit-btn" (click)="editVendor(vendor)">تعديل</button>
-            <button
-              class="toggle-btn"
-              [class.deactivate]="vendor.isActive"
-              [class.activate]="!vendor.isActive"
-              (click)="toggleVendorStatus(vendor)"
-            >
+            <button class="toggle-btn" [class.deactivate]="vendor.isActive" [class.activate]="!vendor.isActive"
+              (click)="toggleVendorStatus(vendor)">
               {{ vendor.isActive ? 'تعطيل' : 'تفعيل' }}
             </button>
           </td>
@@ -150,13 +141,49 @@
     <div class="form-container" *ngIf="showCategoryForm">
       <h3>{{ isEditingCategory ? 'تعديل الفئة' : 'إضافة فئة جديدة' }}</h3>
       <form [formGroup]="categoryForm" (ngSubmit)="onCategorySubmit()">
-        <div class="form-group">
-          <label>اسم الفئة <span class="required">*</span></label>
-          <input type="text" formControlName="name" class="form-control" placeholder="مثال: مطعم" />
-          <small class="field-error" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
-            الاسم مطلوب (50 حرف كحد أقصى)
-          </small>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>اسم الفئة <span class="required">*</span></label>
+            <input type="text" formControlName="name" class="form-control" placeholder="مثال: مطعم" />
+            <small class="field-error" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+              الاسم مطلوب (50 حرف كحد أقصى)
+            </small>
+          </div>
+
+          <!-- Icon picker -->
+          <div class="form-group">
+            <label>الأيقونة</label>
+            <div class="icon-selector">
+              <!-- Selected icon preview -->
+              <button type="button" class="icon-preview-btn" (click)="showIconPicker = !showIconPicker">
+                <ng-container *ngIf="getSelectedIconData() as iconData; else noIcon">
+                  <svg [lucideIcon]="iconData" width="22" height="22"></svg>
+                </ng-container>
+                <ng-template #noIcon>
+                  <span class="no-icon-placeholder">اختر أيقونة</span>
+                </ng-template>
+                <span class="picker-arrow">▾</span>
+              </button>
+
+              <!-- Icon grid -->
+              <div class="icon-picker-grid" *ngIf="showIconPicker">
+                <button
+                  type="button"
+                  class="icon-option"
+                  *ngFor="let icon of availableIcons"
+                  [class.selected]="categoryForm.get('icon')?.value === icon.key"
+                  (click)="selectIcon(icon.key)"
+                  [title]="icon.label"
+                >
+                  <svg [lucideIcon]="icon.icon" width="22" height="22"></svg>
+                  <span>{{ icon.label }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div class="form-actions">
           <button type="submit" class="submit-btn" [disabled]="categoryForm.invalid">
             {{ isEditingCategory ? 'تحديث' : 'حفظ' }}
@@ -172,6 +199,7 @@
     <table class="data-table" *ngIf="!isLoadingCategories && categories.length > 0">
       <thead>
         <tr>
+          <th>الأيقونة</th>
           <th>الاسم</th>
           <th>الحالة</th>
           <th>الإجراءات</th>
@@ -179,6 +207,12 @@
       </thead>
       <tbody>
         <tr *ngFor="let cat of categories" [class.inactive-row]="!cat.isActive">
+          <td class="icon-cell">
+            <ng-container *ngIf="getIconDataByKey(cat.icon) as iconData">
+              <svg [lucideIcon]="iconData" width="22" height="22" class="category-icon"></svg>
+            </ng-container>
+            <span *ngIf="!getIconDataByKey(cat.icon)" class="no-image">—</span>
+          </td>
           <td>{{ cat.name }}</td>
           <td>
             <span class="status-badge" [class.active]="cat.isActive" [class.inactive]="!cat.isActive">
@@ -187,12 +221,8 @@
           </td>
           <td class="actions">
             <button class="edit-btn" (click)="editCategory(cat)">تعديل</button>
-            <button
-              class="toggle-btn"
-              [class.deactivate]="cat.isActive"
-              [class.activate]="!cat.isActive"
-              (click)="toggleCategoryStatus(cat)"
-            >
+            <button class="toggle-btn" [class.deactivate]="cat.isActive" [class.activate]="!cat.isActive"
+              (click)="toggleCategoryStatus(cat)">
               {{ cat.isActive ? 'تعطيل' : 'تفعيل' }}
             </button>
           </td>

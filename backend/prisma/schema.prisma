@@ -139,6 +139,7 @@ model MembershipApplication {
 model VendorCategory {
   id        String   @id @default(cuid())
   name      String   @unique @db.VarChar(50)
+  icon      String?  @db.VarChar(50)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

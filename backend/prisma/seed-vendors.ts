@@ -91,11 +91,18 @@ async function main() {
     // Upsert categories
     const categoryMap = new Map<CategoryName, string>();
 
+    const categoryDefaults: Record<CategoryName, string> = {
+      'مطعم': 'restaurant',
+      'بقالة': 'grocery',
+      'سياحة': 'tourism',
+      'تعليم': 'education',
+    };
+
     for (const name of CATEGORY_NAMES) {
       const category = await tx.vendorCategory.upsert({
         where: { name },
         update: {},
-        create: { name },
+        create: { name, icon: categoryDefaults[name] },
       });
       categoryMap.set(name, category.id);
       console.log(`Category: ${name} → ${category.id}`);
