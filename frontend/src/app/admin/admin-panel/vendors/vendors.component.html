@@ -118,6 +118,7 @@
               (click)="toggleVendorStatus(vendor)">
               {{ vendor.isActive ? 'تعطيل' : 'تفعيل' }}
             </button>
+            <button class="delete-btn" (click)="confirmDeleteVendorId = vendor.id">حذف</button>
           </td>
         </tr>
       </tbody>
@@ -125,6 +126,17 @@
 
     <div class="empty-state" *ngIf="!isLoadingVendors && vendors.length === 0">
       <p>لا يوجد موردون حالياً</p>
+    </div>
+
+    <!-- Delete Vendor Confirmation -->
+    <div class="confirm-overlay" *ngIf="confirmDeleteVendorId">
+      <div class="confirm-dialog">
+        <p>هل أنت متأكد من حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <div class="confirm-actions">
+          <button class="delete-btn" (click)="deleteVendor(confirmDeleteVendorId!)">نعم، احذف</button>
+          <button class="cancel-btn" (click)="confirmDeleteVendorId = null">إلغاء</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -201,12 +213,11 @@
         <tr>
           <th>الأيقونة</th>
           <th>الاسم</th>
-          <th>الحالة</th>
           <th>الإجراءات</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let cat of categories" [class.inactive-row]="!cat.isActive">
+        <tr *ngFor="let cat of categories">
           <td class="icon-cell">
             <ng-container *ngIf="getIconDataByKey(cat.icon) as iconData">
               <svg [lucideIcon]="iconData" width="22" height="22" class="category-icon"></svg>
@@ -214,21 +225,40 @@
             <span *ngIf="!getIconDataByKey(cat.icon)" class="no-image">—</span>
           </td>
           <td>{{ cat.name }}</td>
-          <td>
-            <span class="status-badge" [class.active]="cat.isActive" [class.inactive]="!cat.isActive">
-              {{ cat.isActive ? 'نشطة' : 'معطلة' }}
-            </span>
-          </td>
           <td class="actions">
             <button class="edit-btn" (click)="editCategory(cat)">تعديل</button>
-            <button class="toggle-btn" [class.deactivate]="cat.isActive" [class.activate]="!cat.isActive"
-              (click)="toggleCategoryStatus(cat)">
-              {{ cat.isActive ? 'تعطيل' : 'تفعيل' }}
-            </button>
+            <button class="delete-btn" (click)="requestDeleteCategory(cat.id)">حذف</button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <!-- Delete Category Confirmation -->
+    <div class="confirm-overlay" *ngIf="confirmDeleteCategoryId">
+      <div class="confirm-dialog">
+        <p>هل أنت متأكد من حذف هذه الفئة؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <div class="confirm-actions">
+          <button class="delete-btn" (click)="deleteCategory(confirmDeleteCategoryId!)">نعم، احذف</button>
+          <button class="cancel-btn" (click)="confirmDeleteCategoryId = null">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Category Blocked (has vendors) -->
+    <div class="confirm-overlay" *ngIf="blockedDeleteCategoryId">
+      <div class="confirm-dialog confirm-dialog--warning">
+        <div class="warning-icon">⚠️</div>
+        <h4>لا يمكن حذف هذه الفئة</h4>
+        <p>
+          تحتوي هذه الفئة على
+          <strong>{{ vendorCountForCategory(blockedDeleteCategoryId!) }} مورد</strong>.
+          يجب حذف جميع الموردين المرتبطين بها أو نقلهم إلى فئة أخرى قبل حذف الفئة.
+        </p>
+        <div class="confirm-actions">
+          <button class="cancel-btn" (click)="blockedDeleteCategoryId = null">حسناً، فهمت</button>
+        </div>
+      </div>
+    </div>
 
     <div class="empty-state" *ngIf="!isLoadingCategories && categories.length === 0">
       <p>لا توجد فئات حالياً</p>

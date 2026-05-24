@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import { Admin } from '../admin-auth/decorator/admin.decorator';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 import { VendorService } from './vendor.service';
@@ -31,5 +31,11 @@ export class AdminVendorCategoryController {
   @Patch(':id/reactivate')
   reactivate(@Param('id') id: string) {
     return this.vendorService.reactivateCategory(id);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: string) {
+    await this.vendorService.deleteCategory(id);
   }
 }

@@ -63,6 +63,12 @@ export class VendorService {
     );
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/admin/vendors/${id}`, {
+      headers: this.getHeaders(),
+    });
+  }
+
   // ─── Admin: Categories ───────────────────────────────────────────────────────
 
   getCategories(): Observable<VendorCategory[]> {
@@ -102,6 +108,12 @@ export class VendorService {
       {},
       { headers: this.getHeaders() }
     );
+  }
+
+  deleteCategory(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/admin/vendor-categories/${id}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   // ─── Public ──────────────────────────────────────────────────────────────────

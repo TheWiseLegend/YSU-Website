@@ -78,6 +78,15 @@ export class VendorService {
     }
   }
 
+  async deleteVendor(id: string) {
+    try {
+      await this.prisma.vendor.delete({ where: { id } });
+    } catch (error) {
+      if (error.code === 'P2025') throw new NotFoundException('Vendor not found');
+      throw error;
+    }
+  }
+
   // ─── Category CRUD ───────────────────────────────────────────────────────────
 
   async createCategory(dto: CreateCategoryDto) {
@@ -137,6 +146,18 @@ export class VendorService {
       if (error.code === 'P2025') throw new NotFoundException('Category not found');
       throw error;
     }
+  }
+
+  async deleteCategory(id: string) {
+    const category = await this.prisma.vendorCategory.findUnique({ where: { id } });
+    if (!category) throw new NotFoundException('Category not found');
+
+    const vendorCount = await this.prisma.vendor.count({ where: { categoryId: id } });
+    if (vendorCount > 0) {
+      throw new BadRequestException('Cannot delete a category that has vendors. Remove or reassign the vendors first.');
+    }
+
+    await this.prisma.vendorCategory.delete({ where: { id } });
   }
 
   // ─── Public ──────────────────────────────────────────────────────────────────

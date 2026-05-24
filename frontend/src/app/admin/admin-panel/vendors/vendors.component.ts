@@ -41,6 +41,11 @@ export class AdminVendorsComponent implements OnInit {
   readonly availableIcons: VendorIconOption[] = VENDOR_ICONS;
   showIconPicker = false;
 
+  // ─── Confirmation dialogs ────────────────────────────────────────────────────
+  confirmDeleteVendorId: string | null = null;
+  confirmDeleteCategoryId: string | null = null;
+  blockedDeleteCategoryId: string | null = null; // category has vendors — deletion blocked
+
   // ─── Shared ──────────────────────────────────────────────────────────────────
   successMessage = '';
   errorMessage = '';
@@ -161,6 +166,13 @@ export class AdminVendorsComponent implements OnInit {
     }
   }
 
+  deleteVendor(id: string): void {
+    this.vendorService.delete(id).subscribe({
+      next: () => { this.setSuccessMessage('تم حذف المورد بنجاح'); this.confirmDeleteVendorId = null; this.loadVendors(); },
+      error: () => { this.setErrorMessage('فشل في حذف المورد'); this.confirmDeleteVendorId = null; },
+    });
+  }
+
   toggleVendorStatus(vendor: Vendor): void {
     const action$ = vendor.isActive ? this.vendorService.deactivate(vendor.id) : this.vendorService.reactivate(vendor.id);
     action$.subscribe({
@@ -230,23 +242,33 @@ export class AdminVendorsComponent implements OnInit {
     }
   }
 
-  toggleCategoryStatus(category: VendorCategory): void {
-    const action$ = category.isActive
-      ? this.vendorService.deactivateCategory(category.id)
-      : this.vendorService.reactivateCategory(category.id);
-    action$.subscribe({
-      next: () => {
-        this.setSuccessMessage(category.isActive ? 'تم تعطيل الفئة بنجاح' : 'تم تفعيل الفئة بنجاح');
-        this.loadVendors();
-        this.loadCategories();
+  deleteCategory(id: string): void {
+    this.vendorService.deleteCategory(id).subscribe({
+      next: () => { this.setSuccessMessage('تم حذف الفئة بنجاح'); this.confirmDeleteCategoryId = null; this.loadCategories(); },
+      error: (err) => {
+        const msg = err?.error?.message ?? 'فشل في حذف الفئة';
+        this.setErrorMessage(msg);
+        this.confirmDeleteCategoryId = null;
       },
-      error: () => this.setErrorMessage('فشل في تغيير حالة الفئة'),
     });
+  }
+
+  requestDeleteCategory(categoryId: string): void {
+    const vendorCount = this.vendors.filter(v => v.categoryId === categoryId).length;
+    if (vendorCount > 0) {
+      this.blockedDeleteCategoryId = categoryId;
+    } else {
+      this.confirmDeleteCategoryId = categoryId;
+    }
+  }
+
+  vendorCountForCategory(categoryId: string): number {
+    return this.vendors.filter(v => v.categoryId === categoryId).length;
   }
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
 
   activeCategories(): VendorCategory[] {
-    return this.categories.filter(c => c.isActive);
+    return this.categories;
   }
 }
