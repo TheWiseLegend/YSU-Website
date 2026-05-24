@@ -1,0 +1,137 @@
+// Replace your entire prisma/schema.prisma with this content:
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Branch {
+  id             String       @id @default(cuid())
+  universityName String
+  city           String
+  address        String
+  imageUrl       String
+  phone          String
+  instagram      String?
+  facebook       String?
+  linkedin       String?
+  email          String?
+  establishedAt  DateTime
+  description    String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  teamMembers    TeamMember[]
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  date        DateTime
+  location    String
+  imageUrl    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Gallery {
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  mainImage   String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  images      GalleryImage[]
+}
+
+model GalleryImage {
+  id        String  @id @default(cuid())
+  url       String
+  galleryId String
+  gallery   Gallery @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+}
+
+model News {
+  id        String   @id @default(cuid())
+  title     String
+  summary   String
+  content   String
+  imageUrl  String
+  createdAt DateTime  
+  updatedAt DateTime @updatedAt
+}
+
+model TeamMember {
+  id       String @id @default(cuid())
+  name     String
+  position String
+  type     String
+  imageUrl String
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+}
+
+model UnionTeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  position  String
+  type      String
+  imageUrl  String
+  period    String   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum MembershipStatus {
+  pending
+  active
+  expired
+  cancelled
+}
+
+model Member {
+  id           String   @id @default(cuid())
+  membershipId String   @unique
+  email        String   @unique
+  password     String
+  fullNameAr   String
+  fullNameEn   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  applications MembershipApplication[]
+}
+
+model MembershipApplication {
+  id                  String           @id @default(cuid())
+  memberId            String
+  member              Member           @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  passportNumber      String
+  phone               String
+  gender              String
+  address             String
+
+  university          String
+  studentId           String
+  fieldOfStudy        String
+  yearOfStudy         Int
+  graduationYear      Int
+
+  enrollmentLetterUrl String
+  receiptUrl          String
+
+  status              MembershipStatus @default(pending)
+  submittedAt         DateTime         @default(now())
+  approvedAt          DateTime?
+  expiresAt           DateTime?
+
+  cancellationReason String?
+  cancelledAt       DateTime?
+  
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+}
