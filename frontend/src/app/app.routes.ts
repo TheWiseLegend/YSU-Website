@@ -32,6 +32,8 @@ import { AdminBranchDetailComponent } from './admin/admin-panel/branch-detail/br
 import { DigitalLibraryComponent } from './pages/digital-library/digital-library.component';
 import { AdminMembersComponent } from './admin/admin-panel/members/admin-members.component';
 import { VerifyComponent } from './pages/verify/verify.component';
+import { AdminVendorsComponent } from './admin/admin-panel/vendors/vendors.component';
+
 
 import { MembershipLayoutComponent } from './pages/membership/layout/membership-layout.component';
 import { MembershipLoginComponent } from './pages/membership/login/membership-login.component';
@@ -112,4 +114,8 @@ export const routes: Routes = [
       { path: 'members', component: AdminMembersComponent },
     ],
   },
+];
+      { path: 'vendors', component: AdminVendorsComponent },
+    ]
+  }
 ];

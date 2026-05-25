@@ -1,0 +1,278 @@
+<div class="admin-vendors">
+
+  <!-- Header -->
+  <div class="section-header">
+    <h2>إدارة أماكن الخصومات</h2>
+    <button class="add-btn" (click)="toggleVendorForm()">
+      {{ showVendorForm ? 'إلغاء' : 'إضافة مورد جديد' }}
+    </button>
+  </div>
+
+  <!-- Alerts -->
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- Vendor Form -->
+  <div class="form-container" *ngIf="showVendorForm">
+    <h3>{{ isEditingVendor ? 'تعديل المورد' : 'إضافة مورد جديد' }}</h3>
+    <form [formGroup]="vendorForm" (ngSubmit)="onVendorSubmit()">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>الاسم <span class="required">*</span></label>
+          <input type="text" formControlName="name" class="form-control" placeholder="اسم المورد" />
+          <small class="field-error" *ngIf="vendorForm.get('name')?.invalid && vendorForm.get('name')?.touched">
+            الاسم مطلوب (100 حرف كحد أقصى)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>الفئة <span class="required">*</span></label>
+          <select formControlName="categoryId" class="form-control">
+            <option value="">اختر الفئة</option>
+            <option *ngFor="let cat of activeCategories()" [value]="cat.id">{{ cat.name }}</option>
+          </select>
+          <small class="field-error" *ngIf="vendorForm.get('categoryId')?.invalid && vendorForm.get('categoryId')?.touched">
+            الفئة مطلوبة
+          </small>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>الخصم <span class="required">*</span></label>
+          <input type="text" formControlName="discount" class="form-control" placeholder="مثال: 15% أو 50 RM" />
+          <small class="field-error" *ngIf="vendorForm.get('discount')?.invalid && vendorForm.get('discount')?.touched">
+            الخصم مطلوب
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>الموقع</label>
+          <input type="text" formControlName="location" class="form-control" placeholder="مثال: سايبرجايا" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>رابط الخريطة</label>
+        <input type="text" formControlName="mapsUrl" class="form-control" placeholder="https://maps.google.com/..." />
+      </div>
+
+      <div class="form-group">
+        <label>الصورة</label>
+        <div class="image-upload">
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" #imageInput style="display:none" />
+          <button type="button" class="upload-btn" (click)="imageInput.click()">اختر صورة</button>
+          <button type="button" class="upload-confirm-btn" (click)="uploadImage()" [disabled]="!selectedFile || isUploading">
+            {{ isUploading ? 'جاري الرفع...' : 'رفع الصورة' }}
+          </button>
+        </div>
+        <div class="image-preview" *ngIf="imagePreview">
+          <img [src]="imagePreview" alt="معاينة الصورة" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="vendorForm.invalid">
+          {{ isEditingVendor ? 'تحديث' : 'حفظ' }}
+        </button>
+        <button type="button" class="cancel-btn" (click)="toggleVendorForm()">إلغاء</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Vendors Table -->
+  <div class="list-section">
+    <div class="loading" *ngIf="isLoadingVendors">جاري التحميل...</div>
+
+    <table class="data-table" *ngIf="!isLoadingVendors && vendors.length > 0">
+      <thead>
+        <tr>
+          <th>الصورة</th>
+          <th>الاسم</th>
+          <th>الفئة</th>
+          <th>الموقع</th>
+          <th>الخصم</th>
+          <th>الحالة</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let vendor of vendors" [class.inactive-row]="!vendor.isActive">
+          <td>
+            <img *ngIf="vendor.imageUrl" [src]="vendor.imageUrl" alt="{{ vendor.name }}" class="thumbnail" />
+            <span *ngIf="!vendor.imageUrl" class="no-image">—</span>
+          </td>
+          <td>{{ vendor.name }}</td>
+          <td>{{ vendor.category.name }}</td>
+          <td>{{ vendor.location ?? '—' }}</td>
+          <td>{{ vendor.discount }}</td>
+          <td>
+            <span class="status-badge" [class.active]="vendor.isActive" [class.inactive]="!vendor.isActive">
+              {{ vendor.isActive ? 'نشط' : 'معطل' }}
+            </span>
+          </td>
+          <td class="actions">
+            <button class="edit-btn" (click)="editVendor(vendor)">تعديل</button>
+            <button class="toggle-btn" [class.deactivate]="vendor.isActive" [class.activate]="!vendor.isActive"
+              (click)="toggleVendorStatus(vendor)">
+              {{ vendor.isActive ? 'تعطيل' : 'تفعيل' }}
+            </button>
+            <button class="delete-btn" (click)="confirmDeleteVendorId = vendor.id">حذف</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!isLoadingVendors && vendors.length === 0">
+      <p>لا يوجد موردون حالياً</p>
+    </div>
+
+    <!-- Delete Vendor Confirmation -->
+    <div class="confirm-overlay" *ngIf="confirmDeleteVendorId">
+      <div class="confirm-dialog">
+        <p>هل أنت متأكد من حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <div class="confirm-actions">
+          <button class="delete-btn" (click)="deleteVendor(confirmDeleteVendorId!)">نعم، احذف</button>
+          <button class="cancel-btn" (click)="confirmDeleteVendorId = null">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Categories Section ─────────────────────────────────────────────── -->
+  <div class="categories-section">
+    <div class="section-header">
+      <h2>إدارة الفئات</h2>
+      <button class="add-btn" (click)="toggleCategoryForm()">
+        {{ showCategoryForm ? 'إلغاء' : 'إضافة فئة جديدة' }}
+      </button>
+    </div>
+
+    <!-- Category Form -->
+    <div class="form-container" *ngIf="showCategoryForm">
+      <h3>{{ isEditingCategory ? 'تعديل الفئة' : 'إضافة فئة جديدة' }}</h3>
+      <form [formGroup]="categoryForm" (ngSubmit)="onCategorySubmit()">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>اسم الفئة <span class="required">*</span></label>
+            <input type="text" formControlName="name" class="form-control" placeholder="مثال: مطعم" />
+            <small class="field-error" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+              الاسم مطلوب (50 حرف كحد أقصى)
+            </small>
+          </div>
+
+          <!-- Icon picker -->
+          <div class="form-group">
+            <label>الأيقونة</label>
+            <div class="icon-selector">
+              <!-- Selected icon preview -->
+              <button type="button" class="icon-preview-btn" (click)="showIconPicker = !showIconPicker">
+                <ng-container *ngIf="getSelectedIconData() as iconData; else noIcon">
+                  <svg [lucideIcon]="iconData" width="22" height="22"></svg>
+                </ng-container>
+                <ng-template #noIcon>
+                  <span class="no-icon-placeholder">اختر أيقونة</span>
+                </ng-template>
+                <span class="picker-arrow">▾</span>
+              </button>
+
+              <!-- Icon grid -->
+              <div class="icon-picker-grid" *ngIf="showIconPicker">
+                <button
+                  type="button"
+                  class="icon-option"
+                  *ngFor="let icon of availableIcons"
+                  [class.selected]="categoryForm.get('icon')?.value === icon.key"
+                  (click)="selectIcon(icon.key)"
+                  [title]="icon.label"
+                >
+                  <svg [lucideIcon]="icon.icon" width="22" height="22"></svg>
+                  <span>{{ icon.label }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="submit-btn" [disabled]="categoryForm.invalid">
+            {{ isEditingCategory ? 'تحديث' : 'حفظ' }}
+          </button>
+          <button type="button" class="cancel-btn" (click)="toggleCategoryForm()">إلغاء</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Categories Table -->
+    <div class="loading" *ngIf="isLoadingCategories">جاري التحميل...</div>
+
+    <table class="data-table" *ngIf="!isLoadingCategories && categories.length > 0">
+      <thead>
+        <tr>
+          <th>الأيقونة</th>
+          <th>الاسم</th>
+          <th>الحالة</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categories" [class.inactive-row]="!cat.isActive">
+          <td class="icon-cell">
+            <ng-container *ngIf="getIconDataByKey(cat.icon) as iconData">
+              <svg [lucideIcon]="iconData" width="22" height="22" class="category-icon"></svg>
+            </ng-container>
+            <span *ngIf="!getIconDataByKey(cat.icon)" class="no-image">—</span>
+          </td>
+          <td>{{ cat.name }}</td>
+          <td>
+            <span class="status-badge" [class.active]="cat.isActive" [class.inactive]="!cat.isActive">
+              {{ cat.isActive ? 'نشط' : 'معطل' }}
+            </span>
+          </td>
+          <td class="actions">
+            <button class="edit-btn" (click)="editCategory(cat)">تعديل</button>
+            <button class="toggle-btn" [class.deactivate]="cat.isActive" [class.activate]="!cat.isActive"
+              (click)="toggleCategoryStatus(cat)">
+              {{ cat.isActive ? 'تعطيل' : 'تفعيل' }}
+            </button>
+            <button class="delete-btn" (click)="requestDeleteCategory(cat.id)">حذف</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Delete Category Confirmation -->
+    <div class="confirm-overlay" *ngIf="confirmDeleteCategoryId">
+      <div class="confirm-dialog">
+        <p>هل أنت متأكد من حذف هذه الفئة؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <div class="confirm-actions">
+          <button class="delete-btn" (click)="deleteCategory(confirmDeleteCategoryId!)">نعم، احذف</button>
+          <button class="cancel-btn" (click)="confirmDeleteCategoryId = null">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Category Blocked (has vendors) -->
+    <div class="confirm-overlay" *ngIf="blockedDeleteCategoryId">
+      <div class="confirm-dialog confirm-dialog--warning">
+        <div class="warning-icon">⚠️</div>
+        <h4>لا يمكن حذف هذه الفئة</h4>
+        <p>
+          تحتوي هذه الفئة على
+          <strong>{{ vendorCountForCategory(blockedDeleteCategoryId!) }} مورد</strong>.
+          يجب حذف جميع الموردين المرتبطين بها أو نقلهم إلى فئة أخرى قبل حذف الفئة.
+        </p>
+        <div class="confirm-actions">
+          <button class="cancel-btn" (click)="blockedDeleteCategoryId = null">حسناً، فهمت</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoadingCategories && categories.length === 0">
+      <p>لا توجد فئات حالياً</p>
+    </div>
+  </div>
+
+</div>

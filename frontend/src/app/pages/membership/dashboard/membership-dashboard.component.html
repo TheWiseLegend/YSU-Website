@@ -127,8 +127,20 @@
         <p>استمتع بخصومات حصرية في هذه الأماكن بعرض بطاقة عضويتك</p>
       </div>
 
+      <!-- Vendors loading state -->
+      <div class="loading-state" *ngIf="isLoadingVendors">
+        <div class="spinner"></div>
+        <p>جاري تحميل الأماكن...</p>
+      </div>
+
+      <!-- Vendors error state -->
+      <div class="error-state" *ngIf="vendorsError && !isLoadingVendors">
+        <p>تعذّر تحميل قائمة الأماكن</p>
+        <button class="retry-btn" (click)="loadVendors()">إعادة المحاولة</button>
+      </div>
+
       <!-- Filters -->
-      <div class="filters-bar">
+      <div class="filters-bar" *ngIf="!isLoadingVendors && !vendorsError">
         <div class="search-box">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <circle
@@ -175,7 +187,7 @@
       </div>
 
       <!-- Results count -->
-      <p class="results-count">{{ filteredPlaces.length }} مكان</p>
+      <p class="results-count" *ngIf="!isLoadingVendors && !vendorsError">{{ filteredPlaces.length }} مكان</p>
 
       <!-- Places Grid -->
       <div class="places-grid">
@@ -206,10 +218,42 @@
             </div>
           </a>
         </ng-container>
+      <div class="places-grid" *ngIf="!isLoadingVendors && !vendorsError">
+        
+        <ng-container *ngFor="let place of filteredPlaces">
+            <a [href]="place.mapsUrl" target="_blank" class="place-card">
+                <div class="place-image">
+                <img
+                    [src]="place.imageUrl"
+                    [alt]="place.name"
+                    (error)="onImageError($event, place.id)"
+                    *ngIf="place.imageUrl && !hasImageError(place.id)"
+                />
+                <div class="place-image-fallback" *ngIf="!place.imageUrl || hasImageError(place.id)">
+                    <svg [lucideIcon]="getPlaceIcon(place)" width="36" height="36"></svg>
+                </div>
+                </div>
+                <div class="place-info">
+                    <h4>{{ place.name }}</h4>
+                    <div class="place-meta">
+                        <span class="place-type">
+                          <svg [lucideIcon]="getPlaceIcon(place)" width="14" height="14"></svg>
+                          {{ place.categoryName }}
+                        </span>
+                        <span class="place-location" *ngIf="place.location">{{ place.location }}</span>
+                    </div>
+                    <span class="place-discount">{{ place.discount }}</span>
+                </div>
+            </a>
+            </ng-container>
       </div>
 
-      <p class="no-results" *ngIf="filteredPlaces.length === 0">
+      <p class="no-results" *ngIf="!isLoadingVendors && !vendorsError && filteredPlaces.length === 0 && allPlaces.length > 0">
         لا توجد نتائج للبحث الحالي
+      </p>
+
+      <p class="no-results" *ngIf="!isLoadingVendors && !vendorsError && allPlaces.length === 0">
+        لا توجد أماكن متاحة حالياً
       </p>
     </section>
   </div>

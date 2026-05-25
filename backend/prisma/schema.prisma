@@ -135,3 +135,29 @@ model MembershipApplication {
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
 }
+
+model VendorCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique @db.VarChar(50)
+  icon      String?  @db.VarChar(50)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  vendors   Vendor[]
+}
+
+model Vendor {
+  id         String         @id @default(cuid())
+  name       String         @db.VarChar(100)
+  categoryId String
+  category   VendorCategory @relation(fields: [categoryId], references: [id])
+  location   String?        @db.VarChar(100)
+  discount   String         @db.VarChar(100)
+  imageUrl   String?        @db.VarChar(500)
+  mapsUrl    String?        @db.VarChar(500)
+  isActive   Boolean        @default(true)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@unique([name, categoryId])
+}

@@ -21,7 +21,7 @@ export class LocalStorageService {
   }
 
   private ensureDirectoriesExist() {
-    const folders = ['news', 'events', 'gallery', 'branches', 'union-team', 'membership'];
+    const folders = ['news', 'events', 'gallery', 'branches', 'union-team', 'membership', 'vendors'];
     
     // Create the main assets directory if it doesn't exist
     if (!fs.existsSync(this.uploadsPath)) {
@@ -43,7 +43,7 @@ export class LocalStorageService {
     folder: string = 'images',
   ): Promise<string> {
     // Validate folder name
-    const allowedFolders = ['news', 'events', 'gallery', 'branches', 'union-team', 'membership', 'images'];
+    const allowedFolders = ['news', 'events', 'gallery', 'branches', 'union-team', 'membership', 'vendors', 'images'];
     const targetFolder = allowedFolders.includes(folder) ? folder : 'images';
     
     // Ensure folder exists
