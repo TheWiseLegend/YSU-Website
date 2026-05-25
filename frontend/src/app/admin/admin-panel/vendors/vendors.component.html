@@ -41,9 +41,13 @@
       <div class="form-row">
         <div class="form-group">
           <label>الخصم <span class="required">*</span></label>
-          <input type="text" formControlName="discount" class="form-control" placeholder="مثال: 15% أو 50 RM" />
+          <div class="input-group">
+            <input type="number" formControlName="discount" class="form-control"
+              placeholder="15" min="1" max="100" />
+            <span class="input-suffix">%</span>
+          </div>
           <small class="field-error" *ngIf="vendorForm.get('discount')?.invalid && vendorForm.get('discount')?.touched">
-            الخصم مطلوب
+            أدخل نسبة صحيحة بين 1 و 100
           </small>
         </div>
 

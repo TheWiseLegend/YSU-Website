@@ -36,9 +36,19 @@ export class MembershipDashboardComponent implements OnInit {
   searchQuery = '';
   selectedLocation = '';
   selectedType = '';
+  sortBy = '';           // '' | 'recent'
+  discountRange = '';    // '' | '1-10' | '11-20' | '21-50' | '50+'
 
   locationOptions: { value: string; label: string }[] = [];
   typeOptions: { value: string; label: string }[] = [];
+
+  readonly discountRangeOptions = [
+    { value: '',      label: 'جميع الخصومات' },
+    { value: '1-10',  label: '١٪ – ١٠٪' },
+    { value: '11-20', label: '١١٪ – ٢٠٪' },
+    { value: '21-50', label: '٢١٪ – ٥٠٪' },
+    { value: '50+',   label: 'أكثر من ٥٠٪' },
+  ];
 
   imageErrors: Set<string> = new Set();
 
@@ -160,32 +170,59 @@ export class MembershipDashboardComponent implements OnInit {
 
   // ─── Filter methods ──────────────────────────────────────────────────────────
 
+  /** Extracts the first integer found in a discount string, e.g. "15%" → 15, "حتى 50%" → 50 */
+  private parseDiscountPct(discount: string): number | null {
+    const match = discount.match(/\d+/);
+    // Only treat as a percentage if the string contains '%'
+    if (match && discount.includes('%')) return parseInt(match[0], 10);
+    return null;
+  }
+
   applyFilters(): void {
-    this.filteredPlaces = this.allPlaces.filter((place) => {
+    let result = this.allPlaces.filter((place) => {
       const searchMatch =
         !this.searchQuery.trim() ||
         place.name.toLowerCase().includes(this.searchQuery.toLowerCase().trim());
 
       const typeMatch = !this.selectedType || place.categoryName === this.selectedType;
 
-      let locationMatch: boolean;
-      if (!this.selectedLocation) {
-        locationMatch = true;
-      } else {
-        locationMatch =
-          place.location === null
-            ? false
-            : place.location === this.selectedLocation;
+      const locationMatch = !this.selectedLocation
+        ? true
+        : place.location === this.selectedLocation;
+
+      let discountMatch = true;
+      if (this.discountRange) {
+        const pct = this.parseDiscountPct(place.discount);
+        if (pct === null) {
+          discountMatch = false;
+        } else {
+          switch (this.discountRange) {
+            case '1-10':  discountMatch = pct >= 1  && pct <= 10;  break;
+            case '11-20': discountMatch = pct >= 11 && pct <= 20;  break;
+            case '21-50': discountMatch = pct >= 21 && pct <= 50;  break;
+            case '50+':   discountMatch = pct > 50;                break;
+          }
+        }
       }
 
-      return searchMatch && typeMatch && locationMatch;
+      return searchMatch && typeMatch && locationMatch && discountMatch;
     });
+
+    if (this.sortBy === 'recent') {
+      result = [...result].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    }
+
+    this.filteredPlaces = result;
   }
 
   clearFilters(): void {
     this.searchQuery = '';
     this.selectedLocation = '';
     this.selectedType = '';
+    this.sortBy = '';
+    this.discountRange = '';
     this.applyFilters();
   }
 
@@ -194,6 +231,8 @@ export class MembershipDashboardComponent implements OnInit {
     if (this.searchQuery.trim()) count++;
     if (this.selectedLocation) count++;
     if (this.selectedType) count++;
+    if (this.sortBy) count++;
+    if (this.discountRange) count++;
     return count;
   }
 

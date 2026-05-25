@@ -30,6 +30,7 @@ export interface PublicVendor {
   discount: string;
   imageUrl: string | null;
   mapsUrl: string | null;
+  createdAt: string;
 }
 
 export interface CreateVendorDto {

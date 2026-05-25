@@ -58,7 +58,7 @@ export class AdminVendorsComponent implements OnInit {
     this.vendorForm = this.fb.group({
       name:       ['', [Validators.required, Validators.maxLength(100)]],
       categoryId: ['', Validators.required],
-      discount:   ['', [Validators.required, Validators.maxLength(100)]],
+      discount:   [null, [Validators.required, Validators.min(1), Validators.max(100)]],
       location:   ['', Validators.maxLength(100)],
       imageUrl:   ['', Validators.maxLength(500)],
       mapsUrl:    ['', Validators.maxLength(500)],
@@ -118,7 +118,8 @@ export class AdminVendorsComponent implements OnInit {
     this.showVendorForm = true;
     this.vendorForm.patchValue({
       name: vendor.name, categoryId: vendor.categoryId,
-      discount: vendor.discount, location: vendor.location ?? '',
+      discount: parseInt(vendor.discount, 10) || null,
+      location: vendor.location ?? '',
       imageUrl: vendor.imageUrl ?? '', mapsUrl: vendor.mapsUrl ?? '',
     });
     this.imagePreview = vendor.imageUrl ?? null;
@@ -304,7 +305,7 @@ export class AdminVendorsComponent implements OnInit {
   private normalizeVendorDto(formValue: {
     name: string;
     categoryId: string;
-    discount: string;
+    discount: number;
     location?: string;
     imageUrl?: string;
     mapsUrl?: string;
@@ -312,7 +313,7 @@ export class AdminVendorsComponent implements OnInit {
     return {
       name: formValue.name,
       categoryId: formValue.categoryId,
-      discount: formValue.discount,
+      discount: `${formValue.discount}%`,
       location: this.normalizeOptionalField(formValue.location),
       imageUrl: this.normalizeOptionalField(formValue.imageUrl),
       mapsUrl: this.normalizeOptionalField(formValue.mapsUrl),

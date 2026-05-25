@@ -1,0 +1,121 @@
+<app-page-header *ngIf="vendor" titleFirst="تفاصيل" titleSecond=" المورد"></app-page-header>
+
+<!-- Loading State -->
+<ng-container *ngIf="isLoading">
+  <div class="container">
+    <div class="loading-vendor">
+      <div class="spinner"></div>
+      <p>جاري تحميل التفاصيل...</p>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Not Found State -->
+<ng-container *ngIf="notFound && !isLoading">
+  <div class="container">
+    <div class="not-found">
+      <h2>عذرًا، لم يتم العثور على المورد المطلوب</h2>
+      <p>يبدو أن المورد الذي تبحث عنه غير موجود أو غير متاح حاليًا.</p>
+      <button (click)="goBack()" class="back-btn">العودة لقائمة الموردين</button>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Vendor Detail Content -->
+<div class="container" *ngIf="vendor && !isLoading">
+  <div class="vendor-detail">
+
+    <!-- Hero Image -->
+    <div class="vendor-hero">
+      <ng-container *ngIf="vendor.imageUrl; else imagePlaceholder">
+        <app-optimized-image
+          [src]="vendor.imageUrl"
+          [alt]="vendor.name"
+          [height]="420">
+        </app-optimized-image>
+      </ng-container>
+      <ng-template #imagePlaceholder>
+        <div class="image-placeholder">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>لا توجد صورة</span>
+        </div>
+      </ng-template>
+
+      <!-- Discount Badge overlaid on image -->
+      <div class="discount-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8 8a2 2 0 0 0 2.828 0l7.172-7.172a2 2 0 0 0 0-2.828l-8-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="7" cy="7" r="1" fill="currentColor"/>
+        </svg>
+        {{ vendor.discount }}
+      </div>
+    </div>
+
+    <!-- Vendor Info -->
+    <div class="vendor-info">
+
+      <!-- Name & Category -->
+      <div class="vendor-header">
+        <h1 class="vendor-name">{{ vendor.name }}</h1>
+        <div class="category-badge">
+          <svg [lucideIcon]="getCategoryIcon(vendor.categoryIcon)" width="16" height="16"></svg>
+          <span>{{ vendor.categoryName }}</span>
+        </div>
+      </div>
+
+      <!-- Meta Items -->
+      <div class="vendor-meta">
+
+        <!-- Discount detail row -->
+        <div class="meta-item">
+          <div class="meta-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8 8a2 2 0 0 0 2.828 0l7.172-7.172a2 2 0 0 0 0-2.828l-8-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="7" cy="7" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="meta-text">
+            <div class="meta-title">الخصم المتاح</div>
+            <div class="meta-value discount-value">{{ vendor.discount }}</div>
+          </div>
+        </div>
+
+        <!-- Location row (only if present) -->
+        <div class="meta-item" *ngIf="vendor.location">
+          <div class="meta-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 22C16 18 20 14.4183 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 14.4183 8 18 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="meta-text">
+            <div class="meta-title">الموقع</div>
+            <div class="meta-value">{{ vendor.location }}</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Maps Button -->
+      <div class="vendor-actions" *ngIf="vendor.mapsUrl">
+        <button class="maps-btn" (click)="openMaps()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 22C16 18 20 14.4183 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 14.4183 8 18 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          فتح في خرائط جوجل
+        </button>
+      </div>
+
+      <!-- Back Button -->
+      <div class="back-button-container">
+        <button (click)="goBack()" class="back-btn">العودة لقائمة الموردين</button>
+      </div>
+
+    </div>
+  </div>
+</div>

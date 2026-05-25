@@ -121,4 +121,8 @@ export class VendorService {
   getActiveVendors(): Observable<PublicVendor[]> {
     return this.http.get<PublicVendor[]>(`${this.apiUrl}/vendors/public`);
   }
+
+  getVendorById(id: string): Observable<PublicVendor> {
+    return this.http.get<PublicVendor>(`${this.apiUrl}/vendors/public/${id}`);
+  }
 }

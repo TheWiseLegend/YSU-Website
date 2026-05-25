@@ -131,6 +131,35 @@
         margin-top: 0.4rem;
       }
 
+      .input-group {
+        display: flex;
+        align-items: stretch;
+
+        .form-control {
+          border-radius: 10px 0 0 10px;
+          flex: 1;
+          // hide browser spin buttons
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+          &[type=number] { -moz-appearance: textfield; }
+        }
+
+        .input-suffix {
+          display: flex;
+          align-items: center;
+          padding: 0 1rem;
+          background-color: #f0f2f8;
+          border: 1px solid #e5e7eb;
+          border-right: none;
+          border-radius: 0 10px 10px 0;
+          font-weight: 700;
+          font-size: 1rem;
+          color: var(--primary-color, #5174b9);
+          white-space: nowrap;
+          user-select: none;
+        }
+      }
+
       // ─── Icon selector ──────────────────────────────────────────────────────
       .icon-selector {
         position: relative;

@@ -177,6 +177,17 @@
           </option>
         </select>
 
+        <select [(ngModel)]="discountRange" (ngModelChange)="applyFilters()">
+          <option *ngFor="let opt of discountRangeOptions" [value]="opt.value">
+            {{ opt.label }}
+          </option>
+        </select>
+
+        <select [(ngModel)]="sortBy" (ngModelChange)="applyFilters()">
+          <option value="">الترتيب الافتراضي</option>
+          <option value="recent">الأحدث أولاً</option>
+        </select>
+
         <button
           class="clear-btn"
           *ngIf="activeFilterCount > 0"
@@ -193,7 +204,7 @@
       <div class="places-grid" *ngIf="!isLoadingVendors && !vendorsError">
         
         <ng-container *ngFor="let place of filteredPlaces">
-            <a [href]="place.mapsUrl" target="_blank" class="place-card">
+            <a [routerLink]="['/membership/vendor', place.id]" class="place-card">
                 <div class="place-image">
                 <img
                     [src]="place.imageUrl"

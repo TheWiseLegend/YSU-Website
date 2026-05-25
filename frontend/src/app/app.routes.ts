@@ -33,6 +33,7 @@ import { DigitalLibraryComponent } from './pages/digital-library/digital-library
 import { AdminMembersComponent } from './admin/admin-panel/members/admin-members.component';
 import { VerifyComponent } from './pages/verify/verify.component';
 import { AdminVendorsComponent } from './admin/admin-panel/vendors/vendors.component';
+import { MembershipVendorDetailComponent } from './pages/membership/vendor-detail/vendor-detail.component';
 
 
 import { MembershipLayoutComponent } from './pages/membership/layout/membership-layout.component';
@@ -83,6 +84,11 @@ export const routes: Routes = [
       {
         path: 'apply',
         component: MembershipApplyComponent,
+        canActivate: [MemberAuthGuard],
+      },
+      {
+        path: 'vendor/:id',
+        component: MembershipVendorDetailComponent,
         canActivate: [MemberAuthGuard],
       },
     ],
