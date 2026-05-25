@@ -112,10 +112,7 @@ export const routes: Routes = [
       { path: 'branches/:id/team', component: BranchTeamComponent },
       { path: 'union-team', component: AdminUnionTeamComponent },
       { path: 'members', component: AdminMembersComponent },
+      { path: 'vendors', component: AdminVendorsComponent },
     ],
   },
-];
-      { path: 'vendors', component: AdminVendorsComponent },
-    ]
-  }
 ];

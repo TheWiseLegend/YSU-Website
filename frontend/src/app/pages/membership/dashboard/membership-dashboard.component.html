@@ -190,34 +190,6 @@
       <p class="results-count" *ngIf="!isLoadingVendors && !vendorsError">{{ filteredPlaces.length }} مكان</p>
 
       <!-- Places Grid -->
-      <div class="places-grid">
-        <ng-container *ngFor="let place of filteredPlaces">
-          <a [href]="place.mapsUrl" target="_blank" class="place-card">
-            <div class="place-image">
-              <img
-                [src]="place.imageUrl"
-                [alt]="place.name"
-                (error)="onImageError($event, place.id)"
-                *ngIf="!hasImageError(place.id)"
-              />
-              <div class="place-image-fallback" *ngIf="hasImageError(place.id)">
-                {{ getTypeIcon(place.type) }}
-              </div>
-            </div>
-            <div class="place-info">
-              <h4>{{ place.name }}</h4>
-              <div class="place-meta">
-                <span class="place-type"
-                  >{{ getTypeIcon(place.type) }} {{ place.type }}</span
-                >
-                <span class="place-location" *ngIf="place.location">{{
-                  place.location
-                }}</span>
-              </div>
-              <span class="place-discount">{{ place.discount }}</span>
-            </div>
-          </a>
-        </ng-container>
       <div class="places-grid" *ngIf="!isLoadingVendors && !vendorsError">
         
         <ng-container *ngFor="let place of filteredPlaces">

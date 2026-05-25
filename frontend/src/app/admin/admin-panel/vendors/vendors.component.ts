@@ -158,8 +158,7 @@ export class AdminVendorsComponent implements OnInit {
     }
   }
 
-  onVendorSubmit(): void {
-    if (this.vendorForm.invalid) return;
+  private saveVendor(): void {
     const dto = this.normalizeVendorDto(this.vendorForm.value);
 
     if (this.isEditingVendor && this.editingVendorId) {
