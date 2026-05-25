@@ -193,7 +193,7 @@
       <div class="places-grid" *ngIf="!isLoadingVendors && !vendorsError">
         
         <ng-container *ngFor="let place of filteredPlaces">
-            <a [href]="place.mapsUrl" target="_blank" class="place-card">
+            <a [routerLink]="['/membership/vendor', place.id]" class="place-card">
                 <div class="place-image">
                 <img
                     [src]="place.imageUrl"

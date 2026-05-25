@@ -162,6 +162,26 @@ export class VendorService {
 
   // ─── Public ──────────────────────────────────────────────────────────────────
 
+  async findActiveVendorById(id: string) {
+    const vendor = await this.prisma.vendor.findFirst({
+      where: { id, isActive: true, category: { isActive: true } },
+      include: { category: true },
+    });
+
+    if (!vendor) throw new NotFoundException('Vendor not found');
+
+    return {
+      id: vendor.id,
+      name: vendor.name,
+      categoryName: vendor.category.name,
+      categoryIcon: vendor.category.icon ?? null,
+      location: vendor.location,
+      discount: vendor.discount,
+      imageUrl: vendor.imageUrl,
+      mapsUrl: vendor.mapsUrl,
+    };
+  }
+
   async findActiveVendors() {
     try {
       const vendors = await this.prisma.vendor.findMany({
