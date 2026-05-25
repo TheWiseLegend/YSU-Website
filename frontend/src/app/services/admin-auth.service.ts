@@ -33,7 +33,8 @@ export class AdminAuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/admin-auth/login`, loginData)
       .pipe(
         tap(response => {
-          // Store the token with timestamp
+          // Clear any existing member session before storing admin token
+          localStorage.removeItem('member_token');
           this.setToken(response.access_token);
         }),
         catchError(this.handleError)

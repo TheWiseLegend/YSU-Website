@@ -28,7 +28,11 @@ export class MemberAuthService {
   register(data: RegisterRequest): Observable<MemberLoginResponse> {
     return this.http.post<MemberLoginResponse>(`${this.apiUrl}/member-auth/register`, data)
       .pipe(
-        tap(response => this.setToken(response.access_token)),
+        tap(response => {
+          // Clear any existing admin session before storing member token
+          localStorage.removeItem('admin_token');
+          this.setToken(response.access_token);
+        }),
         catchError(this.handleError)
       );
   }
@@ -36,7 +40,11 @@ export class MemberAuthService {
   login(email: string, password: string): Observable<MemberLoginResponse> {
     return this.http.post<MemberLoginResponse>(`${this.apiUrl}/member-auth/login`, { email, password })
       .pipe(
-        tap(response => this.setToken(response.access_token)),
+        tap(response => {
+          // Clear any existing admin session before storing member token
+          localStorage.removeItem('admin_token');
+          this.setToken(response.access_token);
+        }),
         catchError(this.handleError)
       );
   }

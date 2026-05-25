@@ -1,15 +1,19 @@
-// src/main.ts - Remove static file serving since nginx handles it now
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import multipart from '@fastify/multipart';
+import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
+
+  const configService = app.get(ConfigService);
 
   // Register multipart with increased limits for larger files
   await app.register(multipart, {
@@ -24,9 +28,11 @@ async function bootstrap() {
     },
   });
 
-  // Register static file serving 
+  // Register static file serving — root matches UPLOADS_PATH from .env
+  const uploadsPath = configService.get<string>('UPLOADS_PATH', '/var/www/uploads');
+  const absoluteUploadsPath = path.resolve(uploadsPath);
   await app.register(require('@fastify/static'), {
-    root: '/var/www/uploads',
+    root: absoluteUploadsPath,
     prefix: '/',
   });
 

@@ -138,17 +138,24 @@ export class AdminVendorsComponent implements OnInit {
     }
   }
 
-  uploadImage(): void {
-    if (!this.selectedFile) return;
-    this.isUploading = true;
-    this.uploadService.uploadImage(this.selectedFile, 'vendors').subscribe({
-      next: (response) => {
-        this.vendorForm.patchValue({ imageUrl: response.imageUrl });
-        this.isUploading = false;
-        this.selectedFile = null;
-      },
-      error: () => { this.setErrorMessage('فشل في رفع الصورة'); this.isUploading = false; },
-    });
+  onVendorSubmit(): void {
+    if (this.vendorForm.invalid) return;
+
+    // If a new file was selected, upload it first then save
+    if (this.selectedFile) {
+      this.isUploading = true;
+      this.uploadService.uploadImage(this.selectedFile, 'vendors').subscribe({
+        next: (response) => {
+          this.vendorForm.patchValue({ imageUrl: response.imageUrl });
+          this.isUploading = false;
+          this.selectedFile = null;
+          this.saveVendor();
+        },
+        error: () => { this.setErrorMessage('فشل في رفع الصورة'); this.isUploading = false; },
+      });
+    } else {
+      this.saveVendor();
+    }
   }
 
   onVendorSubmit(): void {

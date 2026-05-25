@@ -62,9 +62,8 @@
         <label>الصورة</label>
         <div class="image-upload">
           <input type="file" accept="image/*" (change)="onFileSelected($event)" #imageInput style="display:none" />
-          <button type="button" class="upload-btn" (click)="imageInput.click()">اختر صورة</button>
-          <button type="button" class="upload-confirm-btn" (click)="uploadImage()" [disabled]="!selectedFile || isUploading">
-            {{ isUploading ? 'جاري الرفع...' : 'رفع الصورة' }}
+          <button type="button" class="upload-btn" (click)="imageInput.click()">
+            {{ selectedFile ? selectedFile.name : 'اختر صورة' }}
           </button>
         </div>
         <div class="image-preview" *ngIf="imagePreview">
@@ -73,8 +72,8 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="submit-btn" [disabled]="vendorForm.invalid">
-          {{ isEditingVendor ? 'تحديث' : 'حفظ' }}
+        <button type="submit" class="submit-btn" [disabled]="vendorForm.invalid || isUploading">
+          {{ isUploading ? 'جاري الرفع...' : (isEditingVendor ? 'تحديث' : 'حفظ') }}
         </button>
         <button type="button" class="cancel-btn" (click)="toggleVendorForm()">إلغاء</button>
       </div>
