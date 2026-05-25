@@ -1,0 +1,70 @@
+<div class="verify-page">
+  <div class="verify-container">
+
+    <!-- Header -->
+    <div class="verify-header">
+      <img src="/logo/ysu_logo_cropped.ico" alt="YSU Logo" class="logo" />
+      <h1>التحقق من العضوية</h1>
+      <p>Membership Verification</p>
+    </div>
+
+    <!-- Input Form -->
+    <div class="verify-form">
+      <input
+        type="text"
+        [(ngModel)]="codeInput"
+        placeholder="أدخل رمز العضوية — e.g. YSU12345"
+        class="code-input"
+        (keyup.enter)="verify()"
+      />
+      <button (click)="verify()" [disabled]="isLoading" class="verify-btn">
+        <span *ngIf="!isLoading">تحقق — Verify</span>
+        <span *ngIf="isLoading">جارٍ التحقق...</span>
+      </button>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="errorMessage" class="error-box">
+      <span>❌ {{ errorMessage }}</span>
+    </div>
+
+    <!-- Result: Active -->
+    <div *ngIf="result && result.isActive" class="result-box active">
+      <div class="status-badge active-badge">✅ عضو نشط — Active Member</div>
+      <div class="member-info">
+        <div class="info-row">
+          <span class="label">الاسم</span>
+          <span class="value">{{ result.fullNameAr }} ({{ result.fullNameEn }})</span>
+        </div>
+        <div class="info-row">
+          <span class="label">رمز العضوية</span>
+          <span class="value code">{{ result.membershipId }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">تاريخ الانتهاء</span>
+          <span class="value">{{ result.expiresAt | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result: Not Active -->
+    <div *ngIf="result && !result.isActive" class="result-box inactive">
+      <div class="status-badge inactive-badge">❌ غير نشط — Not Active</div>
+      <div class="member-info">
+        <div class="info-row">
+          <span class="label">الاسم</span>
+          <span class="value">{{ result.fullNameAr }} ({{ result.fullNameEn }})</span>
+        </div>
+        <div class="info-row">
+          <span class="label">رمز العضوية</span>
+          <span class="value code">{{ result.membershipId }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">الحالة</span>
+          <span class="value">{{ result.status }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

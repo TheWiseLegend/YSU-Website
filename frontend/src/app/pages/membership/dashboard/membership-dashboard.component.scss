@@ -393,3 +393,25 @@ select {
   p { color: #6c757d; max-width: 500px; margin: 0 auto 0.5rem; line-height: 1.8; }
   strong { color: var(--secondary-color); }
 }
+
+.member-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: auto;
+
+  .qr-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    border: 2px solid #e0e4ef;
+  }
+
+  .qr-label {
+    font-size: 0.72rem;
+    color: #888;
+    margin: 0;
+    text-align: center;
+  }
+}

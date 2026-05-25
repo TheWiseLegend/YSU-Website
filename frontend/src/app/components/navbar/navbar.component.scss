@@ -10,13 +10,13 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   direction: rtl;
-  
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
   }
-  
+
   .navbar-content {
     display: flex;
     justify-content: space-between;
@@ -24,14 +24,14 @@
     height: 80px;
     position: relative;
   }
-  
+
   .logo {
     position: absolute;
-    right: 15px; 
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
-    
+
     img {
       height: 60px;
       width: auto;
@@ -75,7 +75,7 @@
       transform: translateY(-50%) translateY(0px);
     }
   }
-  
+
   .menu-toggle {
     display: none;
     background: none;
@@ -87,7 +87,7 @@
     width: 30px;
     padding: 0;
     z-index: 10;
-    
+
     span {
       display: block;
       height: 3px;
@@ -96,28 +96,34 @@
       transition: all 0.3s ease;
     }
   }
-  
+
   .nav-links {
     flex: 1;
     display: flex;
+    align-items: center;
     justify-content: center;
     margin-right: 80px; // Space for logo
     margin-left: 150px; // Space for membership button
-    
+
     ul {
       display: flex;
       list-style: none;
       margin: 0;
       padding: 0;
-      
+      align-items: center;
+
       li {
         margin: 0 10px;
-        
+
         // Hide mobile-only membership link on desktop
         &.mobile-only {
           display: none;
         }
-        
+
+        &.desktop-only {
+          display: list-item;
+        }
+
         a {
           color: #333 !important;
           text-decoration: none;
@@ -126,15 +132,16 @@
           padding: 8px 10px;
           transition: color 0.3s ease;
           white-space: nowrap;
-          
-          &:hover, &.active {
+
+          &:hover,
+          &.active {
             color: #5174b9 !important;
           }
         }
       }
     }
   }
-  
+
   @media (max-width: 991px) {
     .menu-toggle {
       display: flex;
@@ -143,15 +150,15 @@
       top: 50%;
       transform: translateY(-50%);
     }
-    
+
     .navbar-content {
       justify-content: center;
     }
-    
+
     .logo {
       position: static;
       transform: none;
-      
+
       img {
         height: 50px;
       }
@@ -161,10 +168,10 @@
     .membership-btn {
       display: none;
     }
-    
+
     .nav-links {
       position: fixed;
-      top: 80px; 
+      top: 80px;
       right: 0;
       left: 0;
       width: 100%;
@@ -176,35 +183,35 @@
       z-index: 999;
       margin-right: 0;
       margin-left: 0;
-      
+
       &.active {
-        max-height: calc(100vh - 80px); 
+        max-height: calc(100vh - 80px);
       }
-      
+
       ul {
         flex-direction: column;
         padding: 20px 0;
-        
+
         li {
           margin: 0;
-          
+
           // Show mobile-only membership link on mobile
           &.mobile-only {
             display: block;
-            
+
             a {
               background: #5174b9 !important;
               color: white !important;
               font-weight: 600;
               border-radius: 10px;
               margin: 0 10px 10px;
-              
+
               &:hover {
                 background: #3f5a8f !important;
               }
             }
           }
-          
+
           a {
             display: block !important;
             padding: 15px 20px !important;
@@ -213,8 +220,9 @@
             color: #333 !important;
             text-decoration: none !important;
             background-color: transparent !important;
-            
-            &:hover, &.active {
+
+            &:hover,
+            &.active {
               color: #5174b9 !important;
               background-color: rgba(81, 116, 185, 0.1) !important;
             }
@@ -222,11 +230,11 @@
         }
       }
     }
-    
+
     .nav-links.active ul li {
       animation: fadeInRight 0.5s ease forwards;
       opacity: 0;
-      
+
       @for $i from 1 through 12 {
         &:nth-child(#{$i}) {
           animation-delay: $i * 0.1s;
@@ -286,5 +294,94 @@
 @media (max-width: 991px) {
   ::ng-deep .navbar .nav-links.active {
     background-color: #ffffff !important;
+  }
+}
+
+// More dropdown
+.more-dropdown-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &:hover .more-menu {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+.more-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333 !important;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 8px 10px;
+  white-space: nowrap;
+  line-height: 1;
+
+  &:hover {
+    color: #5174b9 !important;
+  }
+}
+
+.more-menu {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  min-width: 180px;
+  padding: 0.5rem;
+  list-style: none;
+  z-index: 1000;
+  direction: rtl;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+  display: flex !important;
+  flex-direction: column !important;
+
+  li {
+    margin: 0 !important;
+    display: block !important;
+    float: none !important;
+    width: 100%;
+
+    a {
+      display: block !important;
+      padding: 10px 14px !important;
+      border-radius: 8px;
+      color: #333 !important;
+      text-decoration: none;
+      font-size: 15px !important;
+      white-space: nowrap;
+      border-bottom: none !important;
+      transition:
+        background 0.2s,
+        color 0.2s;
+
+      &:hover,
+      &.active {
+        background: rgba(81, 116, 185, 0.08) !important;
+        color: #5174b9 !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  .more-dropdown-wrapper.desktop-only {
+    display: none !important;
   }
 }

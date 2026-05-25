@@ -7,6 +7,7 @@ import { MemberAuthService } from '../../../services/member-auth.service';
 import { Member, MembershipApplication } from '../../../models/member.model';
 import { DISCOUNTED_PLACES } from '../../../data/discounted-places';
 import { DiscountedPlace } from '../../../models/discounted-place.model';
+import QRCode from 'qrcode';
 
 @Component({
   selector: 'app-membership-dashboard',
@@ -20,6 +21,7 @@ export class MembershipDashboardComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
   showSettings = false;
+  qrCodeDataUrl: string = '';
 
   // Places
   allPlaces: DiscountedPlace[] = DISCOUNTED_PLACES;
@@ -56,6 +58,7 @@ export class MembershipDashboardComponent implements OnInit {
         this.member = member;
         this.isLoading = false;
         this.applyFilters();
+        this.generateQrCode();
       },
       error: () => {
         this.memberAuthService.logout();
@@ -64,42 +67,52 @@ export class MembershipDashboardComponent implements OnInit {
     });
   }
 
+  private async generateQrCode(): Promise<void> {
+    if (!this.member?.membershipId) return;
+    const verifyUrl = `${window.location.origin}/verify/${this.member.membershipId}`;
+    this.qrCodeDataUrl = await QRCode.toDataURL(verifyUrl, {
+      width: 200,
+      margin: 2,
+      color: { dark: '#2E3F6E', light: '#FFFFFF' }
+    });
+  }
+
   get latestApplication(): MembershipApplication | null {
     return this.member?.applications?.[0] ?? null;
   }
 
-    get currentStatus(): 'new' | 'pending' | 'active' | 'expired' | 'cancelled' {
+  get currentStatus(): 'new' | 'pending' | 'active' | 'expired' | 'cancelled' {
     if (!this.latestApplication) return 'new';
     return this.latestApplication.status;
-    }
+  }
 
-    get statusLabel(): string {
+  get statusLabel(): string {
     const map: Record<string, string> = {
-        new: 'جديد',
-        pending: 'قيد المراجعة',
-        active: 'نشط',
-        expired: 'منتهي',
-        cancelled: 'ملغي'
+      new: 'جديد',
+      pending: 'قيد المراجعة',
+      active: 'نشط',
+      expired: 'منتهي',
+      cancelled: 'ملغي'
     };
     return map[this.currentStatus] ?? '';
-    }
+  }
 
-    get statusClass(): string {
+  get statusClass(): string {
     const map: Record<string, string> = {
-        new: 'status-new',
-        pending: 'status-pending',
-        active: 'status-active',
-        expired: 'status-expired',
-        cancelled: 'status-cancelled'
+      new: 'status-new',
+      pending: 'status-pending',
+      active: 'status-active',
+      expired: 'status-expired',
+      cancelled: 'status-cancelled'
     };
     return map[this.currentStatus] ?? '';
-    }
+  }
 
-    get showCTA(): boolean {
+  get showCTA(): boolean {
     return this.currentStatus === 'new' ||
-            this.currentStatus === 'expired' ||
-            this.currentStatus === 'cancelled';
-    }
+      this.currentStatus === 'expired' ||
+      this.currentStatus === 'cancelled';
+  }
 
   get memberInitials(): string {
     const parts = (this.member?.fullNameAr ?? '').trim().split(' ');

@@ -1,4 +1,3 @@
-<!-- src/app/components/navbar/navbar.component.html -->
 <nav class="navbar">
   <div class="container">
     <div class="navbar-content">
@@ -14,29 +13,52 @@
           <img src="/logo/ysu_logo_cropped.webp" alt="اتحاد الطلبة اليمنيين في ماليزيا" />
         </a>
       </div>
-      
+
       <div class="nav-links" [class.active]="isMenuOpen">
         <ul>
-          <!-- Membership link for mobile only (first item) -->
-          <li class="mobile-only"><a routerLink="/membership" routerLinkActive="active" (click)="isMenuOpen = false">العضوية</a></li>
-          
-          <!-- Regular navigation links -->
+          <!-- Mobile only: membership link -->
+          <li class="mobile-only">
+            <a routerLink="/membership" routerLinkActive="active" (click)="isMenuOpen = false">العضوية</a>
+          </li>
+
+          <!-- Always visible links -->
           <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMenuOpen = false">الرئيسية</a></li>
-          <li><a routerLink="/student-guide" routerLinkActive="active" (click)="isMenuOpen = false">دليل الطالب</a></li>
-          <li><a routerLink="/universities" routerLinkActive="active" (click)="isMenuOpen = false">الجامعات</a></li>
           <li><a routerLink="/news" routerLinkActive="active" (click)="isMenuOpen = false">أخبار الإتحاد</a></li>
           <li><a routerLink="/branches" routerLinkActive="active" (click)="isMenuOpen = false">الفروع</a></li>
-          <li><a routerLink="/gallery" routerLinkActive="active" (click)="isMenuOpen = false">الصور</a></li>
-          <li><a routerLink="/digital-library" routerLinkActive="active" (click)="isMenuOpen = false">المكتبة الرقمية</a></li>
+          <li><a routerLink="/verify" routerLinkActive="active" (click)="isMenuOpen = false">التحقق من العضوية</a></li>
           <li><a routerLink="/about" routerLinkActive="active" (click)="isMenuOpen = false">من نحن</a></li>
-          <li><a routerLink="/contact" routerLinkActive="active" (click)="isMenuOpen = false">تواصل معنا</a></li>
+
+          <!-- Desktop: More dropdown -->
+          <li class="more-dropdown-wrapper desktop-only">
+            <button class="more-btn">
+              المزيد
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <ul class="more-menu" [class.open]="isMoreOpen">
+              <li><a routerLink="/student-guide" routerLinkActive="active" (click)="closeMore()">دليل الطالب</a></li>
+              <li><a routerLink="/universities" routerLinkActive="active" (click)="closeMore()">الجامعات</a></li>
+              <li><a routerLink="/gallery" routerLinkActive="active" (click)="closeMore()">الصور</a></li>
+              <li><a routerLink="/digital-library" routerLinkActive="active" (click)="closeMore()">المكتبة الرقمية</a></li>
+              <li><a routerLink="/contact" routerLinkActive="active" (click)="closeMore()">تواصل معنا</a></li>
+            </ul>
+          </li>
+
+          <!-- Mobile only: show all links flat (no dropdown) -->
+          <li class="mobile-only"><a routerLink="/student-guide" routerLinkActive="active" (click)="isMenuOpen = false">دليل الطالب</a></li>
+          <li class="mobile-only"><a routerLink="/universities" routerLinkActive="active" (click)="isMenuOpen = false">الجامعات</a></li>
+          <li class="mobile-only"><a routerLink="/gallery" routerLinkActive="active" (click)="isMenuOpen = false">الصور</a></li>
+          <li class="mobile-only"><a routerLink="/digital-library" routerLinkActive="active" (click)="isMenuOpen = false">المكتبة الرقمية</a></li>
+          <li class="mobile-only"><a routerLink="/contact" routerLinkActive="active" (click)="isMenuOpen = false">تواصل معنا</a></li>
         </ul>
       </div>
 
-      <!-- Membership CTA Button (Desktop only) -->
+      <!-- Desktop: Membership CTA -->
       <a routerLink="/membership" class="membership-btn">
         <span>العضوية</span>
       </a>
+
     </div>
   </div>
 </nav>

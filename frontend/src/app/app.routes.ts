@@ -31,7 +31,7 @@ import { BranchTeamComponent } from './admin/admin-panel/branch-team/branch-team
 import { AdminBranchDetailComponent } from './admin/admin-panel/branch-detail/branch-detail.component';
 import { DigitalLibraryComponent } from './pages/digital-library/digital-library.component';
 import { AdminMembersComponent } from './admin/admin-panel/members/admin-members.component';
-
+import { VerifyComponent } from './pages/verify/verify.component';
 
 import { MembershipLayoutComponent } from './pages/membership/layout/membership-layout.component';
 import { MembershipLoginComponent } from './pages/membership/login/membership-login.component';
@@ -60,11 +60,13 @@ export const routes: Routes = [
       { path: 'events/:id', component: EventDetailComponent }, // Added event detail route
       { path: 'about', component: AboutComponent },
       { path: 'contact', component: ContactComponent },
-      { path: 'digital-library', component: DigitalLibraryComponent } 
-    ]
+      { path: 'digital-library', component: DigitalLibraryComponent },
+      { path: 'verify', component: VerifyComponent },
+      { path: 'verify/:code', component: VerifyComponent },
+    ],
   },
 
-    {
+  {
     path: 'membership',
     component: MembershipLayoutComponent,
     children: [
@@ -74,20 +76,22 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: MembershipDashboardComponent,
-        canActivate: [MemberAuthGuard]
+        canActivate: [MemberAuthGuard],
       },
       {
         path: 'apply',
         component: MembershipApplyComponent,
-        canActivate: [MemberAuthGuard]
+        canActivate: [MemberAuthGuard],
       },
-    ]
+    ],
   },
 
+  // Hidden admin login route
+  {
+    path: 'admin-ysu-login-e47b9f2ac81e4ffdb47d9a87c36c1abf',
+    component: AdminLoginComponent,
+  },
 
-  // Hidden admin login route 
-  { path: 'admin-ysu-login-e47b9f2ac81e4ffdb47d9a87c36c1abf', component: AdminLoginComponent },
-  
   // Protected admin routes
   {
     path: 'admin-panel',
@@ -103,9 +107,9 @@ export const routes: Routes = [
       { path: 'branches', component: AdminBranchesComponent },
       { path: 'team', component: AdminUnionTeamComponent },
       { path: 'branches/:id', component: AdminBranchDetailComponent },
-      { path: 'branches/:id/team', component: BranchTeamComponent }, 
-      { path: 'union-team', component: AdminUnionTeamComponent},
+      { path: 'branches/:id/team', component: BranchTeamComponent },
+      { path: 'union-team', component: AdminUnionTeamComponent },
       { path: 'members', component: AdminMembersComponent },
-    ]
-  }
+    ],
+  },
 ];

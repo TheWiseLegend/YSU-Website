@@ -1,0 +1,160 @@
+.verify-page {
+  min-height: 100vh;
+  background: #f4f6fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  direction: rtl;
+}
+
+.verify-container {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+.verify-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2E3F6E;
+    margin: 0 0 0.25rem;
+  }
+
+  p {
+    color: #888;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+.verify-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.code-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid #e0e4ef;
+  border-radius: 10px;
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 2px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #2E3F6E;
+  }
+}
+
+.verify-btn {
+  background: #2E3F6E;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #4A7C4E;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.error-box {
+  background: #fdecea;
+  color: #c0392b;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.result-box {
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+
+  &.active {
+    background: #f0faf2;
+    border: 2px solid #4A7C4E;
+  }
+
+  &.inactive {
+    background: #fdf4f4;
+    border: 2px solid #C0392B;
+  }
+}
+
+.status-badge {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+
+  &.active-badge {
+    background: #d4edda;
+    color: #4A7C4E;
+  }
+
+  &.inactive-badge {
+    background: #f8d7da;
+    color: #C0392B;
+  }
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+
+  .label {
+    color: #888;
+    font-weight: 500;
+  }
+
+  .value {
+    color: #1A1A2E;
+    font-weight: 600;
+
+    &.code {
+      font-family: monospace;
+      font-size: 1.05rem;
+      letter-spacing: 1px;
+    }
+  }
+}
