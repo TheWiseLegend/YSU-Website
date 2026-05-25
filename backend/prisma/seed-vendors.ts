@@ -92,10 +92,10 @@ async function main() {
     const categoryMap = new Map<CategoryName, string>();
 
     const categoryDefaults: Record<CategoryName, string> = {
-      'مطعم': 'restaurant',
-      'بقالة': 'grocery',
-      'سياحة': 'tourism',
-      'تعليم': 'education',
+      'مطعم': 'utensils',
+      'بقالة': 'shopping-cart',
+      'سياحة': 'globe',
+      'تعليم': 'graduation-cap',
     };
 
     for (const name of CATEGORY_NAMES) {

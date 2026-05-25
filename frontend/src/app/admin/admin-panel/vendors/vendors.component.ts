@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { LucideDynamicIcon, provideLucideIcons, LucideIcon } from '@lucide/angular';
 import { VendorService } from '../../../services/vendor.service';
 import { UploadService } from '../../../services/upload.service';
-import { Vendor, VendorCategory } from '../../../models/vendor.model';
+import { CreateVendorDto, Vendor, VendorCategory } from '../../../models/vendor.model';
 import { VENDOR_ICONS, VendorIconOption, ALL_VENDOR_LUCIDE_ICONS, getVendorIcon } from '../../../data/vendor-icons';
 
 @Component({
@@ -132,6 +132,8 @@ export class AdminVendorsComponent implements OnInit {
       reader.onload = () => (this.imagePreview = reader.result as string);
       reader.readAsDataURL(file);
     } else {
+      this.selectedFile = null;
+      this.imagePreview = null;
       this.setErrorMessage('الرجاء اختيار صورة صالحة');
     }
   }
@@ -151,7 +153,7 @@ export class AdminVendorsComponent implements OnInit {
 
   onVendorSubmit(): void {
     if (this.vendorForm.invalid) return;
-    const dto = this.vendorForm.value;
+    const dto = this.normalizeVendorDto(this.vendorForm.value);
 
     if (this.isEditingVendor && this.editingVendorId) {
       this.vendorService.update(this.editingVendorId, dto).subscribe({
@@ -266,9 +268,48 @@ export class AdminVendorsComponent implements OnInit {
     return this.vendors.filter(v => v.categoryId === categoryId).length;
   }
 
+  toggleCategoryStatus(category: VendorCategory): void {
+    const action$ = category.isActive
+      ? this.vendorService.deactivateCategory(category.id)
+      : this.vendorService.reactivateCategory(category.id);
+
+    action$.subscribe({
+      next: () => {
+        this.setSuccessMessage(category.isActive ? 'تم تعطيل الفئة بنجاح' : 'تم تفعيل الفئة بنجاح');
+        this.loadCategories();
+        this.loadVendors();
+      },
+      error: () => this.setErrorMessage('فشل في تغيير حالة الفئة'),
+    });
+  }
+
   // ─── Helpers ─────────────────────────────────────────────────────────────────
 
   activeCategories(): VendorCategory[] {
-    return this.categories;
+    return this.categories.filter((category) => category.isActive);
+  }
+
+  private normalizeOptionalField(value: unknown): string | undefined {
+    if (typeof value !== 'string') return undefined;
+    const trimmed = value.trim();
+    return trimmed.length ? trimmed : undefined;
+  }
+
+  private normalizeVendorDto(formValue: {
+    name: string;
+    categoryId: string;
+    discount: string;
+    location?: string;
+    imageUrl?: string;
+    mapsUrl?: string;
+  }): CreateVendorDto {
+    return {
+      name: formValue.name,
+      categoryId: formValue.categoryId,
+      discount: formValue.discount,
+      location: this.normalizeOptionalField(formValue.location),
+      imageUrl: this.normalizeOptionalField(formValue.imageUrl),
+      mapsUrl: this.normalizeOptionalField(formValue.mapsUrl),
+    };
   }
 }

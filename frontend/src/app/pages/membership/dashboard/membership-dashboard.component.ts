@@ -185,16 +185,6 @@ export class MembershipDashboardComponent implements OnInit {
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-  getTypeIcon(type: string): string {
-    const icons: Record<string, string> = {
-      مطعم: '🍽',
-      بقالة: '🛒',
-      سياحة: '🌍',
-      تعليم: '📚',
-    };
-    return icons[type] ?? '🏪';
-  }
-
   getPlaceIcon(place: PublicVendor): LucideIcon {
     return getVendorIcon(place.categoryIcon);
   }

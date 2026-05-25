@@ -213,11 +213,12 @@
         <tr>
           <th>الأيقونة</th>
           <th>الاسم</th>
+          <th>الحالة</th>
           <th>الإجراءات</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let cat of categories">
+        <tr *ngFor="let cat of categories" [class.inactive-row]="!cat.isActive">
           <td class="icon-cell">
             <ng-container *ngIf="getIconDataByKey(cat.icon) as iconData">
               <svg [lucideIcon]="iconData" width="22" height="22" class="category-icon"></svg>
@@ -225,8 +226,17 @@
             <span *ngIf="!getIconDataByKey(cat.icon)" class="no-image">—</span>
           </td>
           <td>{{ cat.name }}</td>
+          <td>
+            <span class="status-badge" [class.active]="cat.isActive" [class.inactive]="!cat.isActive">
+              {{ cat.isActive ? 'نشط' : 'معطل' }}
+            </span>
+          </td>
           <td class="actions">
             <button class="edit-btn" (click)="editCategory(cat)">تعديل</button>
+            <button class="toggle-btn" [class.deactivate]="cat.isActive" [class.activate]="!cat.isActive"
+              (click)="toggleCategoryStatus(cat)">
+              {{ cat.isActive ? 'تعطيل' : 'تفعيل' }}
+            </button>
             <button class="delete-btn" (click)="requestDeleteCategory(cat.id)">حذف</button>
           </td>
         </tr>
