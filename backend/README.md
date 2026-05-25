@@ -61,31 +61,58 @@ The YSU Backend provides a comprehensive API for managing the Yemeni Students Un
 
 ## 📦 Prerequisites
 
-Before you begin, ensure you have the following installed:
-
-- **Node.js**: >= 18.19.1 or >= 20.11.1 or >= 22.0.0
-- **npm**: >= 8.0.0
-- **PostgreSQL**: >= 14.0
+- **Node.js**: v22 LTS (via nvm — see below)
+- **nvm**: Node Version Manager
+- **Docker**: For running PostgreSQL
 - **Git**: Latest version
 
 ---
 
 ## 🚀 Installation
 
-### 1. Clone the Repository
+### 1. Install nvm
+
+If you don't have nvm installed:
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+```
+
+Restart your terminal, then verify:
+
+```bash
+nvm --version
+```
+
+### 2. Use Node 22
+
+```bash
+nvm install 22
+nvm use 22
+```
+
+To make it the default for all future sessions:
+
+```bash
+nvm alias default 22
+```
+
+> ⚠️ Do not use Node 26+. Certain dependencies (`buffer-equal-constant-time`) are incompatible and will crash on startup.
+
+### 3. Clone the Repository
 
 ```bash
 git clone git@github.com:ya7ya-hussein/ysu-backend.git
 cd ysu-backend
 ```
 
-### 2. Install Dependencies
+### 4. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Generate Prisma Client
+### 5. Generate Prisma Client
 
 ```bash
 npx prisma generate
@@ -93,74 +120,69 @@ npx prisma generate
 
 ---
 
-## 🔐 Environment Variables
+## 🐳 Database Setup (Docker)
 
-Create a `.env` file in the root directory with the following variables:
+PostgreSQL runs in Docker. The `docker-compose.yml` is located in the `backend/` directory.
 
-```env
-# Database Configuration
-DATABASE_URL="postgresql://username:password@localhost:5432/ysu-backend?schema=public"
+### 1. Set Up Environment Variables
 
-# JWT Configuration
-JWT_SECRET="your-strong-jwt-secret-key-here"
+Copy the development template and fill in your values:
 
-# Admin Authentication
-ADMIN_PASSWORD="your-secure-admin-password"
-
-# Application Configuration
-NODE_ENV="development"
-BASE_URL="http://localhost:3333"
-
-# File Upload Configuration
-UPLOADS_PATH="/var/www/uploads"
+```bash
+cp .env.development .env
 ```
 
-### Environment Variable Descriptions
+Open `.env` and replace all placeholders (`<...>`) with your actual values. Make sure `DB_USER`, `DB_PASSWORD`, and `DB_NAME` match the credentials in `DATABASE_URL`.
+
+### 2. Start PostgreSQL
+
+```bash
+docker compose up -d
+```
+
+To stop it:
+
+```bash
+docker compose down
+```
+
+To stop and **wipe all data** (useful if you need to reinitialize with new credentials):
+
+```bash
+docker compose down -v
+```
+
+### 3. Push the Schema
+
+```bash
+npx prisma db push
+```
+
+### 4. View Database (Optional)
+
+```bash
+npx prisma studio
+```
+
+Access at: http://localhost:5555
+
+---
+
+## 🔐 Environment Variables
+
+Use `.env.development` as a template. Copy it to `.env` and fill in your values.
 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:password@localhost:5432/ysu-backend` |
 | `JWT_SECRET` | Secret key for JWT token signing | `myjwtsecret123` |
 | `ADMIN_PASSWORD` | Admin login password | `supersecret123` |
-| `NODE_ENV` | Environment (development/production) | `production` |
-| `BASE_URL` | Base URL for the API | `https://ysumalaysia.org` |
-| `UPLOADS_PATH` | Absolute path for file uploads | `/var/www/uploads` |
-
----
-
-## 🗄 Database Setup
-
-### 1. Create PostgreSQL Database
-
-```bash
-# Login to PostgreSQL
-psql -U postgres
-
-# Create database
-CREATE DATABASE "ysu-backend";
-
-# Exit psql
-\q
-```
-
-### 2. Run Migrations
-
-```bash
-# Push schema to database
-npx prisma db push
-
-# Or run migrations
-npx prisma migrate dev --name init
-```
-
-### 3. View Database (Optional)
-
-```bash
-# Open Prisma Studio
-npx prisma studio
-```
-
-Access at: http://localhost:5555
+| `NODE_ENV` | Environment (development/production) | `development` |
+| `BASE_URL` | Base URL for the API | `http://localhost:3333` |
+| `UPLOADS_PATH` | Path for file uploads | `./uploads` |
+| `DB_USER` | PostgreSQL user (Docker) | `postgres` |
+| `DB_PASSWORD` | PostgreSQL password (Docker) | `secret` |
+| `DB_NAME` | PostgreSQL database name (Docker) | `ysu-backend` |
 
 ---
 
@@ -443,20 +465,28 @@ pm2 logs ysu-backend --lines 100
 
 ## 🔧 Troubleshooting
 
-### Common Issues
-
-#### 1. Database Connection Error
+### Wrong Node Version
 
 ```bash
-# Check PostgreSQL is running
-sudo systemctl status postgresql
-
-# Check connection string in .env
-# Ensure format: postgresql://user:password@host:port/database
+nvm use 22
 ```
 
+If you see `buffer-equal-constant-time` or `SlowBuffer` errors, you're on Node 26+. Switch to Node 22.
 
-#### 2. PM2 Process Not Starting
+### Database Authentication Failed
+
+Credentials in `DATABASE_URL` must match `DB_USER` and `DB_PASSWORD`. If you changed credentials after the container was already created, wipe the volume and recreate:
+
+```bash
+docker compose down -v
+docker compose up -d
+```
+
+### Permission Denied on Uploads
+
+Make sure `UPLOADS_PATH` in your `.env` points to a directory your user can write to. For development, `./uploads` works fine.
+
+### PM2 Process Not Starting
 
 ```bash
 # Check logs
@@ -562,4 +592,4 @@ This project is private and proprietary.
 
 ---
 
-**Built by YSU Malaysia Development Team**# YSU-Backend-reference
+**Built by YSU Malaysia Development Team**
