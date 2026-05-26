@@ -1,3 +1,5 @@
 .kiro/
 PR.md
 backend/uploads/assets/
+frontend/public/reference/
+lovable-prompt.md

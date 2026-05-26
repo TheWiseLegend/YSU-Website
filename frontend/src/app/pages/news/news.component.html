@@ -1,34 +1,45 @@
-<!-- src/app/pages/news/news.component.html -->
 <app-page-header titleFirst="أخبار" titleSecond=" الإتحاد"></app-page-header>
 
-<div class="container">
-  <section class="news-section">
-    <div class="section-header">
-      <h2>آخر الأخبار والفعاليات</h2>
-      <div class="section-underline"></div>
-      <p class="section-description">
-        تابع آخر أخبار وفعاليات اتحاد الطلبة اليمنيين في ماليزيا
-      </p>
+<div class="news-page">
+  <div class="container">
+
+    <!-- Section header -->
+    <div class="news-page__header">
+      <div class="section-label section-label--centered">
+        <span class="section-label__line"></span>
+        <h2 class="section-title">آخر الأخبار</h2>
+        <span class="section-label__line"></span>
+      </div>
+      <p class="news-page__subtitle">تابع آخر أخبار وفعاليات اتحاد الطلبة اليمنيين في ماليزيا</p>
     </div>
-    
-    <div class="news-grid">
+
+    <!-- Loading -->
+    <div class="state-block" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>جاري تحميل الأخبار...</p>
+    </div>
+
+    <!-- Error -->
+    <div class="state-block" *ngIf="errorMessage && !isLoading">
+      <p>لا تتوفر أخبار في الوقت الحالي</p>
+    </div>
+
+    <!-- Grid -->
+    <div class="news-grid" *ngIf="!isLoading && newsItems.length > 0">
       <div class="news-item" *ngFor="let news of newsItems">
         <app-news-card [news]="news"></app-news-card>
       </div>
     </div>
-    
-    <!-- Empty state when no news are available -->
-    <div class="empty-state" *ngIf="newsItems.length === 0">
-      <div class="empty-icon">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M3 8H21" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M16 2V6" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M8 2V6" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
+
+    <!-- Empty -->
+    <div class="state-block state-block--empty" *ngIf="!isLoading && !errorMessage && newsItems.length === 0">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none">
+        <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 8H21M16 2V6M8 2V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
       <h3>لا توجد أخبار متاحة حالياً</h3>
       <p>سيتم إضافة الأخبار قريباً، يرجى العودة لاحقاً.</p>
     </div>
-  </section>
+
+  </div>
 </div>

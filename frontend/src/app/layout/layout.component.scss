@@ -4,11 +4,18 @@
   min-height: 100vh;
 }
 
+// Navbar is fixed — its host element must not take up flow space
+app-navbar {
+  display: block;
+  height: 0;
+  overflow: visible;
+}
+
 main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding-top: 20px;
+  padding-top: 0;
 }
 
 app-footer {

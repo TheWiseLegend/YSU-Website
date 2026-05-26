@@ -1,3 +1,5 @@
-body{
-    padding-top: 80px;
+// Navbar is fixed and transparent — pages handle their own top offset
+// via margin-top: -80px on hero/page-header components
+body {
+  padding-top: 0;
 }

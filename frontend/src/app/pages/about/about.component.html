@@ -1,252 +1,244 @@
-<!-- src/app/pages/about/about.component.html -->
 <app-page-header titleFirst="من" titleSecond=" نحن"></app-page-header>
 
-<div class="container">
-  <!-- Union Logo Section -->
-  <div class="logo-section">
-    <div class="logo-container">
-      <img src="/logo/ysu_logo.webp" alt="شعار اتحاد الطلبة اليمنيين في ماليزيا" class="union-logo">
-    </div>
-  </div>
+<div class="about-page">
 
-  <!-- Section 1: Mission Statement -->
-  <section class="about-section mission-section">
-    <div class="section-header">
-      <h2>رسالتنا</h2>
-      <div class="section-underline"></div>
-    </div>
-    <div class="section-content">
-      <p>
-        اتحاد الطلبة اليمنيين في ماليزيا هو مؤسسة طلابية غير ربحية تأسست لخدمة الطلاب اليمنيين في ماليزيا. 
-        يهدف الاتحاد إلى تقديم الدعم الأكاديمي والاجتماعي للطلاب، وتعزيز التواصل بينهم، وتمثيلهم لدى الجهات الرسمية، 
-        والحفاظ على الهوية الثقافية اليمنية. كما يعمل الاتحاد على إقامة الفعاليات والأنشطة التي تساهم في تطوير مهارات الطلاب وتنمية قدراتهم.
-      </p>
-      <h3>ما هو الهدف من الاتحاد؟</h3>
-      <p>
-        يهدف اتحاد الطلبة اليمنيين في ماليزيا إلى توفير بيئة داعمة للطلاب اليمنيين خلال فترة دراستهم في ماليزيا، 
-        وتذليل العقبات التي قد تواجههم، وتقديم المشورة والإرشاد الأكاديمي والاجتماعي. 
-        كما يسعى الاتحاد إلى تمثيل الطلاب اليمنيين أمام المؤسسات التعليمية والجهات الرسمية، 
-        والتنسيق مع السفارة اليمنية وغيرها من الجهات المعنية لتسهيل الإجراءات الخاصة بالطلاب.
-      </p>
+  <!-- ── Mission Section ──────────────────────────────────── -->
+  <section class="about-mission">
+    <div class="container">
+      <div class="about-mission__grid">
+
+        <!-- In RTL: emblem appears on the RIGHT, text on the LEFT -->
+        <!-- HTML order: text first (renders on left in RTL), emblem second (renders on right) -->
+        <div class="about-mission__copy">
+          <div class="section-label section-label--centered">
+            <span class="section-label__line"></span>
+            <h2 class="section-title">رسالتنا</h2>
+            <span class="section-label__line"></span>
+          </div>
+          <p>
+            اتحاد الطلبة اليمنيين في ماليزيا هو مؤسسة طلابية غير ربحية تأسست لخدمة الطلاب اليمنيين في ماليزيا.
+            يهدف الاتحاد إلى تقديم الدعم الأكاديمي والاجتماعي للطلاب، وتعزيز التواصل بينهم، وتمثيلهم لدى الجهات الرسمية،
+            والحفاظ على الهوية الثقافية اليمنية.
+          </p>
+          <h3>ما هو الهدف من الاتحاد؟</h3>
+          <p>
+            يهدف اتحاد الطلبة اليمنيين في ماليزيا إلى توفير بيئة داعمة للطلاب اليمنيين خلال فترة دراستهم في ماليزيا،
+            وتذليل العقبات التي قد تواجههم، وتقديم المشورة والإرشاد الأكاديمي والاجتماعي.
+            كما يسعى الاتحاد إلى تمثيل الطلاب اليمنيين أمام المؤسسات التعليمية والجهات الرسمية.
+          </p>
+        </div>
+
+        <div class="about-emblem">
+          <div class="about-emblem__ring about-emblem__ring--outer"></div>
+          <div class="about-emblem__ring about-emblem__ring--dashed"></div>
+          <div class="about-emblem__glow"></div>
+          <div class="about-emblem__circle">
+            <img src="/logo/ysu_logo.webp" alt="شعار اتحاد الطلبة اليمنيين في ماليزيا" />
+          </div>
+          <div class="about-badge about-badge--est">
+            <span class="about-badge__dot"></span>تأسس ٢٠١٧
+          </div>
+          <div class="about-badge about-badge--nonprofit">غير ربحية</div>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <!-- Section 2: Vision & Goals -->
-  <section class="about-section vision-section">
-    <div class="section-header">
-      <h2>الرؤية والأهداف</h2>
-      <div class="section-underline"></div>
-    </div>
-    <div class="section-content">
-      <div class="vision-content">
-        <div class="vision-text">
+  <!-- ── Vision & Goals ───────────────────────────────────── -->
+  <section class="about-vision">
+    <div class="container">
+      <div class="section-label section-label--centered">
+        <span class="section-label__line"></span>
+        <h2 class="section-title">الرؤية والأهداف</h2>
+        <span class="section-label__line"></span>
+      </div>
+
+      <div class="about-vision__grid">
+        <!-- In RTL: image on right, text on left -->
+        <!-- HTML order: text first (left), image second (right) -->
+        <div class="about-vision__text">
           <p>
-            نسعى في اتحاد الطلبة اليمنيين في ماليزيا إلى بناء مجتمع طلابي متميز، 
+            نسعى في اتحاد الطلبة اليمنيين في ماليزيا إلى بناء مجتمع طلابي متميز،
             قادر على المساهمة في تنمية اليمن ونهضته، وتعزيز دور الطلاب اليمنيين في ماليزيا كسفراء لوطنهم.
           </p>
           <ul class="goals-list">
             <li>
-              <div class="goal-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <span class="goal-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
                   <path d="M8 12L11 15L16 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-              </div>
+              </span>
               <span>المساهمة في حل مشكلات الطلاب اليمنيين</span>
             </li>
             <li>
-              <div class="goal-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <span class="goal-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
                   <path d="M8 12L11 15L16 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-              </div>
+              </span>
               <span>تمثيلهم أكاديميًا واجتماعيًا</span>
             </li>
             <li>
-              <div class="goal-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <span class="goal-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
                   <path d="M8 12L11 15L16 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-              </div>
+              </span>
               <span>تنظيم الأنشطة والفعاليات</span>
             </li>
             <li>
-              <div class="goal-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <span class="goal-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
                   <path d="M8 12L11 15L16 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-              </div>
+              </span>
               <span>إنشاء جسر تواصل بين الطلاب والمؤسسات</span>
             </li>
           </ul>
         </div>
-        <div class="vision-image">
-          <img src="assets/about/vision_image.webp" alt="رؤية الاتحاد">
+        <div class="about-vision__image">
+          <img src="assets/about/vision_image.webp" alt="رؤية الاتحاد" />
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Section 3: Organizational Structure - Administrative -->
-  <section class="about-section structure-section" *ngIf="currentPeriodTeam">
-    <div class="section-header">
-      <h2>الهيكل التنظيمي الحالي ({{ currentPeriod }})</h2>
-      <div class="section-underline"></div>
-    </div>
-    <div class="section-content">
-      <!-- Administrative Team Section -->
-      <div class="team-section" *ngIf="currentPeriodTeam.administrativeMembers.length > 0">
-        <div class="team-header">
-          <h3 class="team-title">الهيئة الإدارية للاتحاد العام</h3>
-          <div class="team-title-underline"></div>
+  <!-- ── Current Team ─────────────────────────────────────── -->
+  <section class="team-section" *ngIf="currentPeriodTeam">
+    <div class="container">
+      <div class="section-label section-label--centered">
+        <span class="section-label__line"></span>
+        <h2 class="section-title">الهيكل التنظيمي الحالي ({{ currentPeriod }})</h2>
+        <span class="section-label__line"></span>
+      </div>
+
+      <!-- Administrative team -->
+      <div class="team-block" *ngIf="currentPeriodTeam.administrativeMembers.length > 0">
+        <div class="team-block__header">
+          <h3>الهيئة الإدارية للاتحاد العام</h3>
         </div>
-        
-        <!-- Administrative Leadership -->
-        <div class="leadership-row">
-          <div class="member-card" *ngFor="let member of getAdministrativeLeaders()">
-            <div class="member-image">
-              <img [src]="member.imageUrl" [alt]="member.name">
+        <div class="leadership-row" *ngIf="getAdministrativeLeaders().length > 0">
+          <div class="member-card member-card--leader" *ngFor="let member of getAdministrativeLeaders()">
+            <div class="member-card__image">
+              <img [src]="member.imageUrl" [alt]="member.name" loading="lazy" />
             </div>
-            <div class="member-info">
-              <h4 class="member-name">{{ member.name }}</h4>
-              <div class="member-role">{{ member.position }}</div>
+            <div class="member-card__info">
+              <h4 class="member-card__name">{{ member.name }}</h4>
+              <span class="member-card__role">{{ member.position }}</span>
             </div>
           </div>
         </div>
-        
-        <!-- Other Administrative Members -->
-        <div class="members-grid">
+        <div class="members-grid" *ngIf="getAdministrativeOtherMembers().length > 0">
           <div class="member-card" *ngFor="let member of getAdministrativeOtherMembers()">
-            <div class="member-image">
-              <img [src]="member.imageUrl" [alt]="member.name">
+            <div class="member-card__image">
+              <img [src]="member.imageUrl" [alt]="member.name" loading="lazy" />
             </div>
-            <div class="member-info">
-              <h4 class="member-name">{{ member.name }}</h4>
-              <div class="member-role">{{ member.position }}</div>
+            <div class="member-card__info">
+              <h4 class="member-card__name">{{ member.name }}</h4>
+              <span class="member-card__role">{{ member.position }}</span>
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- Supervisory Team Section -->
-      <div class="team-section supervisory-section" *ngIf="currentPeriodTeam.supervisoryMembers.length > 0">
-        <div class="team-header">
-          <h3 class="team-title">هيئة الرقابة والتفتيش</h3>
-          <div class="team-title-underline"></div>
+
+      <!-- Supervisory team -->
+      <div class="team-block team-block--supervisory" *ngIf="currentPeriodTeam.supervisoryMembers.length > 0">
+        <div class="team-block__header">
+          <h3>هيئة الرقابة والتفتيش</h3>
         </div>
-        
-        <!-- Supervisory Leadership -->
-        <div class="leadership-row">
-          <div class="member-card" *ngFor="let member of getSupervisoryLeaders()">
-            <div class="member-image">
-              <img [src]="member.imageUrl" [alt]="member.name">
+        <div class="leadership-row" *ngIf="getSupervisoryLeaders().length > 0">
+          <div class="member-card member-card--leader" *ngFor="let member of getSupervisoryLeaders()">
+            <div class="member-card__image">
+              <img [src]="member.imageUrl" [alt]="member.name" loading="lazy" />
             </div>
-            <div class="member-info">
-              <h4 class="member-name">{{ member.name }}</h4>
-              <div class="member-role">{{ member.position }}</div>
+            <div class="member-card__info">
+              <h4 class="member-card__name">{{ member.name }}</h4>
+              <span class="member-card__role">{{ member.position }}</span>
             </div>
           </div>
         </div>
-        
-        <!-- Other Supervisory Members -->
-        <div class="members-grid">
+        <div class="members-grid" *ngIf="getSupervisoryOtherMembers().length > 0">
           <div class="member-card" *ngFor="let member of getSupervisoryOtherMembers()">
-            <div class="member-image">
-              <img [src]="member.imageUrl" [alt]="member.name">
+            <div class="member-card__image">
+              <img [src]="member.imageUrl" [alt]="member.name" loading="lazy" />
             </div>
-            <div class="member-info">
-              <h4 class="member-name">{{ member.name }}</h4>
-              <div class="member-role">{{ member.position }}</div>
+            <div class="member-card__info">
+              <h4 class="member-card__name">{{ member.name }}</h4>
+              <span class="member-card__role">{{ member.position }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-  
-  <!-- Section 4: Historical Periods -->
-  <section class="about-section historical-section" *ngIf="historicalPeriods.length > 0">
-    <div class="section-header">
-      <h2>الهيئات السابقة</h2>
-      <div class="section-underline"></div>
-    </div>
-    <div class="section-content">
-      <div class="historical-periods">
-        <div class="period-dropdown" *ngFor="let periodTeam of historicalPeriods">
-          <button class="period-toggle" (click)="togglePeriodExpansion(periodTeam.period)">
+
+  <!-- ── Historical Periods ───────────────────────────────── -->
+  <section class="historical-section" *ngIf="historicalPeriods.length > 0">
+    <div class="container">
+      <div class="section-label section-label--centered">
+        <span class="section-label__line"></span>
+        <h2 class="section-title">الهيئات السابقة</h2>
+        <span class="section-label__line"></span>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion__item" *ngFor="let periodTeam of historicalPeriods">
+          <button class="accordion__toggle" (click)="togglePeriodExpansion(periodTeam.period)">
             <span>الهيكل التنظيمي ({{ periodTeam.period }})</span>
-            <svg class="toggle-icon" [class.expanded]="isPeriodExpanded(periodTeam.period)" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="accordion__icon" [class.open]="isPeriodExpanded(periodTeam.period)"
+              width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-          
-          <div class="period-content" [class.expanded]="isPeriodExpanded(periodTeam.period)">
-            <!-- Administrative Team Section -->
-            <div class="team-section" *ngIf="periodTeam.administrativeMembers.length > 0">
-              <div class="team-header">
-                <h3 class="team-title">الهيئة الإدارية للاتحاد العام</h3>
-                <div class="team-title-underline"></div>
+
+          <div class="accordion__content" [class.open]="isPeriodExpanded(periodTeam.period)">
+            <div class="team-block" *ngIf="periodTeam.administrativeMembers.length > 0">
+              <div class="team-block__header team-block__header--sm">
+                <h4>الهيئة الإدارية للاتحاد العام</h4>
               </div>
-              
-              <!-- Administrative Leadership -->
               <div class="leadership-row" *ngIf="hasHistoricalAdministrativeLeaders(periodTeam)">
-                <div class="member-card" *ngFor="let member of getHistoricalAdministrativeLeaders(periodTeam)">
-                  <div class="member-image">
-                    <img [src]="member.imageUrl" [alt]="member.name">
-                  </div>
-                  <div class="member-info">
-                    <h4 class="member-name">{{ member.name }}</h4>
-                    <div class="member-role">{{ member.position }}</div>
+                <div class="member-card member-card--leader" *ngFor="let member of getHistoricalAdministrativeLeaders(periodTeam)">
+                  <div class="member-card__image"><img [src]="member.imageUrl" [alt]="member.name" loading="lazy" /></div>
+                  <div class="member-card__info">
+                    <h4 class="member-card__name">{{ member.name }}</h4>
+                    <span class="member-card__role">{{ member.position }}</span>
                   </div>
                 </div>
               </div>
-              
-              <!-- Other Administrative Members -->
               <div class="members-grid">
                 <div class="member-card" *ngFor="let member of getHistoricalAdministrativeOtherMembers(periodTeam)">
-                  <div class="member-image">
-                    <img [src]="member.imageUrl" [alt]="member.name">
-                  </div>
-                  <div class="member-info">
-                    <h4 class="member-name">{{ member.name }}</h4>
-                    <div class="member-role">{{ member.position }}</div>
+                  <div class="member-card__image"><img [src]="member.imageUrl" [alt]="member.name" loading="lazy" /></div>
+                  <div class="member-card__info">
+                    <h4 class="member-card__name">{{ member.name }}</h4>
+                    <span class="member-card__role">{{ member.position }}</span>
                   </div>
                 </div>
               </div>
             </div>
-            
-            <!-- Supervisory Team Section -->
-            <div class="team-section supervisory-section" *ngIf="periodTeam.supervisoryMembers.length > 0">
-              <div class="team-header">
-                <h3 class="team-title">هيئة الرقابة والتفتيش</h3>
-                <div class="team-title-underline"></div>
+            <div class="team-block team-block--supervisory" *ngIf="periodTeam.supervisoryMembers.length > 0">
+              <div class="team-block__header team-block__header--sm">
+                <h4>هيئة الرقابة والتفتيش</h4>
               </div>
-              
-              <!-- Supervisory Leadership -->
               <div class="leadership-row" *ngIf="hasHistoricalSupervisoryLeaders(periodTeam)">
-                <div class="member-card" *ngFor="let member of getHistoricalSupervisoryLeaders(periodTeam)">
-                  <div class="member-image">
-                    <img [src]="member.imageUrl" [alt]="member.name">
-                  </div>
-                  <div class="member-info">
-                    <h4 class="member-name">{{ member.name }}</h4>
-                    <div class="member-role">{{ member.position }}</div>
+                <div class="member-card member-card--leader" *ngFor="let member of getHistoricalSupervisoryLeaders(periodTeam)">
+                  <div class="member-card__image"><img [src]="member.imageUrl" [alt]="member.name" loading="lazy" /></div>
+                  <div class="member-card__info">
+                    <h4 class="member-card__name">{{ member.name }}</h4>
+                    <span class="member-card__role">{{ member.position }}</span>
                   </div>
                 </div>
               </div>
-              
-              <!-- Other Supervisory Members -->
               <div class="members-grid">
                 <div class="member-card" *ngFor="let member of getHistoricalSupervisoryOtherMembers(periodTeam)">
-                  <div class="member-image">
-                    <img [src]="member.imageUrl" [alt]="member.name">
-                  </div>
-                  <div class="member-info">
-                    <h4 class="member-name">{{ member.name }}</h4>
-                    <div class="member-role">{{ member.position }}</div>
+                  <div class="member-card__image"><img [src]="member.imageUrl" [alt]="member.name" loading="lazy" /></div>
+                  <div class="member-card__info">
+                    <h4 class="member-card__name">{{ member.name }}</h4>
+                    <span class="member-card__role">{{ member.position }}</span>
                   </div>
                 </div>
               </div>
@@ -256,34 +248,34 @@
       </div>
     </div>
   </section>
-  <!-- Section: About the Website -->
-  <section class="about-section website-section">
-    <div class="section-header">
-      <h2>عن الموقع</h2>
-      <div class="section-underline"></div>
-    </div>
-    <div class="section-content">
+
+  <!-- ── About the Website ────────────────────────────────── -->
+  <section class="website-section">
+    <div class="website-section__bg"></div>
+    <div class="website-section__overlay"></div>
+    <div class="container">
+      <div class="section-label section-label--centered section-label--light">
+        <span class="section-label__line"></span>
+        <h2 class="section-title section-title--light">عن الموقع</h2>
+        <span class="section-label__line"></span>
+      </div>
+
       <div class="website-info">
-        <div class="website-icon">
-          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-          </svg>
-        </div>
-        <p class="website-description">
-            في 10 مايو 2025، وخلال فعاليات المؤتمر العام التاسع لاتحاد الطلبة اليمنيين في ماليزيا، تم إطلاق الموقع الرسمي للاتحاد تحت إشراف الهيئة الإدارية للدورة الثامنة 2023-2025، تجسيداً لرؤية استراتيجية نحو التحول الرقمي وبناء منظومة طلابية عصرية تواكب العصر، وانطلاقاً من إيمان راسخ بأن الدراسة في الخارج ليست مجرد رحلة تعليمية بل تجربة إنسانية مليئة بالتحديات والصعوبات والقرارات المصيرية، فكانت الحاجة إلى منصة رقمية تجمع الطالب اليمني في مكان واحد، تقدم له المعلومة الصحيحة وتسهّل عليه الطريق وتربطه بمجتمعه الطلابي. يحتوي الموقع العديد من الخدمات والمعلومات المتعلقة بالفعاليات والأنشطة الأكاديمية والاجتماعية والثقافية، ويعمل على توثيق نشاطات الاتحاد وأرشفة إنجازات الطلبة بشكل احترافي، ويضم عدة أقسام رئيسية منها الصفحة الرئيسية التي تنقل آخر الأخبار والفعاليات، وقسم من نحن للتعرف على رسالة الاتحاد ورؤيته، ودليل الطالب كمرجع عملي للإجراءات والنصائح الأكاديمية، وقسم الجامعات في ماليزيا، وأخبار الاتحاد، وفروع الاتحاد المنتشرة في مختلف الولايات، ومعرض الصور الذي يوثق مسيرة الطلبة، بالإضافة إلى قسم تواصل معنا للتواصل المباشر مع الاتحاد. يعمل الاتحاد حالياً على تطوير مشروعين نوعيين هما المكتبة الأكاديمية الإلكترونية التي ستوفر للطلبة مصادر علمية ومعرفية تشمل الأبحاث الجامعية والمشاريع والأوراق العلمية في مختلف التخصصات بما يسهم في بناء قاعدة معرفية يمنية موحدة في ماليزيا، ونظام العضوية الإلكتروني الذي سيتيح للطلبة الحصول على بطاقة عضوية رقمية برقم فريد والاستفادة من خصومات حصرية لدى شركاء الاتحاد من مطاعم وخدمات متنوعة أخرى. مرحباً بكم في بيتكم الرقمي الموقع الرسمي لاتحاد الطلبة اليمنيين في ماليزيا.
+        <p class="website-info__text">
+          في 10 مايو 2025، وخلال فعاليات المؤتمر العام التاسع لاتحاد الطلبة اليمنيين في ماليزيا، تم إطلاق الموقع الرسمي للاتحاد تحت إشراف الهيئة الإدارية للدورة الثامنة 2023-2025، تجسيداً لرؤية استراتيجية نحو التحول الرقمي وبناء منظومة طلابية عصرية تواكب العصر.
         </p>
-        <div class="website-details">
-          <div class="detail-item">
-            <span class="detail-label">تاريخ الإنشاء:</span>
-            <span class="detail-value">10 مايو 2025</span>
+        <div class="website-info__details">
+          <div class="website-info__detail">
+            <span class="website-info__label">تاريخ الإنشاء</span>
+            <span class="website-info__value">10 مايو 2025</span>
           </div>
-          <div class="detail-item">
-            <span class="detail-label">الدورة:</span>
-            <span class="detail-value">2023–2025</span>
+          <div class="website-info__detail">
+            <span class="website-info__label">الدورة</span>
+            <span class="website-info__value">2023–2025</span>
           </div>
         </div>
       </div>
     </div>
   </section>
+
 </div>

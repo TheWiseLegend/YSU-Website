@@ -1,919 +1,586 @@
-// src/app/pages/about/about.component.scss
+.about-page {
+  direction: rtl;
+}
 
-// Main container
+// ── Shared section utilities ─────────────────────────────
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 25px 15px 60px;
-  }
-  
-  // LOGO SECTION
-  .logo-section {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1.3rem;
-    margin-top: -90px;
-    position: relative;
-    z-index: 10;
-  }
-  
-  .logo-container {
-    width: 350px;
-    height: 350px;
-    background: white;
-    border-radius: 50%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
-    border: 8px solid rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    position: relative;
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                box-shadow 0.5s ease;
-    
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: 50%;
-      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.1);
-      pointer-events: none;
-    }
-    
-    &:hover {
-      transform: translateY(-12px) scale(1.02);
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), 0 15px 25px rgba(0, 0, 0, 0.1);
-    }
-    
-    .union-logo {
-      width: 85%;
-      height: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.15));
-      transition: transform 0.4s ease;
-      
-      &:hover {
-        transform: scale(1.04);
-      }
-    }
-    
-    @media (max-width: 992px) {
-      width: 320px;
-      height: 320px;
-    }
-    
-    @media (max-width: 768px) {
-      width: 280px;
-      height: 280px;
-      border-width: 6px;
-    }
-    
-    @media (max-width: 576px) {
-      width: 260px;
-      height: 260px;
-    }
-  }
-  
-  // SECTION HEADERS
-  .section-header {
-    margin-bottom: 2.5rem;
-    
-    h2 {
-      color: var(--secondary-color);
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 0.6rem;
-      position: relative;
-      display: inline-block;
-    }
-  }
-  
-  .section-underline {
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(to right, var(--primary-color), var(--primary-color) 100%, rgba(81, 116, 185, 0.5));
-    border-radius: 2px;
-  }
-  
-  .about-title-header {
-    text-align: center;
-    margin-bottom: 3.5rem;
-    
-    .about-main-title {
-      font-size: 2.8rem;
-      font-weight: 800;
-      color: var(--secondary-color);
-      position: relative;
-      display: inline-block;
-      padding-bottom: 0.8rem;
-      letter-spacing: -0.5px;
-    }
-    
-    .section-underline {
-      width: 100px;
-      height: 5px;
-      margin: 0 auto;
-      background: linear-gradient(to right, 
-                  var(--primary-color), 
-                  var(--primary-color) 60%, 
-                  rgba(81, 116, 185, 0.6));
-    }
-  }
-  
-  // CONTENT SECTIONS
-  .about-section {
-    margin-bottom: 5rem;
-    
-    &:last-child {
-      margin-bottom: 2.5rem;
-    }
-  }
-  
-  .section-content {
-    background-color: #fff;
-    border-radius: 16px;
-    padding: 3rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 
-                0 5px 15px rgba(0, 0, 0, 0.04);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    
-    &:hover {
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08), 
-                  0 10px 25px rgba(0, 0, 0, 0.06);
-    }
-    
-    p {
-      margin-bottom: 1.8rem;
-      line-height: 1.9;
-      color: #333;
-      font-size: 1.05rem;
-      
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  
-    h3 {
-      color: var(--secondary-color);
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin: 2.5rem 0 1.2rem;
-    }
-    
-    @media (max-width: 768px) {
-      padding: 2.5rem;
-    }
-    
-    @media (max-width: 576px) {
-      padding: 2rem;
-    }
-  }
-  
-  // Mission section
-  .mission-section {
-    .section-content {
-      border-top: 5px solid var(--primary-color);
-      position: relative;
-      
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        border-radius: 16px 16px 0 0;
-      }
-    }
-  }
-  
-  // Vision section
-  .vision-content {
-    display: flex;
-    gap: 60px;
-    align-items: center;
-    
-    @media (max-width: 992px) {
-      flex-direction: column;
-      gap: 40px;
-    }
-  }
-  
-  .vision-text {
-    flex: 1;
-  }
-  
-  .vision-image {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
-      
-      &:hover {
-        transform: scale(1.02) translateY(-5px);
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
-      }
-    }
-  }
-  
-  // Goals list
-  .goals-list {
-    list-style: none;
-    padding: 0;
-    margin: 2.5rem 0;
-    
-    li {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      margin-bottom: 1.5rem;
-      font-size: 1.05rem;
-      color: #333;
-      padding: 10px 15px;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
-      
-      &:hover {
-        background-color: rgba(81, 116, 185, 0.05);
-      }
-      
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-  
-  .goal-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    background-color: rgba(81, 116, 185, 0.12);
-    color: var(--primary-color);
-    box-shadow: 0 5px 15px rgba(81, 116, 185, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    
-    li:hover & {
-      transform: scale(1.1);
-      box-shadow: 0 8px 20px rgba(81, 116, 185, 0.2);
-    }
-  }
-  
-  // TEAM STRUCTURE
-  .team-section {
-    margin-bottom: 4rem;
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  
-  .supervisory-section {
-    margin-top: 5rem;
-    padding-top: 4rem;
-    position: relative;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 20%;
-      right: 20%;
-      height: 1px;
-      background: linear-gradient(to right, 
-                rgba(234, 234, 234, 0), 
-                rgba(234, 234, 234, 1) 20%, 
-                rgba(234, 234, 234, 1) 80%, 
-                rgba(234, 234, 234, 0));
-    }
-  }
-  
-  .team-header {
-    text-align: center;
-    margin-bottom: 4rem;
-    background: linear-gradient(to bottom, #f8f9fc, rgba(248, 249, 252, 0.6));
-    padding: 2rem 0;
-    border-radius: 16px;
-    border: 1px solid #eaeaea;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
-    position: relative;
-    overflow: hidden;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: linear-gradient(to right, 
-                var(--primary-color),
-                var(--secondary-color));
-    }
-    
-    .team-title {
-      color: var(--secondary-color);
-      font-size: 1.9rem;
-      font-weight: 700;
-      margin-bottom: 0.7rem;
-      display: inline-block;
-      padding: 0.7rem 2.5rem;
-      background-color: #ffffff;
-      border-radius: 30px;
-      border: 1px solid #e0e8f5;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-      position: relative;
-      z-index: 1;
-    }
-    
-    .team-title-underline {
-      width: 60px;
-      height: 4px;
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      border-radius: 2px;
-      margin: 1rem auto 0;
-    }
-  }
-  
-  // Leadership row
-  .leadership-row {
-    display: flex;
-    justify-content: center;
-    gap: 60px;
-    margin-bottom: 4rem;
-    
-    @media (max-width: 1200px) {
-      gap: 50px;
-    }
-    
-    @media (max-width: 992px) {
-      gap: 40px;
-    }
-    
-    @media (max-width: 768px) {
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
-    }
-    
-    .member-card {
-      width: 300px;
-      transform: translateY(0);
-      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      
-      &:hover {
-        transform: translateY(-15px);
-      }
-      
-      @media (max-width: 1200px) {
-        width: 280px;
-      }
-      
-      @media (max-width: 992px) {
-        width: 240px;
-      }
-      
-      @media (max-width: 768px) {
-        width: 100%;
-        max-width: 300px;
-      }
-      
-      .member-image {
-        padding-top: 130%; // Higher aspect ratio for leadership
-        border-radius: 12px 12px 0 0;
-        
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 40%;
-          background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
-          z-index: 1;
-          opacity: 0.8;
-          transition: opacity 0.3s ease;
-        }
-        
-        .member-card:hover &::after {
-          opacity: 0.9;
-        }
-      }
-      
-      .member-info {
-        padding: 22px 15px;
-        border-top: 4px solid var(--primary-color);
-      }
-      
-      .member-name {
-        font-size: 1.3rem;
-        margin-bottom: 10px;
-      }
-      
-      .member-role {
-        font-size: 0.95rem;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        padding: 7px 18px;
-        background: linear-gradient(to right, var(--secondary-color), darken(#2e3a4d, 10%));
-      }
-    }
-  }
-  
-  // Members grid
-  .members-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 35px;
-    
-    @media (max-width: 1200px) {
-      gap: 30px;
-    }
-    
-    @media (max-width: 992px) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 30px;
-    }
-    
-    @media (max-width: 576px) {
-      grid-template-columns: 1fr;
-      gap: 30px;
-    }
-    
-    .member-card {
-      height: 100%;
-      transform: translateY(0);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      
-      &:hover {
-        transform: translateY(-12px);
-      }
-      
-      .member-image {
-        padding-top: 100%; 
-        border-radius: 12px 12px 0 0;
-      }
-    }
-  }
-  
-  // Member card components
-  .member-card {
-    background-color: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 
-                0 5px 15px rgba(0, 0, 0, 0.04);
-    transition: box-shadow 0.4s ease;
-    border: 1px solid rgba(240, 240, 240, 0.9);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    
-    &:hover {
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12), 
-                  0 10px 25px rgba(0, 0, 0, 0.08);
-      border-color: rgba(224, 224, 224, 0.9);
-    }
-  }
-  
-  .member-image {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    
-    img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      object-position: center top; 
-      transition: transform 0.6s ease;
-    }
-    
-    .member-card:hover & img {
-      transform: scale(1.08);
-    }
-  }
-  
-  .member-info {
-    padding: 20px 15px;
-    text-align: center;
-    border-top: 4px solid var(--primary-color);
-    background-color: #fff;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  .member-name {
-    color: var(--secondary-color);
-    font-size: 1.15rem;
-    font-weight: 600;
-    margin-bottom: 12px;
-    line-height: 1.4;
-  }
-  
-  .member-role {
-    display: inline-block;
-    color: white;
-    background-color: var(--secondary-color);
-    font-size: 0.9rem;
-    padding: 6px 16px;
-    border-radius: 30px;
-    margin-bottom: 0;
-    box-shadow: 0 4px 12px rgba(46, 58, 77, 0.2);
-  }
-  
-  // RESPONSIVE ADJUSTMENTS
-  @media (max-width: 992px) {
-    .about-title-header .about-main-title {
-      font-size: 2.5rem;
-    }
-    
-    .section-header h2 {
-      font-size: 2rem;
-    }
-    
-    .team-header .team-title {
-      font-size: 1.7rem;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .about-title-header .about-main-title {
-      font-size: 2.2rem;
-    }
-    
-    .section-header h2 {
-      font-size: 1.8rem;
-    }
-    
-    .section-content h3 {
-      font-size: 1.4rem;
-    }
-    
-    .team-header .team-title {
-      font-size: 1.5rem;
-      padding: 0.6rem 1.8rem;
-    }
-    
-    .goals-list li {
-      padding: 8px 12px;
-    }
-    
-    .goal-icon {
-      min-width: 42px;
-      height: 42px;
-    }
-  }
-  
-  @media (max-width: 576px) {
-    .about-section {
-      margin-bottom: 4rem;
-    }
-    
-    .about-title-header .about-main-title {
-      font-size: 2rem;
-    }
-    
-    .section-header h2 {
-      font-size: 1.6rem;
-    }
-    
-    .section-content h3 {
-      font-size: 1.3rem;
-    }
-    
-    .team-header {
-      padding: 1.5rem 0;
-    }
-    
-    .team-header .team-title {
-      font-size: 1.4rem;
-      padding: 0.5rem 1.5rem;
-    }
-    
-    .goals-list li {
-      font-size: 1rem;
-    }
-    
-    .goal-icon {
-      min-width: 38px;
-      height: 38px;
-    }
-  }
-
-.loading-state, .error-state, .no-members {
-  text-align: center;
-  padding: 40px;
-  background-color: white;
-  border-radius: 12px;
-  margin: 30px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-.loading-state {
-  color: #6c757d;
+// Section label: lines on both sides of the title
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+
+  &--centered { justify-content: center; }
+
+  &--light {
+    .section-label__line { background: var(--gold); }
+    .section-title { color: #fff; }
+  }
 }
 
-.error-state {
-  color: #721c24;
+.section-label__line {
+  flex: 1;
+  height: 2px;
+  background: var(--primary-light);
+  max-width: 80px;
+  border-radius: 2px;
 }
 
-.spinner {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  margin-bottom: 20px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
+.section-title {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.15;
+  margin: 0; // title is inline inside section-label flex row
+  white-space: nowrap;
+
+  &--light { color: #fff; }
+}
+
+// ── Mission Section ──────────────────────────────────────
+.about-mission {
+  padding: 80px 0;
+  background: var(--bg-card);
+}
+
+.about-mission__grid {
+  display: grid;
+  // RTL: text on left (col 1), emblem on right (col 2)
+  grid-template-columns: 7fr 5fr;
+  gap: 80px;
+  align-items: center;
+  direction: rtl;
+}
+
+.about-mission__copy {
+  // section-label inside copy — left-align the lines+title
+  .section-label {
+    justify-content: flex-start;
+    margin-bottom: 24px;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 28px 0 12px;
+  }
+
+  p {
+    color: var(--text-muted);
+    line-height: 1.85;
+    font-size: 1.02rem;
+    margin-bottom: 16px;
+  }
+}
+
+// Emblem (reuse home page pattern)
+.about-emblem {
+  position: relative;
+  width: min(360px, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+.about-emblem__ring {
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
-  border-top-color: var(--primary-color);
-  animation: spin 1s ease-in-out infinite;
-}
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+  &--outer {
+    border: 1px solid rgba(81, 116, 185, 0.2);
+    animation: spin-slow 40s linear infinite;
+  }
 
-.error-icon {
-  display: inline-block;
-  width: 60px;
-  height: 60px;
-  margin-bottom: 15px;
-  color: #dc3545;
-}
-
-.no-members {
-  color: #6c757d;
-  font-style: italic;
-}
-
-// Historical Periods Styles
-.historical-section {
-  .section-content {
-    padding: 2rem 0;
+  &--dashed {
+    inset: 24px;
+    border: 1px dashed rgba(81, 116, 185, 0.15);
   }
 }
 
-.historical-periods {
-  .period-dropdown {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-    overflow: auto;
-    border: 1px solid #e5e7eb;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    }
+.about-emblem__glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(81, 116, 185, 0.15), transparent 70%);
+  filter: blur(24px);
+}
+
+.about-emblem__circle {
+  position: absolute;
+  inset: 40px;
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-elegant);
+  overflow: hidden;
+  border: 1px solid var(--border);
+
+  img {
+    width: 82%;
+    height: 82%;
+    object-fit: contain;
   }
-  
-  .period-toggle {
+}
+
+.about-badge {
+  position: absolute;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &--est {
+    top: 16px;
+    left: -8px;
+    background: #fff;
+    color: var(--ink);
+    border: 1px solid var(--border);
+  }
+
+  &--nonprofit {
+    bottom: 24px;
+    right: -8px;
+    background: var(--gold);
+    color: var(--ink);
+  }
+}
+
+.about-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+// ── Vision Section ───────────────────────────────────────
+.about-vision {
+  padding: 80px 0;
+  background: var(--bg-muted);
+}
+
+.about-vision__grid {
+  display: grid;
+  // RTL: text on left (col 1), image on right (col 2)
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  direction: rtl;
+}
+
+.about-vision__text {
+  p {
+    color: var(--text-muted);
+    line-height: 1.85;
+    font-size: 1.02rem;
+    margin-bottom: 24px;
+  }
+}
+
+.about-vision__image {
+  img {
     width: 100%;
-    padding: 1.5rem 2rem;
-    background-color: #f8f9fc;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--secondary-color);
-    transition: all 0.3s ease;
-    
-    &:hover {
-      background-color: #f1f3f7;
-      color: var(--primary-color);
-    }
-    
-    span {
-      text-align: right;
-    }
-    
-    .toggle-icon {
-      color: var(--primary-color);
-      transition: transform 0.3s ease;
-      
-      &.expanded {
-        transform: rotate(180deg);
-      }
-    }
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elegant);
+    object-fit: cover;
+    aspect-ratio: 4/3;
+    transition: transform 0.4s ease;
+
+    &:hover { transform: scale(1.02) translateY(-4px); }
   }
-  
-  .period-content {
-    max-height: 0;
-    overflow: auto;
-    transition: max-height 0.5s ease;
-    padding: 0 2rem;
-    
-    &.expanded {
-      max-height: 2000px;
-      padding: 2rem;
+}
+
+.goals-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    font-size: 1rem;
+    color: var(--text);
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: var(--primary-light);
+      background: rgba(81, 116, 185, 0.04);
+      transform: translateX(-4px);
     }
   }
 }
 
-// Website Section Styles
+.goal-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(81, 116, 185, 0.1);
+  color: var(--primary-light);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+// ── Team Section ─────────────────────────────────────────
+.team-section {
+  padding: 80px 0;
+  background: var(--bg-card);
+}
+
+.team-block {
+  margin-bottom: 64px;
+
+  &:last-child { margin-bottom: 0; }
+
+  &--supervisory {
+    padding-top: 64px;
+    border-top: 1px solid var(--border);
+  }
+}
+
+.team-block__header {
+  text-align: center;
+  margin-bottom: 48px;
+
+  h3 {
+    display: inline-block;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    padding: 12px 32px;
+    border-radius: var(--radius-full);
+    background: var(--bg-muted);
+    border: 1px solid var(--border);
+  }
+
+  &--sm h4 {
+    display: inline-block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    padding: 8px 24px;
+    border-radius: var(--radius-full);
+    background: var(--bg-muted);
+    border: 1px solid var(--border);
+  }
+}
+
+// Leadership row
+.leadership-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+
+// Members grid
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+// Member card
+.member-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-elegant);
+  }
+
+  &--leader {
+    width: 260px;
+    flex-shrink: 0;
+  }
+}
+
+.member-card__image {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg-muted);
+
+  // Square ratio for grid cards
+  padding-top: 100%;
+
+  .member-card--leader & {
+    padding-top: 120%; // portrait for leaders
+  }
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.6s ease;
+  }
+
+  .member-card:hover & img {
+    transform: scale(1.06);
+  }
+}
+
+.member-card__info {
+  padding: 18px 16px;
+  text-align: center;
+  border-top: 3px solid var(--primary-light);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.member-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.member-card__role {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--secondary);
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+}
+
+// ── Historical Section ───────────────────────────────────
+.historical-section {
+  padding: 80px 0;
+  background: var(--bg-muted);
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accordion__item {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.accordion__toggle {
+  width: 100%;
+  padding: 20px 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  direction: rtl;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: var(--bg-muted);
+    color: var(--primary-light);
+  }
+}
+
+.accordion__icon {
+  color: var(--primary-light);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+
+  &.open { transform: rotate(180deg); }
+}
+
+.accordion__content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  padding: 0 24px;
+
+  &.open {
+    max-height: 3000px;
+    padding: 24px;
+  }
+}
+
+// ── Website Section ──────────────────────────────────────
 .website-section {
-  margin-top: 5rem;
-  
-  .section-content {
-    background-image: url('/assets/about/general_Assembly_meeting.jpg');
-    background-size: cover;
-    background-position: center;
-    border: 1px solid #e5e7eb;
-    position: relative;
-    overflow: hidden;
-    
-    // Top gradient bar (unchanged)
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      z-index: 2;
-    }
+  position: relative;
+  padding: 96px 0;
+  overflow: hidden;
 
-    // Dark overlay using ::after
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-color: rgba(45, 62, 95, 0.91);
-      z-index: 1;
-    }
+  .container { position: relative; z-index: 2; }
+}
 
-    // Push all content above the overlay
-    .website-info {
-      position: relative;
-      z-index: 3;
-    }
-  }
+.website-section__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/assets/about/general_Assembly_meeting.jpg');
+  background-size: cover;
+  background-position: center;
+}
 
-  .section-header h2 {
-    color: var(--secondary-color);
-  }
-
-  .section-underline {
-    background: linear-gradient(to right,var(--primary-color),var(--primary-color) 100%,rgba(81,116,185,.5));
-  }
+.website-section__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 30, 48, 0.88);
+  z-index: 1;
 }
 
 .website-info {
+  max-width: 760px;
+  margin: 0 auto;
   text-align: center;
-  
-  .website-icon {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2rem;
-    
-    svg {
-      width: 80px;
-      height: 80px;
-      color: #fff;
-      padding: 15px;
-      background-color: rgba(255, 255, 255, 0.15);
-      border-radius: 50%;
-      box-shadow: 0 10px 25px rgba(81, 116, 185, 0.15);
-      transition: all 0.3s ease;
-      
-      &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(81, 116, 185, 0.2);
-      }
-    }
+}
+
+.website-info__text {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.9;
+  font-size: 1.05rem;
+  margin-bottom: 40px;
+}
+
+.website-info__details {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.website-info__detail {
+  padding: 16px 28px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  text-align: center;
+  transition: background 0.3s ease;
+
+  &:hover { background: rgba(255, 255, 255, 0.14); }
+}
+
+.website-info__label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.website-info__value {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+// ── Responsive ───────────────────────────────────────────
+@media (max-width: 1024px) {
+  .about-mission__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    // On mobile: emblem on top, text below
+    direction: ltr; // reset so emblem (2nd in HTML) goes below text
   }
-  
-  .website-description {
-    font-size: 1.1rem;
-    line-height: 2;
-    color: #fff;
-    margin-bottom: 3rem;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-    
-    &::before, &::after {
-      content: '"';
-      font-size: 3rem;
-      color: var(--primary-color);
-      position: absolute;
-      opacity: 0.2;
-    }
-    
-    &::before {
-      top: -20px;
-      right: -30px;
-    }
-    
-    &::after {
-      bottom: -40px;
-      left: -30px;
-      transform: rotate(180deg);
-    }
+
+  .about-emblem {
+    width: min(300px, 80%);
+    margin: 0 auto;
   }
-  
-  .website-details {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 2.5rem;
-    
-    .detail-item {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 1.2rem 2rem;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s ease;
-      
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.15);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(81, 116, 185, 0.1);
-      }
-      
-      .detail-label {
-        display: block;
-        font-weight: 600;
-        color: #fff;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-      }
-      
-      .detail-value {
-        display: block;
-        color: rgba(255, 255, 255, 0.85);
-        font-size: 1.1rem;
-        font-weight: 700;
-      }
-    }
+
+  .about-vision__grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    direction: ltr; // image (2nd in HTML) goes below text
+  }
+
+  .members-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-// Responsive adjustments 
 @media (max-width: 768px) {
-  .website-info {
-    .website-icon svg {
-      width: 60px;
-      height: 60px;
-    }
-    
-    .website-description {
-      font-size: 1rem;
-      padding: 0 1rem;
-      
-      &::before, &::after {
-        display: none;
-      }
-    }
-    
-    .website-details {
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      
-      .detail-item {
-        width: 100%;
-        max-width: 300px;
-        text-align: center;
-      }
-    }
+  .about-mission,
+  .about-vision,
+  .team-section,
+  .historical-section,
+  .website-section {
+    padding: 56px 0;
+  }
+
+  .leadership-row {
+    gap: 24px;
+  }
+
+  .member-card--leader {
+    width: 220px;
+  }
+
+  .members-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 }
 
 @media (max-width: 576px) {
-  .website-section {
-    margin-top: 3rem;
+  .members-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .website-info {
-    .website-details {
-      .detail-item {
-        padding: 1rem 1.5rem;
-      }
-    }
+
+  .leadership-row {
+    flex-direction: column;
+    align-items: center;
   }
+
+  .member-card--leader {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .about-badge--est { left: 0; }
+  .about-badge--nonprofit { right: 0; }
+}
+
+// ── Animations ───────────────────────────────────────────
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
 }

@@ -1,54 +1,156 @@
+/* Import RTL font */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Tajawal', Arial, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    direction: rtl;
-    text-align: justify;
-  }
-  
-  /* Container */
-  .container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
-  }
-  
-  /* Main theme colors */
-  :root {
-    --primary-color: #5174b9; 
-    --secondary-color: #2d3e5f; 
-    --text-color: #333333;
-    --light-gray: #f0f4f9;
-    --border-color: #d8e0ed;
-  }
-  
-  /* Import RTL font */
-  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  // Prevent content layout shifts
-  img[loading="lazy"] {
-    min-height: 1px;
-  }
+/* ─── Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Brand palette */
+  --primary:        #3d5fa8;
+  --primary-light:  #5174b9;
+  --primary-glow:   #7a9dd4;
+  --secondary:      #1e2d4a;   /* deep navy — used as dark section bg */
+  --ink:            #141e30;   /* near-black for text on light */
+  --gold:           #c9a84c;   /* accent gold */
+  --accent:         #c0392b;   /* Yemen red accent */
 
+  /* Legacy aliases — keep old pages working */
+  --primary-color:   #5174b9;
+  --secondary-color: #1e2d4a;
+  --text-color:      #1e2d4a;
+  --light-gray:      #f0f4f9;
+  --border-color:    #dde4ef;
+
+  /* Surfaces */
+  --bg:             #f8f9fc;
+  --bg-card:        #ffffff;
+  --bg-muted:       #f0f4f9;
+
+  /* Text */
+  --text:           #1e2d4a;
+  --text-muted:     #5a6a82;
+  --text-light:     #8a9ab5;
+
+  /* Borders */
+  --border:         #dde4ef;
+
+  /* Shadows */
+  --shadow-card:    0 8px 30px -8px rgba(20, 30, 48, 0.12);
+  --shadow-elegant: 0 24px 60px -16px rgba(20, 30, 48, 0.22);
+  --shadow-glow:    0 0 50px rgba(81, 116, 185, 0.28);
+
+  /* Radius */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  28px;
+  --radius-full: 9999px;
+}
+
+/* ─── Keyframes ─────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ken-burns {
+  0%   { transform: scale(1)    translate(0, 0); }
+  100% { transform: scale(1.10) translate(-1%, 1%); }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Base ──────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Tajawal', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--bg);
+  direction: rtl;
+  text-align: right;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+img[loading="lazy"] {
+  min-height: 1px;
+}
+
+/* ─── Layout ────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ─── Patterns ──────────────────────────────────────────────── */
+.bg-mashrabiya {
+  background-image: radial-gradient(
+    circle at 1.5px 1.5px,
+    rgba(81, 116, 185, 0.25) 1px,
+    transparent 0
+  );
+  background-size: 28px 28px;
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(to right,  rgba(20, 30, 48, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(20, 30, 48, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ─── Layout host fixes ─────────────────────────────────── */
+// Navbar host must not take up flow space (it's position: fixed inside)
+app-navbar {
+  display: block !important;
+  height: 0 !important;
+  overflow: visible !important;
+  position: relative;
+  z-index: 1000;
+}
+
+/* ─── Navbar overrides (mobile) ─────────────────────────── */
 @media (max-width: 991px) {
   .navbar .nav-links.active ul li a {
     color: #333 !important;
     background-color: #fff !important;
-    
+
     &:hover, &.active {
-      color: #5174b9 !important;
+      color: var(--primary-light) !important;
       background-color: rgba(81, 116, 185, 0.1) !important;
     }
   }

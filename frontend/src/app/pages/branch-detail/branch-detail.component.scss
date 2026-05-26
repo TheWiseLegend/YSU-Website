@@ -79,7 +79,7 @@
   display: flex;
   justify-content: center;
   margin-bottom: 3.0rem;
-  margin-top: -90px;
+  margin-top: -20px; // reduced — page-header now handles spacing via margin-bottom
   position: relative;
   z-index: 10;
 }

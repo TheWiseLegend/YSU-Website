@@ -1,36 +1,33 @@
-<nav class="navbar">
+<nav class="navbar" [class.scrolled]="isScrolled || forceSolid" [class.menu-open]="isMenuOpen">
   <div class="container">
     <div class="navbar-content">
 
+      <!-- Hamburger (mobile) -->
       <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle mobile menu">
         <span></span>
         <span></span>
         <span></span>
       </button>
 
+      <!-- Logo -->
       <div class="logo">
         <a routerLink="/">
           <img src="/logo/ysu_logo_cropped.webp" alt="اتحاد الطلبة اليمنيين في ماليزيا" />
         </a>
       </div>
 
+      <!-- Desktop nav links -->
       <div class="nav-links" [class.active]="isMenuOpen">
         <ul>
-          <!-- Mobile only: membership link -->
-          <li class="mobile-only">
-            <a routerLink="/membership" routerLinkActive="active" (click)="isMenuOpen = false">العضوية</a>
-          </li>
-
-          <!-- Always visible links -->
           <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMenuOpen = false">الرئيسية</a></li>
           <li><a routerLink="/news" routerLinkActive="active" (click)="isMenuOpen = false">أخبار الإتحاد</a></li>
           <li><a routerLink="/branches" routerLinkActive="active" (click)="isMenuOpen = false">الفروع</a></li>
           <li><a routerLink="/verify" routerLinkActive="active" (click)="isMenuOpen = false">التحقق من العضوية</a></li>
           <li><a routerLink="/about" routerLinkActive="active" (click)="isMenuOpen = false">من نحن</a></li>
 
-          <!-- Desktop: More dropdown -->
+          <!-- Desktop: hover dropdown -->
           <li class="more-dropdown-wrapper desktop-only">
-            <button class="more-btn">
+            <button class="more-btn" (click)="toggleMore($event)">
               المزيد
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -44,14 +41,34 @@
               <li><a routerLink="/contact" routerLinkActive="active" (click)="closeMore()">تواصل معنا</a></li>
             </ul>
           </li>
-
-          <!-- Mobile only: show all links flat (no dropdown) -->
-          <li class="mobile-only"><a routerLink="/student-guide" routerLinkActive="active" (click)="isMenuOpen = false">دليل الطالب</a></li>
-          <li class="mobile-only"><a routerLink="/universities" routerLinkActive="active" (click)="isMenuOpen = false">الجامعات</a></li>
-          <li class="mobile-only"><a routerLink="/gallery" routerLinkActive="active" (click)="isMenuOpen = false">الصور</a></li>
-          <li class="mobile-only"><a routerLink="/digital-library" routerLinkActive="active" (click)="isMenuOpen = false">المكتبة الرقمية</a></li>
-          <li class="mobile-only"><a routerLink="/contact" routerLinkActive="active" (click)="isMenuOpen = false">تواصل معنا</a></li>
         </ul>
+
+        <!-- Mobile-only section: accordion "المزيد" + membership pill -->
+        <div class="mobile-extra">
+          <!-- Accordion toggle -->
+          <button class="mobile-more-btn" (click)="toggleMobileMore($event)">
+            <span>المزيد</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+              [style.transform]="isMobileMoreOpen ? 'rotate(180deg)' : 'rotate(0deg)'"
+              style="transition: transform 0.3s ease">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <!-- Accordion content -->
+          <div class="mobile-more-content" [class.open]="isMobileMoreOpen">
+            <a routerLink="/student-guide" routerLinkActive="active" (click)="isMenuOpen = false">دليل الطالب</a>
+            <a routerLink="/universities" routerLinkActive="active" (click)="isMenuOpen = false">الجامعات</a>
+            <a routerLink="/gallery" routerLinkActive="active" (click)="isMenuOpen = false">الصور</a>
+            <a routerLink="/digital-library" routerLinkActive="active" (click)="isMenuOpen = false">المكتبة الرقمية</a>
+            <a routerLink="/contact" routerLinkActive="active" (click)="isMenuOpen = false">تواصل معنا</a>
+          </div>
+
+          <!-- Membership pill at bottom of mobile menu -->
+          <a routerLink="/membership" class="mobile-membership-btn" (click)="isMenuOpen = false">
+            العضوية
+          </a>
+        </div>
       </div>
 
       <!-- Desktop: Membership CTA -->

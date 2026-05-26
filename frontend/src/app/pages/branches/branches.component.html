@@ -1,60 +1,61 @@
-<!-- src/app/pages/branches/branches.component.html -->
 <app-page-header titleFirst="فروع" titleSecond=" الإتحاد"></app-page-header>
 
-<div class="container">
-  <section class="branches-section">
-    <div class="section-header">
-      <h2>فروع اتحاد الطلبة اليمنيين في ماليزيا</h2>
-      <div class="section-underline"></div>
-      <p class="section-description">
+<div class="branches-page">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="branches-page__header">
+      <div class="section-label section-label--centered">
+        <span class="section-label__line"></span>
+        <h2 class="section-title">فروع الاتحاد</h2>
+        <span class="section-label__line"></span>
+      </div>
+      <p class="branches-page__subtitle">
         يمتلك اتحاد الطلبة اليمنيين في ماليزيا فروعاً في معظم الجامعات الماليزية التي يدرس فيها طلاب يمنيون
       </p>
     </div>
-    
-    <!-- Loading state -->
-    <div class="loading-state" *ngIf="isLoading">
+
+    <!-- Loading -->
+    <div class="state-block" *ngIf="isLoading">
       <div class="spinner"></div>
       <p>جاري تحميل الفروع...</p>
     </div>
-    
-    <!-- Error state -->
-    <div class="error-state" *ngIf="errorMessage && !isLoading">
-      <p>{{ errorMessage }}</p>
+
+    <!-- Error -->
+    <div class="state-block" *ngIf="errorMessage && !isLoading">
+      <p>لا تتوفر بيانات الفروع في الوقت الحالي</p>
     </div>
-    
+
     <div *ngIf="!isLoading && !errorMessage">
-      <!-- City Filter -->
-      <div class="filter-container">
-        <div class="city-filter">
-          <label for="citySelect">تصفية حسب المدينة:</label>
-          <select 
-            id="citySelect" 
-            [(ngModel)]="selectedCity" 
-            (change)="filterByCity(selectedCity)"
-            class="filter-select">
-            <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
-          </select>
-        </div>
+
+      <!-- City filter -->
+      <div class="filter-bar">
+        <button
+          *ngFor="let city of cities"
+          class="filter-btn"
+          [class.active]="selectedCity === city"
+          (click)="filterByCity(city)">
+          {{ city }}
+        </button>
       </div>
-      
-      <!-- Branches Grid -->
-      <div class="branches-grid">
+
+      <!-- Grid -->
+      <div class="branches-grid" *ngIf="filteredBranches.length > 0">
         <div class="branch-item" *ngFor="let branch of filteredBranches">
           <app-branch-card [branch]="branch"></app-branch-card>
         </div>
       </div>
-      
-      <!-- Empty state when no branches match the filter -->
-      <div class="empty-state" *ngIf="filteredBranches.length === 0">
-        <div class="empty-icon">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9 22V12H15V22" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+
+      <!-- Empty filter result -->
+      <div class="state-block state-block--empty" *ngIf="filteredBranches.length === 0">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none">
+          <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <h3>لا توجد فروع في هذه المدينة</h3>
         <p>يرجى اختيار مدينة أخرى من القائمة.</p>
       </div>
+
     </div>
-  </section>
+  </div>
 </div>
