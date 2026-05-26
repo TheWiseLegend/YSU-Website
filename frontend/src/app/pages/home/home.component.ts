@@ -127,7 +127,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   scrollToEvents(): void {
-    document.querySelector('#events')?.scrollIntoView({
+    document.querySelector('#about')?.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });
