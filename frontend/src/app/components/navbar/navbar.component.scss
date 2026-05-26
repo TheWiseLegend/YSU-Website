@@ -15,15 +15,30 @@
     background-color: #fff;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 
-    .nav-links ul li a { color: #333 !important; }
-    .more-btn { color: #333 !important; }
     .menu-toggle span { background-color: #333; }
+
     .membership-btn {
       background: #5174b9;
       border-color: #5174b9;
       color: #fff !important;
       backdrop-filter: none;
       &:hover { background: #3f5a8f; }
+    }
+
+    // Nav links — dark text on white
+    .nav-links ul li a {
+      color: #333 !important;
+
+      &::after { background: #5174b9; }
+
+      &:hover, &.active {
+        color: #5174b9 !important;
+      }
+    }
+
+    .more-btn {
+      color: #333 !important;
+      &:hover { color: #5174b9 !important; }
     }
   }
 
@@ -155,7 +170,7 @@
             background: #fff;
             transform: scaleX(0);
             transform-origin: right;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background 0.4s ease;
           }
 
           &:hover, &.active {
@@ -188,7 +203,6 @@
       img { height: 50px; }
     }
 
-    // Hide desktop membership btn on mobile
     .membership-btn { display: none; }
 
     .nav-links {
@@ -240,7 +254,6 @@
         }
       }
 
-      // Show mobile-extra on mobile
       .mobile-extra {
         display: flex;
         flex-direction: column;
@@ -296,7 +309,7 @@
 
   a {
     display: block;
-    padding: 13px 32px !important; // extra indent to show hierarchy
+    padding: 13px 32px !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
     font-size: 16px !important;
     color: #555 !important;
@@ -359,21 +372,21 @@
   &:hover { color: #fff !important; }
 }
 
-.navbar.scrolled .more-btn {
-  color: #333 !important;
-  &:hover { color: #5174b9 !important; }
-}
-
+// ── More dropdown menu ───────────────────────────────────
 .more-menu {
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + 8px);
   right: 0;
-  background: white;
+  // Transparent navbar state — dark glass
+  background: rgba(20, 30, 48, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   min-width: 180px;
   padding: 0.5rem;
   list-style: none;
@@ -392,7 +405,7 @@
       display: block !important;
       padding: 10px 14px !important;
       border-radius: 8px;
-      color: #333 !important;
+      color: rgba(255, 255, 255, 0.85) !important;
       text-decoration: none;
       font-size: 15px !important;
       white-space: nowrap;
@@ -400,10 +413,28 @@
       transition: background 0.2s, color 0.2s;
 
       &::after { display: none !important; }
+
       &:hover, &.active {
-        background: rgba(81, 116, 185, 0.08) !important;
-        color: #5174b9 !important;
+        background: rgba(255, 255, 255, 0.12) !important;
+        color: #fff !important;
       }
+    }
+  }
+}
+
+// Scrolled state — white dropdown
+.navbar.scrolled .more-menu {
+  background: #fff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  li a {
+    color: #333 !important;
+    &:hover, &.active {
+      background: rgba(81, 116, 185, 0.08) !important;
+      color: #5174b9 !important;
     }
   }
 }

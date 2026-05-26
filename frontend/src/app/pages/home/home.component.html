@@ -154,10 +154,10 @@
           <p class="event-card__desc">{{ event.description }}</p>
 
           <a [routerLink]="['/events', event.id]" class="card-link">
-            للمزيد من التفاصيل
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+            للمزيد من التفاصيل
           </a>
         </div>
 
@@ -167,10 +167,10 @@
     <!-- "View all" button at the BOTTOM -->
     <div class="events-more" *ngIf="!isLoadingEvents">
       <a routerLink="/events" class="btn-outline">
-        مشاهدة كافة الفعاليات
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+        مشاهدة كافة الفعاليات
       </a>
     </div>
 
@@ -328,10 +328,10 @@
         <p class="news-card__summary">{{ news.summary }}</p>
 
         <a [routerLink]="['/news', news.id]" class="news-card__link">
-          قراءة المزيد
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
+          قراءة المزيد
         </a>
 
       </article>
@@ -339,10 +339,10 @@
 
     <div class="news-more">
       <a routerLink="/news" class="btn-outline">
-        عرض المزيد من الأخبار
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+        عرض المزيد من الأخبار
       </a>
     </div>
 
