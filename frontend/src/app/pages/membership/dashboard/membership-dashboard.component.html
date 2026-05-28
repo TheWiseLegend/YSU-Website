@@ -5,9 +5,7 @@
     <div class="portal-header__inner">
       <!-- Logo -->
       <div class="portal-header__brand">
-        <div class="portal-header__logo-mark">
-          <img src="/logo/ysu_logo_cropped.webp" alt="YSU" />
-        </div>
+        <img src="/logo/ysu_logo_cropped.webp" alt="YSU" class="portal-header__logo-mark" />
         <div class="portal-header__brand-text">
           <span class="portal-header__brand-name">اتحاد الطلبة اليمنيين</span>
           <span class="portal-header__brand-sub">Malaysia</span>
@@ -77,10 +75,8 @@
           <!-- Identity side -->
           <div class="member-card__identity">
             <div class="member-card__top-row">
-              <div class="member-card__badge-ysu">
-                <img src="/logo/ysu_logo_cropped.webp" alt="YSU" />
-              </div>
-              <div class="member-card__subtitle">Membership · Malaysia</div>
+              <img src="/logo/ysu_logo_cropped.webp" alt="YSU" class="member-card__badge-ysu" />
+              <div class="member-card__subtitle">عضوية الاتحاد · ماليزيا</div>
             </div>
 
             <!-- Profile photo + name row -->
@@ -122,11 +118,11 @@
 
             <div class="member-card__meta">
               <div class="member-card__meta-item">
-                <div class="member-card__meta-label">Member ID</div>
+                <div class="member-card__meta-label">رقم العضوية</div>
                 <div class="member-card__meta-value member-card__meta-value--mono">{{ member.membershipId }}</div>
               </div>
               <div class="member-card__meta-item" *ngIf="latestApplication?.expiresAt">
-                <div class="member-card__meta-label">Valid Until</div>
+                <div class="member-card__meta-label">صالح حتى</div>
                 <div class="member-card__meta-value">{{ latestApplication!.expiresAt | date:'dd/MM/yyyy' }}</div>
               </div>
             </div>
