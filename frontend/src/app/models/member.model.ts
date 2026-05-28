@@ -30,6 +30,7 @@ export interface Member {
   email: string;
   fullNameAr: string;
   fullNameEn: string;
+  profileImageUrl: string | null;
   createdAt: string;
   updatedAt: string;
   applications: MembershipApplication[];

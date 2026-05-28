@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LucideDynamicIcon, provideLucideIcons, LucideIcon } from '@lucide/angular';
 import { VendorService } from '../../../services/vendor.service';
 import { UploadService } from '../../../services/upload.service';
-import { CreateVendorDto, Vendor, VendorCategory } from '../../../models/vendor.model';
+import { CreateVendorDto, Vendor, VendorCategory, VendorImage } from '../../../models/vendor.model';
 import { VENDOR_ICONS, VendorIconOption, ALL_VENDOR_LUCIDE_ICONS, getVendorIcon } from '../../../data/vendor-icons';
 
 @Component({
   selector: 'app-admin-vendors',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideDynamicIcon],
+  imports: [CommonModule, ReactiveFormsModule, LucideDynamicIcon, DatePipe],
   providers: [
     provideLucideIcons(...ALL_VENDOR_LUCIDE_ICONS),
   ],
@@ -25,9 +25,17 @@ export class AdminVendorsComponent implements OnInit {
   editingVendorId: string | null = null;
   isLoadingVendors = false;
   showVendorForm = false;
+
+  // Main logo upload
   selectedFile: File | null = null;
   imagePreview: string | null = null;
   isUploading = false;
+
+  // Gallery images
+  galleryImages: VendorImage[] = [];          // existing images (when editing)
+  pendingGalleryFiles: File[] = [];           // new files queued for upload
+  pendingGalleryPreviews: string[] = [];      // data-URL previews for queued files
+  isUploadingGallery = false;
 
   // ─── Categories ─────────────────────────────────────────────────────────────
   categories: VendorCategory[] = [];
@@ -44,7 +52,7 @@ export class AdminVendorsComponent implements OnInit {
   // ─── Confirmation dialogs ────────────────────────────────────────────────────
   confirmDeleteVendorId: string | null = null;
   confirmDeleteCategoryId: string | null = null;
-  blockedDeleteCategoryId: string | null = null; // category has vendors — deletion blocked
+  blockedDeleteCategoryId: string | null = null;
 
   // ─── Shared ──────────────────────────────────────────────────────────────────
   successMessage = '';
@@ -56,12 +64,15 @@ export class AdminVendorsComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.vendorForm = this.fb.group({
-      name:       ['', [Validators.required, Validators.maxLength(100)]],
-      categoryId: ['', Validators.required],
-      discount:   [null, [Validators.required, Validators.min(1), Validators.max(100)]],
-      location:   ['', Validators.maxLength(100)],
-      imageUrl:   ['', Validators.maxLength(500)],
-      mapsUrl:    ['', Validators.maxLength(500)],
+      name:               ['', [Validators.required, Validators.maxLength(100)]],
+      categoryId:         ['', Validators.required],
+      discount:           [null, [Validators.required, Validators.min(1), Validators.max(100)]],
+      location:           ['', Validators.maxLength(100)],
+      imageUrl:           ['', Validators.maxLength(500)],
+      mapsUrl:            ['', Validators.maxLength(500)],
+      phone:              ['', Validators.maxLength(20)],
+      notes:              [''],
+      discountExpiresAt:  [''],
     });
 
     this.categoryForm = this.fb.group({
@@ -110,20 +121,40 @@ export class AdminVendorsComponent implements OnInit {
     this.editingVendorId = null;
     this.selectedFile = null;
     this.imagePreview = null;
+    this.galleryImages = [];
+    this.pendingGalleryFiles = [];
+    this.pendingGalleryPreviews = [];
   }
 
   editVendor(vendor: Vendor): void {
     this.isEditingVendor = true;
     this.editingVendorId = vendor.id;
     this.showVendorForm = true;
+
+    // Format date for <input type="date"> (YYYY-MM-DD)
+    const expiryDate = vendor.discountExpiresAt
+      ? new Date(vendor.discountExpiresAt).toISOString().split('T')[0]
+      : '';
+
     this.vendorForm.patchValue({
-      name: vendor.name, categoryId: vendor.categoryId,
-      discount: parseInt(vendor.discount, 10) || null,
-      location: vendor.location ?? '',
-      imageUrl: vendor.imageUrl ?? '', mapsUrl: vendor.mapsUrl ?? '',
+      name:              vendor.name,
+      categoryId:        vendor.categoryId,
+      discount:          parseInt(vendor.discount, 10) || null,
+      location:          vendor.location ?? '',
+      imageUrl:          vendor.imageUrl ?? '',
+      mapsUrl:           vendor.mapsUrl ?? '',
+      phone:             vendor.phone ?? '',
+      notes:             vendor.notes ?? '',
+      discountExpiresAt: expiryDate,
     });
+
     this.imagePreview = vendor.imageUrl ?? null;
+    this.galleryImages = [...(vendor.images ?? [])];
+    this.pendingGalleryFiles = [];
+    this.pendingGalleryPreviews = [];
   }
+
+  // ─── Main logo upload ────────────────────────────────────────────────────────
 
   onFileSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -139,10 +170,42 @@ export class AdminVendorsComponent implements OnInit {
     }
   }
 
+  // ─── Gallery image upload ────────────────────────────────────────────────────
+
+  onGalleryFilesSelected(event: Event): void {
+    const files = Array.from((event.target as HTMLInputElement).files ?? []);
+    const validFiles = files.filter(f => f.type.startsWith('image/'));
+
+    if (validFiles.length !== files.length) {
+      this.setErrorMessage('بعض الملفات المختارة ليست صوراً صالحة');
+    }
+
+    validFiles.forEach(file => {
+      this.pendingGalleryFiles.push(file);
+      const reader = new FileReader();
+      reader.onload = () => this.pendingGalleryPreviews.push(reader.result as string);
+      reader.readAsDataURL(file);
+    });
+
+    // Reset input so same files can be re-selected if needed
+    (event.target as HTMLInputElement).value = '';
+  }
+
+  removePendingGalleryFile(index: number): void {
+    this.pendingGalleryFiles.splice(index, 1);
+    this.pendingGalleryPreviews.splice(index, 1);
+  }
+
+  removeExistingGalleryImage(index: number): void {
+    this.galleryImages.splice(index, 1);
+  }
+
+  // ─── Submit ──────────────────────────────────────────────────────────────────
+
   onVendorSubmit(): void {
     if (this.vendorForm.invalid) return;
 
-    // If a new file was selected, upload it first then save
+    // Upload main logo first if a new file was selected
     if (this.selectedFile) {
       this.isUploading = true;
       this.uploadService.uploadImage(this.selectedFile, 'vendors').subscribe({
@@ -150,17 +213,55 @@ export class AdminVendorsComponent implements OnInit {
           this.vendorForm.patchValue({ imageUrl: response.imageUrl });
           this.isUploading = false;
           this.selectedFile = null;
-          this.saveVendor();
+          this.uploadGalleryThenSave();
         },
-        error: () => { this.setErrorMessage('فشل في رفع الصورة'); this.isUploading = false; },
+        error: () => { this.setErrorMessage('فشل في رفع الصورة الرئيسية'); this.isUploading = false; },
       });
     } else {
-      this.saveVendor();
+      this.uploadGalleryThenSave();
     }
   }
 
-  private saveVendor(): void {
-    const dto = this.normalizeVendorDto(this.vendorForm.value);
+  private uploadGalleryThenSave(): void {
+    if (this.pendingGalleryFiles.length === 0) {
+      this.saveVendor([]);
+      return;
+    }
+
+    this.isUploadingGallery = true;
+    const uploadedUrls: string[] = [];
+    let completed = 0;
+    let failed = false;
+
+    this.pendingGalleryFiles.forEach(file => {
+      this.uploadService.uploadImage(file, 'vendors').subscribe({
+        next: (response) => {
+          uploadedUrls.push(response.imageUrl);
+          completed++;
+          if (completed === this.pendingGalleryFiles.length) {
+            this.isUploadingGallery = false;
+            this.saveVendor(uploadedUrls);
+          }
+        },
+        error: () => {
+          if (!failed) {
+            failed = true;
+            this.isUploadingGallery = false;
+            this.setErrorMessage('فشل في رفع بعض صور المعرض');
+          }
+        },
+      });
+    });
+  }
+
+  private saveVendor(newGalleryUrls: string[]): void {
+    // Combine existing gallery images (not removed) + newly uploaded ones
+    const allImageUrls = [
+      ...this.galleryImages.map(img => img.url),
+      ...newGalleryUrls,
+    ];
+
+    const dto = this.normalizeVendorDto(this.vendorForm.value, allImageUrls);
 
     if (this.isEditingVendor && this.editingVendorId) {
       this.vendorService.update(this.editingVendorId, dto).subscribe({
@@ -296,27 +397,46 @@ export class AdminVendorsComponent implements OnInit {
     return this.categories.filter((category) => category.isActive);
   }
 
+  isSubmitting(): boolean {
+    return this.isUploading || this.isUploadingGallery;
+  }
+
+  isExpired(dateStr: string | null): boolean {
+    if (!dateStr) return false;
+    return new Date(dateStr) < new Date();
+  }
+
   private normalizeOptionalField(value: unknown): string | undefined {
     if (typeof value !== 'string') return undefined;
     const trimmed = value.trim();
     return trimmed.length ? trimmed : undefined;
   }
 
-  private normalizeVendorDto(formValue: {
-    name: string;
-    categoryId: string;
-    discount: number;
-    location?: string;
-    imageUrl?: string;
-    mapsUrl?: string;
-  }): CreateVendorDto {
+  private normalizeVendorDto(
+    formValue: {
+      name: string;
+      categoryId: string;
+      discount: number;
+      location?: string;
+      imageUrl?: string;
+      mapsUrl?: string;
+      phone?: string;
+      notes?: string;
+      discountExpiresAt?: string;
+    },
+    imageUrls: string[]
+  ): CreateVendorDto {
     return {
-      name: formValue.name,
-      categoryId: formValue.categoryId,
-      discount: `${formValue.discount}%`,
-      location: this.normalizeOptionalField(formValue.location),
-      imageUrl: this.normalizeOptionalField(formValue.imageUrl),
-      mapsUrl: this.normalizeOptionalField(formValue.mapsUrl),
+      name:              formValue.name,
+      categoryId:        formValue.categoryId,
+      discount:          `${formValue.discount}%`,
+      location:          this.normalizeOptionalField(formValue.location),
+      imageUrl:          this.normalizeOptionalField(formValue.imageUrl),
+      mapsUrl:           this.normalizeOptionalField(formValue.mapsUrl),
+      phone:             this.normalizeOptionalField(formValue.phone),
+      notes:             this.normalizeOptionalField(formValue.notes),
+      discountExpiresAt: this.normalizeOptionalField(formValue.discountExpiresAt),
+      imageUrls,
     };
   }
 }

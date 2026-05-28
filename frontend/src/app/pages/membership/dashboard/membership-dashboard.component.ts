@@ -1,8 +1,9 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LucideDynamicIcon, provideLucideIcons, LucideIcon } from '@lucide/angular';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { MembershipService } from '../../../services/membership.service';
 import { MemberAuthService } from '../../../services/member-auth.service';
 import { VendorService } from '../../../services/vendor.service';
@@ -16,7 +17,7 @@ import { ALL_VENDOR_LUCIDE_ICONS, getVendorIcon } from '../../../data/vendor-ico
 @Component({
   selector: 'app-membership-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, LucideDynamicIcon],
+  imports: [CommonModule, RouterModule, FormsModule, LucideDynamicIcon, DatePipe, NgSelectModule],
   providers: [provideLucideIcons(...ALL_VENDOR_LUCIDE_ICONS)],
   templateUrl: './membership-dashboard.component.html',
   styleUrls: ['./membership-dashboard.component.scss'],
@@ -27,6 +28,13 @@ export class MembershipDashboardComponent implements OnInit {
   errorMessage = '';
   showSettings = false;
   qrCodeDataUrl: string = '';
+
+  // Profile photo modal
+  showProfileModal = false;
+  profileImageFile: File | null = null;
+  profileImagePreview: string | null = null;
+  isUploadingProfile = false;
+  profileUploadError = '';
 
   // Vendors
   allPlaces: PublicVendor[] = [];
@@ -50,7 +58,22 @@ export class MembershipDashboardComponent implements OnInit {
     { value: '50+',   label: 'أكثر من ٥٠٪' },
   ];
 
+  readonly sortOptions = [
+    { value: '',       label: 'الترتيب الافتراضي' },
+    { value: 'recent', label: 'الأحدث أولاً' },
+  ];
+
   imageErrors: Set<string> = new Set();
+
+  // Mobile filter panel toggle
+  showFilters = false;
+
+  // Decorative QR pattern (shown while real QR loads)
+  readonly qrPattern = [
+    1,1,1,0,1,1,1, 1,0,1,1,0,0,1, 1,0,1,0,1,1,1,
+    0,1,1,1,0,1,0, 1,0,0,1,1,0,1, 0,1,1,0,1,0,1,
+    1,1,1,0,0,1,1,
+  ];
 
   constructor(
     private membershipService: MembershipService,
@@ -66,6 +89,10 @@ export class MembershipDashboardComponent implements OnInit {
         this.isLoading = false;
         this.applyFilters();
         this.generateQrCode();
+        // Show profile photo modal if member doesn't have one
+        if (!member.profileImageUrl) {
+          this.showProfileModal = true;
+        }
       },
       error: () => {
         this.memberAuthService.logout();
@@ -234,6 +261,78 @@ export class MembershipDashboardComponent implements OnInit {
     if (this.sortBy) count++;
     if (this.discountRange) count++;
     return count;
+  }
+
+  // ─── Profile Photo Modal ──────────────────────────────────────────────────────
+
+  onProfileImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      this.profileUploadError = 'يرجى اختيار صورة بصيغة JPG أو PNG أو WebP';
+      input.value = '';
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      this.profileUploadError = 'حجم الصورة يجب أن لا يتجاوز 2 ميجابايت';
+      input.value = '';
+      return;
+    }
+
+    this.profileImageFile = file;
+    this.profileUploadError = '';
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.profileImagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  uploadProfileImage(): void {
+    if (!this.profileImageFile) {
+      this.profileUploadError = 'يرجى اختيار صورة أولاً';
+      return;
+    }
+
+    this.isUploadingProfile = true;
+    this.profileUploadError = '';
+
+    this.membershipService.uploadProfileImage(this.profileImageFile).subscribe({
+      next: (updatedMember) => {
+        if (this.member) {
+          this.member.profileImageUrl = updatedMember.profileImageUrl;
+        }
+        this.isUploadingProfile = false;
+        this.showProfileModal = false;
+        this.profileImageFile = null;
+        this.profileImagePreview = null;
+      },
+      error: (err) => {
+        this.profileUploadError = err;
+        this.isUploadingProfile = false;
+      },
+    });
+  }
+
+  dismissProfileModal(): void {
+    this.showProfileModal = false;
+    this.profileImageFile = null;
+    this.profileImagePreview = null;
+    this.profileUploadError = '';
+  }
+
+  openChangeProfileModal(): void {
+    this.showSettings = false;
+    this.profileUploadError = '';
+    this.profileImageFile = null;
+    // Show current profile as the preview
+    this.profileImagePreview = this.member?.profileImageUrl ?? null;
+    this.showProfileModal = true;
   }
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────

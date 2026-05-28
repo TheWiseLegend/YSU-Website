@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Req,
   UseGuards,
   BadRequestException,
@@ -23,6 +24,51 @@ export class MembersController {
     return this.membersService.getMe(req.user.sub);
   }
 
+  @Patch('profile-image')
+  async uploadProfileImage(@Req() req: any) {
+    try {
+      const parts = req.parts();
+      let profileImageFile: Express.Multer.File | null = null;
+
+      for await (const part of parts) {
+        if (part.type === 'file' && part.fieldname === 'profileImage') {
+          const buffer = await part.toBuffer();
+          // Limit file size to 2MB
+          if (buffer.length > 2 * 1024 * 1024) {
+            throw new BadRequestException(
+              'حجم الصورة يجب أن لا يتجاوز 2 ميجابايت',
+            );
+          }
+          profileImageFile = {
+            fieldname: part.fieldname,
+            originalname: part.filename,
+            encoding: part.encoding,
+            mimetype: part.mimetype,
+            size: buffer.length,
+            buffer,
+            stream: null as any,
+            destination: '',
+            filename: '',
+            path: '',
+          };
+        }
+      }
+
+      if (!profileImageFile) {
+        throw new BadRequestException('الصورة الشخصية مطلوبة');
+      }
+
+      return await this.membersService.updateProfileImage(
+        req.user.sub,
+        profileImageFile,
+      );
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      if (error.status) throw error;
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
   @Post('apply')
   async apply(@Req() req: any) {
     try {
@@ -36,20 +82,18 @@ export class MembersController {
           fields[part.fieldname] = part.value;
         } else if (part.type === 'file') {
           const buffer = await part.toBuffer();
-          const file: Express.Multer.File = Object.assign(
-            {
-              fieldname: part.fieldname,
-              originalname: part.filename,
-              encoding: part.encoding,
-              mimetype: part.mimetype,
-              size: buffer.length,
-              buffer,
-              stream: null as any,
-              destination: '',
-              filename: '',
-              path: '',
-            },
-          );
+          const file: Express.Multer.File = Object.assign({
+            fieldname: part.fieldname,
+            originalname: part.filename,
+            encoding: part.encoding,
+            mimetype: part.mimetype,
+            size: buffer.length,
+            buffer,
+            stream: null as any,
+            destination: '',
+            filename: '',
+            path: '',
+          });
 
           if (part.fieldname === 'enrollmentLetter') {
             enrollmentLetterFile = file;

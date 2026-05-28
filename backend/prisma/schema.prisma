@@ -93,14 +93,15 @@ enum MembershipStatus {
 }
 
 model Member {
-  id           String   @id @default(cuid())
-  membershipId String   @unique
-  email        String   @unique
-  password     String
-  fullNameAr   String
-  fullNameEn   String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String   @id @default(cuid())
+  membershipId    String   @unique
+  email           String   @unique
+  password        String
+  fullNameAr      String
+  fullNameEn      String
+  profileImageUrl String?  @db.VarChar(500)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   applications MembershipApplication[]
 }
@@ -147,17 +148,29 @@ model VendorCategory {
 }
 
 model Vendor {
-  id         String         @id @default(cuid())
-  name       String         @db.VarChar(100)
-  categoryId String
-  category   VendorCategory @relation(fields: [categoryId], references: [id])
-  location   String?        @db.VarChar(100)
-  discount   String         @db.VarChar(100)
-  imageUrl   String?        @db.VarChar(500)
-  mapsUrl    String?        @db.VarChar(500)
-  isActive   Boolean        @default(true)
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  id                String         @id @default(cuid())
+  name              String         @db.VarChar(100)
+  categoryId        String
+  category          VendorCategory @relation(fields: [categoryId], references: [id])
+  location          String?        @db.VarChar(100)
+  discount          String         @db.VarChar(100)
+  imageUrl          String?        @db.VarChar(500)
+  mapsUrl           String?        @db.VarChar(500)
+  phone             String?        @db.VarChar(20)
+  notes             String?
+  discountExpiresAt DateTime?
+  isActive          Boolean        @default(true)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  images            VendorImage[]
 
   @@unique([name, categoryId])
+}
+
+model VendorImage {
+  id        String   @id @default(cuid())
+  url       String   @db.VarChar(500)
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }

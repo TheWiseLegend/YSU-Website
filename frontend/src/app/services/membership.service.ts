@@ -63,6 +63,17 @@ export class MembershipService {
     ).pipe(catchError(this.handleError));
   }
 
+  uploadProfileImage(file: File): Observable<Member> {
+    const formData = new FormData();
+    formData.append('profileImage', file);
+
+    return this.http.patch<Member>(
+      `${this.apiUrl}/members/profile-image`,
+      formData,
+      { headers: this.getHeaders() }
+    ).pipe(catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'حدث خطأ غير متوقع';
     if (error.status === 400) errorMessage = error.error?.message ?? 'بيانات غير صحيحة';

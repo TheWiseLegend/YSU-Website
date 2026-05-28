@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
@@ -21,6 +21,10 @@ export class VendorDetailComponent implements OnInit {
   vendor: PublicVendor | undefined;
   isLoading = true;
   notFound = false;
+  phoneCopied = false;
+
+  // Lightbox
+  lightboxUrl: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -66,5 +70,38 @@ export class VendorDetailComponent implements OnInit {
     if (this.vendor?.mapsUrl) {
       window.open(this.vendor.mapsUrl, '_blank');
     }
+  }
+
+  copyPhone(phone: string): void {
+    navigator.clipboard.writeText(phone).then(() => {
+      this.phoneCopied = true;
+      setTimeout(() => this.phoneCopied = false, 2000);
+    });
+  }
+
+  // ─── Lightbox ────────────────────────────────────────────────────────────────
+
+  openLightbox(url: string): void {
+    this.lightboxUrl = url;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeLightbox(): void {
+    this.lightboxUrl = null;
+    document.body.style.overflow = '';
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.closeLightbox();
+  }
+
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+  formatExpiryDate(dateStr: string | null): string {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('ar-MY', {
+      year: 'numeric', month: 'long', day: 'numeric',
+    });
   }
 }

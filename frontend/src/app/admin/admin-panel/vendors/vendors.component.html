@@ -17,6 +17,7 @@
     <h3>{{ isEditingVendor ? 'تعديل المورد' : 'إضافة مورد جديد' }}</h3>
     <form [formGroup]="vendorForm" (ngSubmit)="onVendorSubmit()">
 
+      <!-- Row 1: Name + Category -->
       <div class="form-row">
         <div class="form-group">
           <label>الاسم <span class="required">*</span></label>
@@ -38,6 +39,7 @@
         </div>
       </div>
 
+      <!-- Row 2: Discount + Expiry -->
       <div class="form-row">
         <div class="form-group">
           <label>الخصم <span class="required">*</span></label>
@@ -52,18 +54,41 @@
         </div>
 
         <div class="form-group">
-          <label>الموقع</label>
-          <input type="text" formControlName="location" class="form-control" placeholder="مثال: سايبرجايا" />
+          <label>تاريخ انتهاء الخصم</label>
+          <input type="date" formControlName="discountExpiresAt" class="form-control" />
+          <small class="field-hint">اتركه فارغاً إذا كان الخصم دائماً</small>
         </div>
       </div>
 
+      <!-- Row 3: Location + Phone -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>الموقع</label>
+          <input type="text" formControlName="location" class="form-control" placeholder="مثال: سايبرجايا" />
+        </div>
+
+        <div class="form-group">
+          <label>رقم الهاتف</label>
+          <input type="tel" formControlName="phone" class="form-control" placeholder="+60 12-345 6789" />
+        </div>
+      </div>
+
+      <!-- Maps URL -->
       <div class="form-group">
         <label>رابط الخريطة</label>
         <input type="text" formControlName="mapsUrl" class="form-control" placeholder="https://maps.google.com/..." />
       </div>
 
+      <!-- Notes -->
       <div class="form-group">
-        <label>الصورة</label>
+        <label>ملاحظات</label>
+        <textarea formControlName="notes" class="form-control form-textarea"
+          placeholder="معلومات إضافية تظهر للزوار..." rows="3"></textarea>
+      </div>
+
+      <!-- Main Logo -->
+      <div class="form-group">
+        <label>الشعار / الصورة الرئيسية</label>
         <div class="image-upload">
           <input type="file" accept="image/*" (change)="onFileSelected($event)" #imageInput style="display:none" />
           <button type="button" class="upload-btn" (click)="imageInput.click()">
@@ -71,13 +96,45 @@
           </button>
         </div>
         <div class="image-preview" *ngIf="imagePreview">
-          <img [src]="imagePreview" alt="معاينة الصورة" />
+          <img [src]="imagePreview" alt="معاينة الصورة الرئيسية" />
         </div>
       </div>
 
+      <!-- Gallery Images -->
+      <div class="form-group">
+        <label>صور المعرض</label>
+
+        <!-- Existing gallery images (when editing) -->
+        <div class="gallery-grid" *ngIf="galleryImages.length > 0">
+          <div class="gallery-thumb" *ngFor="let img of galleryImages; let i = index">
+            <img [src]="img.url" alt="صورة المعرض" />
+            <button type="button" class="remove-thumb-btn" (click)="removeExistingGalleryImage(i)" title="حذف">✕</button>
+          </div>
+        </div>
+
+        <!-- Pending new files -->
+        <div class="gallery-grid" *ngIf="pendingGalleryPreviews.length > 0">
+          <div class="gallery-thumb gallery-thumb--pending" *ngFor="let preview of pendingGalleryPreviews; let i = index">
+            <img [src]="preview" alt="صورة جديدة" />
+            <button type="button" class="remove-thumb-btn" (click)="removePendingGalleryFile(i)" title="إلغاء">✕</button>
+            <span class="pending-badge">جديد</span>
+          </div>
+        </div>
+
+        <div class="image-upload" style="margin-top: 0.75rem;">
+          <input type="file" accept="image/*" multiple (change)="onGalleryFilesSelected($event)" #galleryInput style="display:none" />
+          <button type="button" class="upload-btn" (click)="galleryInput.click()">
+            إضافة صور للمعرض
+          </button>
+        </div>
+        <small class="field-hint">يمكنك اختيار عدة صور في المرة الواحدة</small>
+      </div>
+
       <div class="form-actions">
-        <button type="submit" class="submit-btn" [disabled]="vendorForm.invalid || isUploading">
-          {{ isUploading ? 'جاري الرفع...' : (isEditingVendor ? 'تحديث' : 'حفظ') }}
+        <button type="submit" class="submit-btn" [disabled]="vendorForm.invalid || isSubmitting()">
+          <ng-container *ngIf="isUploading">جاري رفع الشعار...</ng-container>
+          <ng-container *ngIf="isUploadingGallery">جاري رفع صور المعرض...</ng-container>
+          <ng-container *ngIf="!isSubmitting()">{{ isEditingVendor ? 'تحديث' : 'حفظ' }}</ng-container>
         </button>
         <button type="button" class="cancel-btn" (click)="toggleVendorForm()">إلغاء</button>
       </div>
@@ -91,11 +148,13 @@
     <table class="data-table" *ngIf="!isLoadingVendors && vendors.length > 0">
       <thead>
         <tr>
-          <th>الصورة</th>
+          <th>الشعار</th>
           <th>الاسم</th>
           <th>الفئة</th>
           <th>الموقع</th>
           <th>الخصم</th>
+          <th>انتهاء الخصم</th>
+          <th>الصور</th>
           <th>الحالة</th>
           <th>الإجراءات</th>
         </tr>
@@ -110,6 +169,20 @@
           <td>{{ vendor.category.name }}</td>
           <td>{{ vendor.location ?? '—' }}</td>
           <td>{{ vendor.discount }}</td>
+          <td>
+            <ng-container *ngIf="vendor.discountExpiresAt; else noExpiry">
+              <span class="expiry-badge" [class.expiry-badge--expired]="isExpired(vendor.discountExpiresAt)">
+                {{ vendor.discountExpiresAt | date:'dd/MM/yyyy' }}
+              </span>
+            </ng-container>
+            <ng-template #noExpiry><span class="no-image">دائم</span></ng-template>
+          </td>
+          <td>
+            <span class="image-count-badge" *ngIf="vendor.images?.length">
+              {{ vendor.images.length }} صورة
+            </span>
+            <span *ngIf="!vendor.images?.length" class="no-image">—</span>
+          </td>
           <td>
             <span class="status-badge" [class.active]="vendor.isActive" [class.inactive]="!vendor.isActive">
               {{ vendor.isActive ? 'نشط' : 'معطل' }}
@@ -170,7 +243,6 @@
           <div class="form-group">
             <label>الأيقونة</label>
             <div class="icon-selector">
-              <!-- Selected icon preview -->
               <button type="button" class="icon-preview-btn" (click)="showIconPicker = !showIconPicker">
                 <ng-container *ngIf="getSelectedIconData() as iconData; else noIcon">
                   <svg [lucideIcon]="iconData" width="22" height="22"></svg>
@@ -181,7 +253,6 @@
                 <span class="picker-arrow">▾</span>
               </button>
 
-              <!-- Icon grid -->
               <div class="icon-picker-grid" *ngIf="showIconPicker">
                 <button
                   type="button"

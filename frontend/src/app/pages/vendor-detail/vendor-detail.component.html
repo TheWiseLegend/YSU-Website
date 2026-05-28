@@ -45,7 +45,7 @@
         </div>
       </ng-template>
 
-      <!-- Discount Badge overlaid on image -->
+      <!-- Discount Badge -->
       <div class="discount-badge">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8 8a2 2 0 0 0 2.828 0l7.172-7.172a2 2 0 0 0 0-2.828l-8-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -70,7 +70,7 @@
       <!-- Meta Items -->
       <div class="vendor-meta">
 
-        <!-- Discount detail row -->
+        <!-- Discount -->
         <div class="meta-item">
           <div class="meta-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -81,10 +81,13 @@
           <div class="meta-text">
             <div class="meta-title">الخصم المتاح</div>
             <div class="meta-value discount-value">{{ vendor.discount }}</div>
+            <div class="meta-expiry" *ngIf="vendor.discountExpiresAt">
+              صالح حتى: {{ formatExpiryDate(vendor.discountExpiresAt) }}
+            </div>
           </div>
         </div>
 
-        <!-- Location row (only if present) -->
+        <!-- Location -->
         <div class="meta-item" *ngIf="vendor.location">
           <div class="meta-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,6 +101,71 @@
           </div>
         </div>
 
+        <!-- Phone -->
+        <div class="meta-item" *ngIf="vendor.phone">
+          <div class="meta-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="meta-text">
+            <div class="meta-title">رقم الهاتف</div>
+            <div class="phone-row">
+              <a [href]="'tel:' + vendor.phone" class="meta-value meta-phone">{{ vendor.phone }}</a>
+              <button
+                class="copy-btn"
+                [class.copy-btn--copied]="phoneCopied"
+                (click)="copyPhone(vendor.phone)"
+                type="button"
+                [attr.aria-label]="phoneCopied ? 'تم النسخ' : 'نسخ رقم الهاتف'">
+                <!-- Copy icon -->
+                <svg *ngIf="!phoneCopied" width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <!-- Check icon -->
+                <svg *ngIf="phoneCopied" width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>{{ phoneCopied ? 'تم النسخ' : 'نسخ' }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Notes -->
+      <div class="vendor-notes" *ngIf="vendor.notes">
+        <div class="notes-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="notes-text">{{ vendor.notes }}</p>
+      </div>
+
+      <!-- Gallery -->
+      <div class="vendor-gallery" *ngIf="vendor.images && vendor.images.length > 0">
+        <h3 class="gallery-title">صور المكان</h3>
+        <div class="gallery-grid">
+          <button
+            class="gallery-item"
+            *ngFor="let img of vendor.images"
+            (click)="openLightbox(img.url)"
+            type="button"
+            aria-label="عرض الصورة بالحجم الكامل"
+          >
+            <img [src]="img.url" alt="صورة المكان" loading="lazy" />
+            <div class="gallery-overlay">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </button>
+        </div>
       </div>
 
       <!-- Maps Button -->
@@ -117,5 +185,13 @@
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" *ngIf="lightboxUrl" (click)="closeLightbox()" role="dialog" aria-modal="true" aria-label="عرض الصورة">
+  <button class="lightbox-close" (click)="closeLightbox()" type="button" aria-label="إغلاق">✕</button>
+  <div class="lightbox-content" (click)="$event.stopPropagation()">
+    <img [src]="lightboxUrl" alt="صورة المكان" />
   </div>
 </div>

@@ -31,6 +31,9 @@
     <!-- Result: Active -->
     <div *ngIf="result && result.isActive" class="result-box active">
       <div class="status-badge active-badge">✅ عضو نشط — Active Member</div>
+      <div class="member-profile" *ngIf="result.profileImageUrl">
+        <img [src]="result.profileImageUrl" alt="صورة العضو" class="member-profile__img" />
+      </div>
       <div class="member-info">
         <div class="info-row">
           <span class="label">الاسم</span>
@@ -50,6 +53,9 @@
     <!-- Result: Not Active -->
     <div *ngIf="result && !result.isActive" class="result-box inactive">
       <div class="status-badge inactive-badge">❌ غير نشط — Not Active</div>
+      <div class="member-profile" *ngIf="result.profileImageUrl">
+        <img [src]="result.profileImageUrl" alt="صورة العضو" class="member-profile__img" />
+      </div>
       <div class="member-info">
         <div class="info-row">
           <span class="label">الاسم</span>
@@ -61,7 +67,15 @@
         </div>
         <div class="info-row">
           <span class="label">الحالة</span>
-          <span class="value">{{ result.status }}</span>
+          <span class="value">
+            <ng-container [ngSwitch]="result.status">
+              <span *ngSwitchCase="'none'">لم يتقدم بطلب عضوية</span>
+              <span *ngSwitchCase="'pending'">طلب العضوية قيد المراجعة</span>
+              <span *ngSwitchCase="'expired'">العضوية منتهية الصلاحية</span>
+              <span *ngSwitchCase="'cancelled'">تم رفض طلب العضوية</span>
+              <span *ngSwitchDefault>غير نشط</span>
+            </ng-container>
+          </span>
         </div>
       </div>
     </div>

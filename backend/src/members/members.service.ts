@@ -28,6 +28,39 @@ export class MembersService {
     return memberData;
   }
 
+  async updateProfileImage(
+    memberId: string,
+    profileImageFile: Express.Multer.File,
+  ) {
+    const member = await this.prisma.member.findUnique({
+      where: { id: memberId },
+    });
+    if (!member) throw new NotFoundException('Member not found');
+
+    // If member already has a profile image, replace it
+    let profileImageUrl: string;
+    if (member.profileImageUrl) {
+      profileImageUrl = await this.localStorageService.replaceImage(
+        member.profileImageUrl,
+        profileImageFile,
+        'profile-photos',
+      );
+    } else {
+      profileImageUrl = await this.localStorageService.uploadImage(
+        profileImageFile,
+        'profile-photos',
+      );
+    }
+
+    const updated = await this.prisma.member.update({
+      where: { id: memberId },
+      data: { profileImageUrl },
+    });
+
+    const { password, ...memberData } = updated;
+    return memberData;
+  }
+
   async apply(
     memberId: string,
     dto: CreateApplicationDto,

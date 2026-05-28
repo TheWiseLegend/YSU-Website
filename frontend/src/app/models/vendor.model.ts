@@ -7,6 +7,12 @@ export interface VendorCategory {
   updatedAt: string;
 }
 
+export interface VendorImage {
+  id: string;
+  url: string;
+  createdAt: string;
+}
+
 export interface Vendor {
   id: string;
   name: string;
@@ -16,6 +22,10 @@ export interface Vendor {
   discount: string;
   imageUrl: string | null;
   mapsUrl: string | null;
+  phone: string | null;
+  notes: string | null;
+  discountExpiresAt: string | null;
+  images: VendorImage[];
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -30,6 +40,10 @@ export interface PublicVendor {
   discount: string;
   imageUrl: string | null;
   mapsUrl: string | null;
+  phone: string | null;
+  notes: string | null;
+  discountExpiresAt: string | null;
+  images: VendorImage[];
   createdAt: string;
 }
 
@@ -40,6 +54,10 @@ export interface CreateVendorDto {
   location?: string;
   imageUrl?: string;
   mapsUrl?: string;
+  phone?: string;
+  notes?: string;
+  discountExpiresAt?: string;
+  imageUrls?: string[];
 }
 
 export interface UpdateVendorDto {
@@ -49,6 +67,10 @@ export interface UpdateVendorDto {
   location?: string;
   imageUrl?: string;
   mapsUrl?: string;
+  phone?: string;
+  notes?: string;
+  discountExpiresAt?: string | null;
+  imageUrls?: string[];
 }
 
 export interface CreateCategoryDto {

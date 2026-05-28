@@ -1,32 +1,52 @@
 <div class="dashboard" dir="rtl">
-  <!-- Top Bar -->
-  <header class="dashboard-header">
-    <div class="header-inner">
-      <img src="/logo/logo-wide.webp" alt="YSU" class="header-logo" />
-      <div class="header-actions">
-        <div class="settings-wrapper">
-          <button class="settings-btn" (click)="toggleSettings($event)">
-            <span class="member-avatar">{{ memberInitials }}</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M6 9l6 6 6-6"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-          <div class="settings-dropdown" *ngIf="showSettings">
-            <div class="dropdown-info">
-              <p class="dropdown-name">{{ member?.fullNameAr }}</p>
-              <p class="dropdown-id">{{ member?.membershipId }}</p>
-            </div>
-            <hr />
-            <button class="dropdown-item logout" (click)="logout()">
-              تسجيل الخروج
-            </button>
+
+  <!-- ─── Header ──────────────────────────────────────────────────────────── -->
+  <header class="portal-header">
+    <div class="portal-header__inner">
+      <!-- Logo -->
+      <div class="portal-header__brand">
+        <img src="/logo/ysu_logo_cropped.webp" alt="YSU" class="portal-header__logo-mark" />
+        <div class="portal-header__brand-text">
+          <span class="portal-header__brand-name">اتحاد الطلبة اليمنيين</span>
+          <span class="portal-header__brand-sub">في ماليزيا</span>
+        </div>
+      </div>
+
+      <!-- Avatar dropdown -->
+      <div class="settings-wrapper">
+        <button class="settings-btn" (click)="toggleSettings($event)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            [class.rotated]="showSettings">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="settings-btn__name" *ngIf="!member?.profileImageUrl">{{ memberInitials }}</span>
+          <div class="member-avatar">
+            <img *ngIf="member?.profileImageUrl" [src]="member!.profileImageUrl" alt="صورة شخصية" class="member-avatar__img" />
+            <span *ngIf="!member?.profileImageUrl">{{ memberInitials }}</span>
           </div>
+        </button>
+
+        <div class="settings-dropdown" *ngIf="showSettings">
+          <div class="dropdown-info">
+            <p class="dropdown-name">{{ member?.fullNameAr }}</p>
+            <p class="dropdown-id">{{ member?.membershipId }}</p>
+          </div>
+          <hr />
+          <button class="dropdown-item" (click)="openChangeProfileModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                fill="currentColor"/>
+            </svg>
+            تغيير الصورة الشخصية
+          </button>
+          <button class="dropdown-item logout" (click)="logout()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            تسجيل الخروج
+          </button>
         </div>
       </div>
     </div>
@@ -39,205 +59,416 @@
   </div>
 
   <div class="dashboard-body" *ngIf="!isLoading && member">
-    <!-- Member Card -->
+
+    <!-- ─── Member Identity Card ─────────────────────────────────────────── -->
     <section class="member-card-section">
-      <div class="member-card">
-        <div class="member-avatar-large">{{ memberInitials }}</div>
-        <div class="member-info">
-          <h2>{{ member.fullNameAr }}</h2>
-          <p class="member-id">{{ member.membershipId }}</p>
-          <span class="status-badge" [ngClass]="statusClass">{{
-            statusLabel
-          }}</span>
+      <div class="member-card-neon">
+        <div class="member-card">
+          <!-- Background gradient -->
+          <div class="member-card__bg"></div>
+        <!-- Geometric pattern overlay -->
+        <svg class="member-card__pattern" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="islamic" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M30 0 L60 30 L30 60 L0 30 Z M30 10 L50 30 L30 50 L10 30 Z"
+                fill="none" stroke="white" stroke-width="1"/>
+              <circle cx="30" cy="30" r="4" fill="white"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#islamic)"/>
+        </svg>
+        <!-- Glow blobs -->
+        <div class="member-card__glow member-card__glow--1"></div>
+        <div class="member-card__glow member-card__glow--2"></div>
+
+        <!-- Content -->
+        <div class="member-card__content">
+          <!-- Identity side -->
+          <div class="member-card__identity">
+            <div class="member-card__top-row">
+              <img src="/logo/ysu_logo_cropped.webp" alt="YSU" class="member-card__badge-ysu" />
+              <div class="member-card__subtitle">عضوية الاتحاد · ماليزيا</div>
+            </div>
+
+            <!-- Profile photo + name row -->
+            <div class="member-card__profile-row">
+              <div class="member-card__photo">
+                <img *ngIf="member.profileImageUrl" [src]="member.profileImageUrl" alt="صورة شخصية" />
+                <svg *ngIf="!member.profileImageUrl" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="member-card__photo-icon">
+                  <circle cx="24" cy="18" r="9" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+                  <path d="M6 42c0-9.941 8.059-18 18-18s18 8.059 18 18" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div>
+                <div class="member-card__role">عضو الاتحاد</div>
+                <h2 class="member-card__name">{{ member.fullNameAr }}</h2>
+                <div class="member-card__status-pill" [ngClass]="statusClass">
+                  <!-- Icon changes per status -->
+                  <svg *ngIf="currentStatus === 'active'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <svg *ngIf="currentStatus === 'pending'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <svg *ngIf="currentStatus === 'expired'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  <svg *ngIf="currentStatus === 'cancelled'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  <svg *ngIf="currentStatus === 'new'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ statusLabel }}
+                </div>
+              </div>
+            </div>
+
+            <div class="member-card__meta">
+              <div class="member-card__meta-item">
+                <div class="member-card__meta-label">رقم العضوية</div>
+                <div class="member-card__meta-value member-card__meta-value--mono">{{ member.membershipId }}</div>
+              </div>
+              <div class="member-card__meta-item" *ngIf="latestApplication?.expiresAt">
+                <div class="member-card__meta-label">صالح حتى</div>
+                <div class="member-card__meta-value">{{ latestApplication!.expiresAt | date:'dd/MM/yyyy' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QR side -->
+          <div class="member-card__qr-side">
+            <div class="member-card__qr-wrap">
+              <div class="member-card__qr-glow"></div>
+              <div class="member-card__qr-inner">
+                <img *ngIf="qrCodeDataUrl" [src]="qrCodeDataUrl" alt="QR Code" class="member-card__qr-img" />
+                <div *ngIf="!qrCodeDataUrl" class="member-card__qr-placeholder">
+                  <div class="qr-art">
+                    <div *ngFor="let cell of qrPattern" class="qr-cell" [class.qr-cell--filled]="cell === 1"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="member-card__qr-label">امسح للتحقق من العضوية</div>
+          </div>
         </div>
-        <div class="member-expiry" *ngIf="latestApplication?.expiresAt">
-          <span class="expiry-label">تاريخ الانتهاء</span>
-          <span class="expiry-date">
-            {{ latestApplication!.expiresAt | date: "dd/MM/yyyy" }}
-          </span>
-        </div>
-        <div class="member-qr" *ngIf="qrCodeDataUrl">
-          <img
-            [src]="qrCodeDataUrl"
-            alt="QR Code للتحقق من العضوية"
-            class="qr-image"
-          />
-          <p class="qr-label">امسح للتحقق من العضوية</p>
+      </div>
+      </div>
+    </section>
+
+    <!-- ─── Status Blocks ────────────────────────────────────────────────── -->
+
+    <!-- Pending -->
+    <section class="status-block status-block--pending" *ngIf="currentStatus === 'pending'">
+      <div class="status-block__blob"></div>
+      <div class="status-block__inner">
+        <div class="status-block__icon status-block__icon--amber">⏳</div>
+        <div>
+          <h3 class="status-block__title">طلبك قيد المراجعة</h3>
+          <p class="status-block__text">تم استلام طلبك بنجاح. سيتم إشعارك عبر البريد الإلكتروني فور الموافقة عليه.</p>
         </div>
       </div>
     </section>
 
-    <!-- Pending State -->
-    <section class="info-section" *ngIf="currentStatus === 'pending'">
-      <div class="pending-card">
-        <div class="pending-icon">⏳</div>
-        <h3>طلبك قيد المراجعة</h3>
-        <p>
-          تم استلام طلبك بنجاح. سيتم إشعارك عبر البريد الإلكتروني فور الموافقة
-          عليه.
-        </p>
+    <!-- Cancelled -->
+    <section class="status-block status-block--cancelled" *ngIf="currentStatus === 'cancelled'">
+      <div class="status-block__blob"></div>
+      <div class="status-block__inner">
+        <div class="status-block__icon status-block__icon--red">❌</div>
+        <div>
+          <h3 class="status-block__title">تم رفض طلبك</h3>
+          <p class="status-block__reason" *ngIf="latestApplication?.cancellationReason">
+            السبب: {{ latestApplication!.cancellationReason }}
+          </p>
+          <p class="status-block__text">يمكنك التقديم مجدداً بعد تصحيح المشكلة.</p>
+        </div>
       </div>
     </section>
 
-    <!-- Cancelled State -->
-    <section class="info-section" *ngIf="currentStatus === 'cancelled'">
-      <div class="cancelled-card">
-        <div class="cancelled-icon">❌</div>
-        <h3>تم رفض طلبك</h3>
-        <p *ngIf="latestApplication?.cancellationReason">
-          <strong>السبب:</strong> {{ latestApplication!.cancellationReason }}
-        </p>
-        <p>يمكنك التقديم مجدداً بعد تصحيح المشكلة.</p>
-      </div>
-    </section>
-
-    <!-- CTA for new/expired -->
-    <section class="cta-section" *ngIf="showCTA">
-      <div class="cta-card">
-        <div class="cta-icon">🎓</div>
-        <h3 *ngIf="currentStatus === 'new'">احصل على عضويتك الآن</h3>
-        <h3 *ngIf="currentStatus === 'expired'">جدد عضويتك</h3>
-        <h3 *ngIf="currentStatus === 'cancelled'">أعد التقديم للعضوية</h3>
-        <p *ngIf="currentStatus === 'new'">
-          سجل الآن للحصول على عضوية اتحاد الطلبة اليمنيين والاستمتاع بالخصومات
-          الحصرية.
-        </p>
-        <p *ngIf="currentStatus === 'expired'">
-          انتهت صلاحية عضويتك. جدد الآن للاستمرار في الاستفادة من الخصومات.
-        </p>
-        <p *ngIf="currentStatus === 'cancelled'">
-          يمكنك إعادة التقديم بعد تصحيح البيانات أو المستندات المطلوبة.
-        </p>
-        <a routerLink="/membership/apply" class="cta-btn">
-          {{
-            currentStatus === "new"
-              ? "التقديم للعضوية"
-              : currentStatus === "expired"
-                ? "تجديد العضوية"
-                : "إعادة التقديم"
-          }}
+    <!-- CTA (new / expired) -->
+    <section class="cta-block" *ngIf="showCTA">
+      <div class="cta-block__glow"></div>
+      <div class="cta-block__inner">
+        <div class="cta-block__left">
+          <div class="cta-block__emoji">🎓</div>
+          <div>
+            <h3 class="cta-block__title">
+              {{ currentStatus === 'expired' ? 'جدد عضويتك' : 'احصل على عضويتك الآن' }}
+            </h3>
+            <p class="cta-block__text">
+              سجل الآن للحصول على عضوية اتحاد الطلبة اليمنيين والاستمتاع بالخصومات الحصرية لدى شركائنا في جميع أنحاء ماليزيا.
+            </p>
+          </div>
+        </div>
+        <a routerLink="/membership/apply" class="cta-block__btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ currentStatus === 'expired' ? 'تجديد العضوية' : 'التقديم للعضوية' }}
         </a>
       </div>
     </section>
 
-    <!-- Discount Places (active only) -->
+    <!-- ─── Discount Places ──────────────────────────────────────────────── -->
     <section class="places-section">
-      <div class="places-header">
-        <h2>الأماكن المشاركة في الخصم</h2>
-        <p>استمتع بخصومات حصرية في هذه الأماكن بعرض بطاقة عضويتك</p>
+      <div class="places-section__header">
+        <div class="places-section__title-row">
+          <div class="places-section__accent-bar"></div>
+          <h2 class="places-section__title">الأماكن المشاركة في الخصم</h2>
+        </div>
+        <p class="places-section__subtitle">استمتع بخصومات حصرية في هذه الأماكن بعرض بطاقة عضويتك</p>
       </div>
 
-      <!-- Vendors loading state -->
+      <!-- Vendors loading -->
       <div class="loading-state" *ngIf="isLoadingVendors">
         <div class="spinner"></div>
         <p>جاري تحميل الأماكن...</p>
       </div>
 
-      <!-- Vendors error state -->
+      <!-- Vendors error -->
       <div class="error-state" *ngIf="vendorsError && !isLoadingVendors">
         <p>تعذّر تحميل قائمة الأماكن</p>
         <button class="retry-btn" (click)="loadVendors()">إعادة المحاولة</button>
       </div>
 
-      <!-- Filters -->
-      <div class="filters-bar" *ngIf="!isLoadingVendors && !vendorsError">
-        <div class="search-box">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <circle
-              cx="11"
-              cy="11"
-              r="8"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path
-              d="m21 21-4.35-4.35"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-          <input
-            type="text"
-            [(ngModel)]="searchQuery"
-            (ngModelChange)="applyFilters()"
-            placeholder="ابحث عن مكان..."
-          />
+      <ng-container *ngIf="!isLoadingVendors && !vendorsError">
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <!-- Always-visible row: search + mobile toggle -->
+          <div class="filter-bar__top-row">
+            <div class="filter-bar__search">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="filter-bar__search-icon">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()"
+                placeholder="ابحث عن مكان..." class="filter-bar__input" />
+            </div>
+
+            <!-- Mobile toggle button -->
+            <button class="filter-bar__toggle-btn" (click)="showFilters = !showFilters" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M3 6h18M7 12h10M11 18h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              فلترة
+              <span class="filter-bar__toggle-count" *ngIf="activeFilterCount > 0">{{ activeFilterCount }}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                   [style.transform]="showFilters ? 'rotate(180deg)' : 'rotate(0deg)'"
+                   style="transition: transform 0.2s; flex-shrink:0">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Collapsible dropdowns -->
+          <div class="filter-bar__dropdowns" [class.filter-bar__dropdowns--open]="showFilters">
+            <!-- Location -->
+            <ng-select
+              [(ngModel)]="selectedLocation"
+              (ngModelChange)="applyFilters()"
+              [items]="locationOptions"
+              bindLabel="label"
+              bindValue="value"
+              [searchable]="false"
+              [clearable]="false"
+              placeholder="جميع المناطق"
+              class="filter-select"
+              appendTo="body"
+              dir="rtl">
+            </ng-select>
+
+            <!-- Category -->
+            <ng-select
+              [(ngModel)]="selectedType"
+              (ngModelChange)="applyFilters()"
+              [items]="typeOptions"
+              bindLabel="label"
+              bindValue="value"
+              [searchable]="false"
+              [clearable]="false"
+              placeholder="جميع الأنواع"
+              class="filter-select"
+              appendTo="body"
+              dir="rtl">
+            </ng-select>
+
+            <!-- Discount range -->
+            <ng-select
+              [(ngModel)]="discountRange"
+              (ngModelChange)="applyFilters()"
+              [items]="discountRangeOptions"
+              bindLabel="label"
+              bindValue="value"
+              [searchable]="false"
+              [clearable]="false"
+              placeholder="جميع الخصومات"
+              class="filter-select"
+              appendTo="body"
+              dir="rtl">
+            </ng-select>
+
+            <!-- Sort -->
+            <ng-select
+              [(ngModel)]="sortBy"
+              (ngModelChange)="applyFilters()"
+              [items]="sortOptions"
+              bindLabel="label"
+              bindValue="value"
+              [searchable]="false"
+              [clearable]="false"
+              placeholder="الترتيب الافتراضي"
+              class="filter-select"
+              appendTo="body"
+              dir="rtl">
+            </ng-select>
+          </div>
+
+          <div class="filter-bar__clear-row" *ngIf="activeFilterCount > 0">
+            <button class="filter-bar__clear-btn" (click)="clearFilters()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              مسح الفلاتر ({{ activeFilterCount }})
+            </button>
+          </div>
         </div>
 
-        <select [(ngModel)]="selectedLocation" (ngModelChange)="applyFilters()">
-          <option *ngFor="let opt of locationOptions" [value]="opt.value">
-            {{ opt.label }}
-          </option>
-        </select>
+        <!-- Results count -->
+        <div class="results-count">
+          <span class="results-count__num">{{ filteredPlaces.length }}</span> مكان
+        </div>
 
-        <select [(ngModel)]="selectedType" (ngModelChange)="applyFilters()">
-          <option *ngFor="let opt of typeOptions" [value]="opt.value">
-            {{ opt.label }}
-          </option>
-        </select>
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="filteredPlaces.length === 0 && allPlaces.length > 0">
+          <div class="empty-state__icon">🔍</div>
+          <div class="empty-state__title">لا توجد نتائج مطابقة</div>
+          <p class="empty-state__text">جرب تعديل الفلاتر أو مسحها.</p>
+        </div>
 
-        <select [(ngModel)]="discountRange" (ngModelChange)="applyFilters()">
-          <option *ngFor="let opt of discountRangeOptions" [value]="opt.value">
-            {{ opt.label }}
-          </option>
-        </select>
+        <div class="empty-state" *ngIf="allPlaces.length === 0">
+          <div class="empty-state__icon">🏪</div>
+          <div class="empty-state__title">لا توجد أماكن متاحة حالياً</div>
+        </div>
 
-        <select [(ngModel)]="sortBy" (ngModelChange)="applyFilters()">
-          <option value="">الترتيب الافتراضي</option>
-          <option value="recent">الأحدث أولاً</option>
-        </select>
-
-        <button
-          class="clear-btn"
-          *ngIf="activeFilterCount > 0"
-          (click)="clearFilters()"
-        >
-          مسح الفلاتر ({{ activeFilterCount }})
-        </button>
-      </div>
-
-      <!-- Results count -->
-      <p class="results-count" *ngIf="!isLoadingVendors && !vendorsError">{{ filteredPlaces.length }} مكان</p>
-
-      <!-- Places Grid -->
-      <div class="places-grid" *ngIf="!isLoadingVendors && !vendorsError">
-
-        <ng-container *ngFor="let place of filteredPlaces">
-            <a [routerLink]="['/membership/vendor', place.id]" class="place-card">
-                <div class="place-image">
-                <img
-                    [src]="place.imageUrl"
-                    [alt]="place.name"
-                    (error)="onImageError($event, place.id)"
-                    *ngIf="place.imageUrl && !hasImageError(place.id)"
-                />
-                <div class="place-image-fallback" *ngIf="!place.imageUrl || hasImageError(place.id)">
-                    <svg [lucideIcon]="getPlaceIcon(place)" width="36" height="36"></svg>
-                </div>
-                </div>
-                <div class="place-info">
-                    <h4>{{ place.name }}</h4>
-                    <div class="place-meta">
-                        <span class="place-type">
-                          <svg [lucideIcon]="getPlaceIcon(place)" width="14" height="14"></svg>
-                          {{ place.categoryName }}
-                        </span>
-                        <span class="place-location" *ngIf="place.location">{{ place.location }}</span>
-                    </div>
-                    <span class="place-discount">{{ place.discount }}</span>
-                </div>
-            </a>
-            </ng-container>
-      </div>
-
-      <p class="no-results" *ngIf="!isLoadingVendors && !vendorsError && filteredPlaces.length === 0 && allPlaces.length > 0">
-        لا توجد نتائج للبحث الحالي
-      </p>
-
-      <p class="no-results" *ngIf="!isLoadingVendors && !vendorsError && allPlaces.length === 0">
-        لا توجد أماكن متاحة حالياً
-      </p>
+        <!-- Vendor grid -->
+        <div class="places-grid" *ngIf="filteredPlaces.length > 0">
+          <a *ngFor="let place of filteredPlaces"
+             [routerLink]="['/membership/vendor', place.id]"
+             class="place-card">
+            <!-- Image -->
+            <div class="place-card__image">
+              <img *ngIf="place.imageUrl && !hasImageError(place.id)"
+                   [src]="place.imageUrl" [alt]="place.name"
+                   (error)="onImageError($event, place.id)"
+                   class="place-card__img" loading="lazy" />
+              <div *ngIf="!place.imageUrl || hasImageError(place.id)" class="place-card__fallback">
+                <svg [lucideIcon]="getPlaceIcon(place)" width="40" height="40"></svg>
+              </div>
+              <!-- Bottom gradient -->
+              <div class="place-card__image-grad"></div>
+              <!-- Discount badge -->
+              <div class="place-card__discount">{{ place.discount }}</div>
+              <!-- Category chip -->
+              <div class="place-card__category">
+                <svg [lucideIcon]="getPlaceIcon(place)" width="12" height="12"></svg>
+                {{ place.categoryName }}
+              </div>
+            </div>
+            <!-- Body -->
+            <div class="place-card__body">
+              <h4 class="place-card__name">{{ place.name }}</h4>
+              <div class="place-card__location" *ngIf="place.location">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12 22C16 18 20 14.4183 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 14.4183 8 18 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ place.location }}
+              </div>
+            </div>
+            <!-- Hover accent line -->
+            <div class="place-card__accent-line"></div>
+          </a>
+        </div>
+      </ng-container>
     </section>
+
+  </div>
+</div>
+
+<!-- Profile Photo Modal -->
+<div class="profile-modal-overlay" *ngIf="showProfileModal" (click)="dismissProfileModal()">
+  <div class="profile-modal" (click)="$event.stopPropagation()" dir="rtl">
+    <button class="profile-modal__close" (click)="dismissProfileModal()">✕</button>
+
+    <div class="profile-modal__header">
+      <div class="profile-modal__icon">📸</div>
+      <h2>أضف صورتك الشخصية</h2>
+      <p>الصورة الشخصية ستظهر على بطاقة عضويتك وعند التحقق من هويتك</p>
+    </div>
+
+    <!-- Example illustration -->
+    <div class="profile-modal__example">
+      <div class="example-good">
+        <div class="example-avatar">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="example-label">✅ صورة واضحة للوجه</span>
+      </div>
+      <div class="example-bad">
+        <div class="example-avatar example-avatar--bad">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="9" cy="9" r="1" fill="currentColor"/>
+            <circle cx="15" cy="9" r="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="example-label">❌ صورة جماعية أو غير واضحة</span>
+      </div>
+    </div>
+
+    <!-- Upload area -->
+    <div class="profile-modal__upload">
+      <div class="profile-modal__preview" (click)="modalFileInput.click()">
+        <img *ngIf="profileImagePreview" [src]="profileImagePreview" alt="معاينة" />
+        <div *ngIf="!profileImagePreview" class="profile-modal__preview-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>اضغط لاختيار صورة</span>
+        </div>
+      </div>
+      <input
+        #modalFileInput
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        (change)="onProfileImageSelected($event)"
+        style="display: none"
+      />
+      <p class="profile-modal__hint">JPG, PNG أو WebP — الحد الأقصى 2 ميجابايت</p>
+    </div>
+
+    <div class="profile-modal__error" *ngIf="profileUploadError">
+      {{ profileUploadError }}
+    </div>
+
+    <div class="profile-modal__actions">
+      <button class="profile-modal__btn profile-modal__btn--primary"
+              (click)="uploadProfileImage()"
+              [disabled]="!profileImageFile || isUploadingProfile">
+        <span *ngIf="!isUploadingProfile">رفع الصورة</span>
+        <span *ngIf="isUploadingProfile" class="spinner"></span>
+      </button>
+      <button class="profile-modal__btn profile-modal__btn--ghost" (click)="dismissProfileModal()">
+        لاحقاً
+      </button>
+    </div>
   </div>
 </div>

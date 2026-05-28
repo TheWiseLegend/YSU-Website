@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AdminMembershipService } from '../../../services/admin-membership.service';
 import { Member, MembershipApplication } from '../../../models/member.model';
 import { FormsModule } from '@angular/forms';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-admin-members',
@@ -143,5 +144,42 @@ confirmCancel(): void {
       this.isApproving = false;
     }
   });
+}
+
+exportToExcel(): void {
+  if (this.members.length === 0) return;
+
+  const tabLabel: Record<string, string> = {
+    pending: 'قيد المراجعة',
+    active: 'نشط',
+    expired: 'منتهي',
+    all: 'الكل',
+  };
+
+  const data = this.members.map((member) => {
+    const app = this.getLatestApplication(member);
+    return {
+      'رقم العضوية': member.membershipId,
+      'الاسم بالعربية': member.fullNameAr,
+      'الاسم بالإنجليزية': member.fullNameEn,
+      'البريد الإلكتروني': member.email,
+      'الجامعة': app?.university ?? '—',
+      'التخصص': app?.fieldOfStudy ?? '—',
+      'السنة الدراسية': app?.yearOfStudy ?? '—',
+      'رقم الهاتف': app?.phone ?? '—',
+      'جواز السفر': app?.passportNumber ?? '—',
+      'الحالة': app ? this.getStatusLabel(app.status) : 'جديد',
+      'تاريخ التقديم': app ? this.formatDate(app.submittedAt) : '—',
+      'تاريخ الموافقة': app?.approvedAt ? this.formatDate(app.approvedAt) : '—',
+      'تاريخ الانتهاء': app?.expiresAt ? this.formatDate(app.expiresAt) : '—',
+    };
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, tabLabel[this.activeTab] ?? 'أعضاء');
+
+  const fileName = `أعضاء_${tabLabel[this.activeTab] ?? 'الكل'}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+  XLSX.writeFile(workbook, fileName);
 }
 }

@@ -5,9 +5,10 @@ import { MemberAuthController } from './member-auth.controller';
 import { MemberAuthService } from './member-auth.service';
 import { MemberJwtStrategy } from './strategy/member-jwt.strategy';
 import { MemberJwtGuard } from './guard/member-jwt.guard';
+import { LocalStorageModule } from '../local-storage/local-storage.module';
 
 @Module({
-  imports: [PassportModule, JwtModule.register({})],
+  imports: [PassportModule, JwtModule.register({}), LocalStorageModule],
   controllers: [MemberAuthController],
   providers: [MemberAuthService, MemberJwtStrategy, MemberJwtGuard],
   exports: [MemberJwtStrategy, MemberJwtGuard, JwtModule],

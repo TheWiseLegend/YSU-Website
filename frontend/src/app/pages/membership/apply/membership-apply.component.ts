@@ -119,29 +119,29 @@ export class MembershipApplyComponent implements OnInit {
       !this.enrollmentLetterFile ||
       !this.receiptFile
     ) {
-      this.errorMessage = 'يرجى ملء جميع الحقول وتحميل الملفات المطلوبة';
+      this.setError('يرجى ملء جميع الحقول وتحميل الملفات المطلوبة');
       return;
     }
 
     // Passport: letters + numbers only, 6–20 chars
     const passportRegex = /^[A-Za-z0-9]{6,20}$/;
     if (!passportRegex.test(this.passportNumber.trim())) {
-      this.errorMessage =
-        'رقم جواز السفر غير صحيح (6–20 حرف أو رقم، بدون مسافات أو رموز)';
+      this.setError(
+        'رقم جواز السفر غير صحيح (6–20 حرف أو رقم، بدون مسافات أو رموز)');
       return;
     }
 
     // Phone: Malaysian format +60XXXXXXXXX or 0XXXXXXXXX
     const phoneRegex = /^(\+?60|0)[0-9]{8,11}$/;
     if (!phoneRegex.test(this.phone.trim())) {
-      this.errorMessage =
-        'رقم الهاتف غير صحيح — مثال: +60123456789 أو 0123456789';
+      this.setError(
+        'رقم الهاتف غير صحيح — مثال: +60123456789 أو 0123456789');
       return;
     }
 
     // Agreement
     if (!this.dataAgreement) {
-      this.errorMessage = 'يجب الموافقة على إقرار صحة البيانات قبل إرسال الطلب';
+      this.setError('يجب الموافقة على إقرار صحة البيانات قبل إرسال الطلب');
       return;
     }
 
@@ -168,9 +168,16 @@ export class MembershipApplyComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          this.errorMessage = err;
+          this.setError(err);
           this.isLoading = false;
         },
       });
+  }
+
+  private setError(message: string): void {
+    this.errorMessage = message;
+    setTimeout(() => {
+      document.querySelector('.error-message')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
   }
 }
