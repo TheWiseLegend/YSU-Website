@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
@@ -18,7 +18,7 @@ import { ALL_VENDOR_LUCIDE_ICONS, getVendorIcon } from '../../../data/vendor-ico
   templateUrl: './vendor-detail.component.html',
   styleUrls: ['./vendor-detail.component.scss'],
 })
-export class MembershipVendorDetailComponent implements OnInit {
+export class MembershipVendorDetailComponent implements OnInit, OnDestroy {
   vendor: PublicVendor | undefined;
   member: Member | null = null;
   isLoading = true;
@@ -27,6 +27,9 @@ export class MembershipVendorDetailComponent implements OnInit {
 
   // ─── Slider ──────────────────────────────────────────────────────────────────
   activeSlide = 0;
+  isPaused = false;
+  private intervalId: ReturnType<typeof setInterval> | null = null;
+  readonly transitionInterval = 5000;
   private touchStartX = 0;
 
   constructor(
@@ -53,6 +56,10 @@ export class MembershipVendorDetailComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.clearTimer();
+  }
+
   private loadVendor(id: string): void {
     this.isLoading = true;
     this.vendorService.getVendorById(id).subscribe({
@@ -62,6 +69,7 @@ export class MembershipVendorDetailComponent implements OnInit {
         this.isLoading = false;
         this.activeSlide = 0;
         document.title = `${vendor.name} - اتحاد الطلبة اليمنيين في ماليزيا`;
+        this.startTimer();
       },
       error: () => {
         this.vendor = undefined;
@@ -71,27 +79,53 @@ export class MembershipVendorDetailComponent implements OnInit {
     });
   }
 
-  // ─── Slider helpers ───────────────────────────────────────────────────────────
+  // ─── Auto-play timer ──────────────────────────────────────────────────────────
+
+  private startTimer(): void {
+    if (this.sliderImages.length <= 1) return;
+    this.intervalId = setInterval(() => {
+      if (!this.isPaused) this.nextSlide();
+    }, this.transitionInterval);
+  }
+
+  private clearTimer(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  private resetTimer(): void {
+    this.clearTimer();
+    this.startTimer();
+  }
+
+  // ─── Slider navigation ────────────────────────────────────────────────────────
 
   get sliderImages(): string[] {
     if (!this.vendor) return [];
     const gallery = (this.vendor.images ?? []).map(i => i.url);
-    // If no gallery images, fall back to the main logo
     return gallery.length > 0 ? gallery : (this.vendor.imageUrl ? [this.vendor.imageUrl] : []);
   }
 
   prevSlide(): void {
     const len = this.sliderImages.length;
     this.activeSlide = (this.activeSlide - 1 + len) % len;
+    this.resetTimer();
   }
 
   nextSlide(): void {
     this.activeSlide = (this.activeSlide + 1) % this.sliderImages.length;
+    // no resetTimer here — called by interval itself
   }
 
   goToSlide(index: number): void {
     this.activeSlide = index;
+    this.resetTimer();
   }
+
+  onSliderMouseEnter(): void { this.isPaused = true; }
+  onSliderMouseLeave(): void { this.isPaused = false; }
 
   onTouchStart(e: TouchEvent): void {
     this.touchStartX = e.touches[0].clientX;
@@ -100,16 +134,23 @@ export class MembershipVendorDetailComponent implements OnInit {
   onTouchEnd(e: TouchEvent): void {
     const delta = this.touchStartX - e.changedTouches[0].clientX;
     if (Math.abs(delta) > 40) {
+      // RTL: swipe left = go to previous (visually right), swipe right = next
       delta > 0 ? this.nextSlide() : this.prevSlide();
+      this.resetTimer();
     }
   }
 
   @HostListener('document:keydown', ['$event'])
   onKeydown(e: KeyboardEvent): void {
     if (this.vendor && this.sliderImages.length > 1) {
-      if (e.key === 'ArrowLeft') this.nextSlide();
-      if (e.key === 'ArrowRight') this.prevSlide();
+      if (e.key === 'ArrowLeft') { this.nextSlide(); this.resetTimer(); }
+      if (e.key === 'ArrowRight') { this.prevSlide(); this.resetTimer(); }
     }
+  }
+
+  @HostListener('document:visibilitychange')
+  onVisibilityChange(): void {
+    this.isPaused = document.hidden;
   }
 
   // ─── Other helpers ────────────────────────────────────────────────────────────

@@ -57,6 +57,8 @@
 
       <!-- ─── Image Slider ─────────────────────────────────────────────────── -->
       <div class="vendor-slider"
+           (mouseenter)="onSliderMouseEnter()"
+           (mouseleave)="onSliderMouseLeave()"
            (touchstart)="onTouchStart($event)"
            (touchend)="onTouchEnd($event)">
 
@@ -84,17 +86,22 @@
           </div>
         </div>
 
-        <!-- Prev / Next arrows (only when >1 image) -->
+        <!-- Gradient overlay at bottom for readability -->
+        <div class="slider-gradient"></div>
+
+        <!-- Prev / Next arrows (only when >1 image) — RTL: prev=right arrow, next=left arrow -->
         <ng-container *ngIf="sliderImages.length > 1">
+          <!-- Prev: go to previous slide = visually move right in RTL -->
           <button class="slider-arrow slider-arrow--prev" (click)="prevSlide()" aria-label="السابق">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5"
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.5"
                 stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
+          <!-- Next: go to next slide = visually move left in RTL -->
           <button class="slider-arrow slider-arrow--next" (click)="nextSlide()" aria-label="التالي">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.5"
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5"
                 stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
@@ -110,34 +117,49 @@
           {{ vendor.discount }}
         </div>
 
-        <!-- Vendor logo avatar (bottom-left, only if gallery images exist AND logo exists) -->
-        <div class="vendor-logo-avatar"
-             *ngIf="vendor.imageUrl && vendor.images && vendor.images.length > 0">
+        <!-- Dot indicators + counter row -->
+        <div class="slider-bottom" *ngIf="sliderImages.length > 1">
+          <div class="slider-dots">
+            <button
+              class="dot"
+              *ngFor="let img of sliderImages; let i = index"
+              [class.dot--active]="i === activeSlide"
+              (click)="goToSlide(i)"
+              [attr.aria-label]="'الصورة ' + (i + 1)"
+            ></button>
+          </div>
+          <span class="slide-counter">{{ activeSlide + 1 }} / {{ sliderImages.length }}</span>
+        </div>
+      </div>
+
+      <!-- ─── Brand Strip (logo + name) ──────────────────────────────────── -->
+      <div class="brand-strip" *ngIf="vendor.imageUrl">
+        <div class="brand-logo">
           <img [src]="vendor.imageUrl" [alt]="vendor.name" />
         </div>
-
-        <!-- Dot indicators -->
-        <div class="slider-dots" *ngIf="sliderImages.length > 1">
-          <button
-            class="dot"
-            *ngFor="let img of sliderImages; let i = index"
-            [class.dot--active]="i === activeSlide"
-            (click)="goToSlide(i)"
-            [attr.aria-label]="'الصورة ' + (i + 1)"
-          ></button>
-        </div>
-
-        <!-- Slide counter -->
-        <div class="slide-counter" *ngIf="sliderImages.length > 1">
-          {{ activeSlide + 1 }} / {{ sliderImages.length }}
+        <div class="brand-text">
+          <span class="brand-name">{{ vendor.name }}</span>
+          <span class="brand-category">
+            <svg [lucideIcon]="getCategoryIcon(vendor.categoryIcon)" width="12" height="12"></svg>
+            {{ vendor.categoryName }}
+          </span>
         </div>
       </div>
 
       <!-- ─── Info ─────────────────────────────────────────────────────────── -->
       <div class="vendor-info">
 
-        <!-- Name + category -->
-        <div class="vendor-header">
+        <!-- Name + category (shown when no logo, otherwise brand strip handles it) -->
+        <div class="vendor-header" *ngIf="!vendor.imageUrl">
+          <h1 class="vendor-name">{{ vendor.name }}</h1>
+          <span class="category-badge">
+            <svg [lucideIcon]="getCategoryIcon(vendor.categoryIcon)" width="14" height="14"></svg>
+            {{ vendor.categoryName }}
+          </span>
+        </div>
+
+        <!-- Name when logo exists (brand strip shows logo+category, we still need the h1) -->
+        <div class="vendor-header" *ngIf="vendor.imageUrl">
           <h1 class="vendor-name">{{ vendor.name }}</h1>
           <span class="category-badge">
             <svg [lucideIcon]="getCategoryIcon(vendor.categoryIcon)" width="14" height="14"></svg>
