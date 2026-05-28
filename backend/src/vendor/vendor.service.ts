@@ -26,12 +26,23 @@ export class VendorService {
       throw new BadRequestException('Category not found');
     }
 
-    return this.prisma.vendor.create({ data: dto });
+    const { imageUrls, ...rest } = dto;
+
+    return this.prisma.vendor.create({
+      data: {
+        ...rest,
+        discountExpiresAt: rest.discountExpiresAt ? new Date(rest.discountExpiresAt) : undefined,
+        images: imageUrls?.length
+          ? { create: imageUrls.map((url) => ({ url })) }
+          : undefined,
+      },
+      include: { images: true },
+    });
   }
 
   findAllVendors() {
     return this.prisma.vendor.findMany({
-      include: { category: true },
+      include: { category: true, images: true },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -46,8 +57,25 @@ export class VendorService {
       }
     }
 
+    const { imageUrls, ...rest } = dto;
+
     try {
-      return await this.prisma.vendor.update({ where: { id }, data: dto });
+      return await this.prisma.vendor.update({
+        where: { id },
+        data: {
+          ...rest,
+          discountExpiresAt: rest.discountExpiresAt !== undefined
+            ? (rest.discountExpiresAt ? new Date(rest.discountExpiresAt) : null)
+            : undefined,
+          ...(imageUrls !== undefined && {
+            images: {
+              deleteMany: {},
+              create: imageUrls.map((url) => ({ url })),
+            },
+          }),
+        },
+        include: { images: true },
+      });
     } catch (error) {
       if (error.code === 'P2025') throw new NotFoundException('Vendor not found');
       throw error;
@@ -165,7 +193,7 @@ export class VendorService {
   async findActiveVendorById(id: string) {
     const vendor = await this.prisma.vendor.findFirst({
       where: { id, isActive: true, category: { isActive: true } },
-      include: { category: true },
+      include: { category: true, images: true },
     });
 
     if (!vendor) throw new NotFoundException('Vendor not found');
@@ -179,18 +207,27 @@ export class VendorService {
       discount: vendor.discount,
       imageUrl: vendor.imageUrl,
       mapsUrl: vendor.mapsUrl,
+      phone: vendor.phone,
+      notes: vendor.notes,
+      discountExpiresAt: vendor.discountExpiresAt,
+      images: vendor.images.map((img) => ({ id: img.id, url: img.url, createdAt: img.createdAt })),
       createdAt: vendor.createdAt,
     };
   }
 
   async findActiveVendors() {
     try {
+      const now = new Date();
       const vendors = await this.prisma.vendor.findMany({
         where: {
           isActive: true,
           category: { isActive: true },
+          OR: [
+            { discountExpiresAt: null },
+            { discountExpiresAt: { gte: now } },
+          ],
         },
-        include: { category: true },
+        include: { category: true, images: true },
         orderBy: [
           { category: { name: 'asc' } },
           { name: 'asc' },
@@ -206,6 +243,10 @@ export class VendorService {
         discount: v.discount,
         imageUrl: v.imageUrl,
         mapsUrl: v.mapsUrl,
+        phone: v.phone,
+        notes: v.notes,
+        discountExpiresAt: v.discountExpiresAt,
+        images: v.images.map((img) => ({ id: img.id, url: img.url, createdAt: img.createdAt })),
         createdAt: v.createdAt,
       }));
     } catch {
