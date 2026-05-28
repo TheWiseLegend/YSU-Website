@@ -7,11 +7,50 @@
     <h1 class="auth-title">إنشاء حساب</h1>
     <p class="auth-subtitle">انضم إلى بوابة عضوية اتحاد الطلبة اليمنيين</p>
 
-    <div class="error-message" *ngIf="errorMessage">
+    <div class="error-message" *ngIf="errorMessage" #errorBox>
       <span>{{ errorMessage }}</span>
     </div>
 
     <form (ngSubmit)="onSubmit()">
+      <!-- Profile Image Upload -->
+      <div class="profile-upload-section">
+        <label class="section-label">الصورة الشخصية <span class="required">*</span></label>
+        <div class="profile-upload-wrapper">
+          <div class="profile-upload-preview" (click)="profileInput.click()">
+            <img *ngIf="profileImagePreview" [src]="profileImagePreview" alt="صورة شخصية" />
+            <div class="profile-upload-placeholder" *ngIf="!profileImagePreview">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
+              </svg>
+              <span>اضغط لاختيار صورة</span>
+            </div>
+          </div>
+          <input
+            #profileInput
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onProfileImageChange($event)"
+            [disabled]="isLoading"
+            style="display: none"
+          />
+          <div class="profile-upload-info">
+            <div class="profile-upload-example">
+              <div class="example-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+                  <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <p class="example-text">صورة شخصية واضحة للوجه بخلفية فاتحة</p>
+            </div>
+            <p class="upload-hint">JPG, PNG أو WebP — الحد الأقصى 2 ميجابايت</p>
+            <button type="button" class="remove-photo-btn" *ngIf="profileImagePreview" (click)="removeProfileImage()">
+              إزالة الصورة
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="form-row">
         <div class="form-group">
           <label>الاسم الكامل بالعربية</label>
@@ -44,7 +83,22 @@
         </div>
       </div>
 
-      <button type="submit" class="auth-btn" [disabled]="isLoading">
+      <!-- Agreement Checkbox -->
+      <div class="agreement-box">
+        <label class="agreement-label">
+          <input
+            type="checkbox"
+            [(ngModel)]="dataAgreement"
+            name="dataAgreement"
+            [disabled]="isLoading"
+          />
+          <span>
+            أقر بأن جميع البيانات المدخلة صحيحة وأتعهد بالالتزام بأنظمة ولوائح اتحاد الطلبة اليمنيين في ماليزيا.
+          </span>
+        </label>
+      </div>
+
+      <button type="submit" class="auth-btn" [disabled]="isLoading || !dataAgreement || !fullNameAr || !fullNameEn || !email || !password || !confirmPassword || !profileImageFile">
         <span *ngIf="!isLoading">إنشاء الحساب</span>
         <span *ngIf="isLoading" class="spinner"></span>
       </button>

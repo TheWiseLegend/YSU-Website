@@ -14,6 +14,7 @@ export interface RegisterRequest {
   password: string;
   fullNameAr: string;
   fullNameEn: string;
+  profileImage?: File | null;
 }
 
 @Injectable({
@@ -26,7 +27,16 @@ export class MemberAuthService {
   constructor(private http: HttpClient) {}
 
   register(data: RegisterRequest): Observable<MemberLoginResponse> {
-    return this.http.post<MemberLoginResponse>(`${this.apiUrl}/member-auth/register`, data)
+    const formData = new FormData();
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    formData.append('fullNameAr', data.fullNameAr);
+    formData.append('fullNameEn', data.fullNameEn);
+    if (data.profileImage) {
+      formData.append('profileImage', data.profileImage);
+    }
+
+    return this.http.post<MemberLoginResponse>(`${this.apiUrl}/member-auth/register`, formData)
       .pipe(
         tap(response => {
           // Clear any existing admin session before storing member token
