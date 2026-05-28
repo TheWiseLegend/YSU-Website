@@ -226,8 +226,8 @@
       <ng-container *ngIf="!isLoadingVendors && !vendorsError">
         <!-- Filter bar -->
         <div class="filter-bar">
-          <div class="filter-bar__grid">
-            <!-- Search -->
+          <!-- Always-visible row: search + mobile toggle -->
+          <div class="filter-bar__top-row">
             <div class="filter-bar__search">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="filter-bar__search-icon">
                 <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
@@ -237,6 +237,23 @@
                 placeholder="ابحث عن مكان..." class="filter-bar__input" />
             </div>
 
+            <!-- Mobile toggle button -->
+            <button class="filter-bar__toggle-btn" (click)="showFilters = !showFilters" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M3 6h18M7 12h10M11 18h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              فلترة
+              <span class="filter-bar__toggle-count" *ngIf="activeFilterCount > 0">{{ activeFilterCount }}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                   [style.transform]="showFilters ? 'rotate(180deg)' : 'rotate(0deg)'"
+                   style="transition: transform 0.2s; flex-shrink:0">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Collapsible dropdowns -->
+          <div class="filter-bar__dropdowns" [class.filter-bar__dropdowns--open]="showFilters">
             <!-- Location -->
             <div class="filter-bar__select-wrap">
               <span class="filter-bar__chevron">▼</span>

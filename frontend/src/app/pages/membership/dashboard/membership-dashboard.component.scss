@@ -553,19 +553,74 @@
   box-shadow: 0 8px 30px rgba(45,62,95,0.06);
   margin-bottom: 1rem;
 
-  &__grid {
-    display: grid;
-    grid-template-columns: 1fr;
+  // Top row: search + mobile toggle button
+  &__top-row {
+    display: flex;
+    align-items: center;
     gap: 0.75rem;
+  }
 
-    @media (min-width: 640px)  { grid-template-columns: 1fr 1fr; }
-    @media (min-width: 1024px) { grid-template-columns: 2fr 1fr 1fr 1fr 1fr; }
+  // Mobile toggle button — hidden on desktop
+  &__toggle-btn {
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    border: 1px solid #e5eaf2;
+    background: white;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #2d3e5f;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+
+    &:hover { border-color: #5174b9; }
+  }
+
+  &__toggle-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #5174b9;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+  }
+
+  // Dropdowns panel — on desktop always visible as a grid row
+  &__dropdowns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+
+    @media (max-width: 768px) {
+      // Hidden by default on mobile, shown when toggled
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 0.75rem;
+
+      &--open { display: grid; }
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__search {
     position: relative;
     display: flex;
     align-items: center;
+    flex: 1;
   }
 
   &__search-icon {
@@ -651,6 +706,11 @@
 
     &:hover { background: #1a2540; }
   }
+}
+
+// Show toggle button only on mobile
+@media (max-width: 768px) {
+  .filter-bar__toggle-btn { display: inline-flex; }
 }
 
 // ─── Results count ────────────────────────────────────────────────────────────

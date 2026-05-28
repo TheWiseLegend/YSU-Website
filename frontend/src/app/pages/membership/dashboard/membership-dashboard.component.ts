@@ -52,6 +52,9 @@ export class MembershipDashboardComponent implements OnInit {
 
   imageErrors: Set<string> = new Set();
 
+  // Mobile filter panel toggle
+  showFilters = false;
+
   // Decorative QR pattern (shown while real QR loads)
   readonly qrPattern = [
     1,1,1,0,1,1,1, 1,0,1,1,0,0,1, 1,0,1,0,1,1,1,
