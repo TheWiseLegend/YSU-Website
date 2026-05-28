@@ -34,6 +34,7 @@ export class VerifyService {
       membershipId: member.membershipId,
       fullNameAr: member.fullNameAr,
       fullNameEn: member.fullNameEn,
+      profileImageUrl: member.profileImageUrl ?? null,
       status: isActive ? 'active' : (latestApplication?.status ?? 'none'),
       isActive,
       expiresAt: latestApplication?.expiresAt ?? null,

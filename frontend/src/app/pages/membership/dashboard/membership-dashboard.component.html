@@ -83,8 +83,8 @@
             <!-- Profile photo + name row -->
             <div class="member-card__profile-row">
               <div class="member-card__photo">
-                <!-- Placeholder: swap src for real photo URL when available -->
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="member-card__photo-icon">
+                <img *ngIf="member.profileImageUrl" [src]="member.profileImageUrl" alt="صورة شخصية" />
+                <svg *ngIf="!member.profileImageUrl" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="member-card__photo-icon">
                   <circle cx="24" cy="18" r="9" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
                   <path d="M6 42c0-9.941 8.059-18 18-18s18 8.059 18 18" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
                 </svg>
@@ -386,5 +386,79 @@
       </ng-container>
     </section>
 
+  </div>
+</div>
+
+<!-- Profile Photo Modal -->
+<div class="profile-modal-overlay" *ngIf="showProfileModal" (click)="dismissProfileModal()">
+  <div class="profile-modal" (click)="$event.stopPropagation()" dir="rtl">
+    <button class="profile-modal__close" (click)="dismissProfileModal()">✕</button>
+
+    <div class="profile-modal__header">
+      <div class="profile-modal__icon">📸</div>
+      <h2>أضف صورتك الشخصية</h2>
+      <p>الصورة الشخصية ستظهر على بطاقة عضويتك وعند التحقق من هويتك</p>
+    </div>
+
+    <!-- Example illustration -->
+    <div class="profile-modal__example">
+      <div class="example-good">
+        <div class="example-avatar">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="example-label">✅ صورة واضحة للوجه</span>
+      </div>
+      <div class="example-bad">
+        <div class="example-avatar example-avatar--bad">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="9" cy="9" r="1" fill="currentColor"/>
+            <circle cx="15" cy="9" r="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="example-label">❌ صورة جماعية أو غير واضحة</span>
+      </div>
+    </div>
+
+    <!-- Upload area -->
+    <div class="profile-modal__upload">
+      <div class="profile-modal__preview" (click)="modalFileInput.click()">
+        <img *ngIf="profileImagePreview" [src]="profileImagePreview" alt="معاينة" />
+        <div *ngIf="!profileImagePreview" class="profile-modal__preview-placeholder">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>اضغط لاختيار صورة</span>
+        </div>
+      </div>
+      <input
+        #modalFileInput
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        (change)="onProfileImageSelected($event)"
+        style="display: none"
+      />
+      <p class="profile-modal__hint">JPG, PNG أو WebP — الحد الأقصى 2 ميجابايت</p>
+    </div>
+
+    <div class="profile-modal__error" *ngIf="profileUploadError">
+      {{ profileUploadError }}
+    </div>
+
+    <div class="profile-modal__actions">
+      <button class="profile-modal__btn profile-modal__btn--primary"
+              (click)="uploadProfileImage()"
+              [disabled]="!profileImageFile || isUploadingProfile">
+        <span *ngIf="!isUploadingProfile">رفع الصورة</span>
+        <span *ngIf="isUploadingProfile" class="spinner"></span>
+      </button>
+      <button class="profile-modal__btn profile-modal__btn--ghost" (click)="dismissProfileModal()">
+        لاحقاً
+      </button>
+    </div>
   </div>
 </div>

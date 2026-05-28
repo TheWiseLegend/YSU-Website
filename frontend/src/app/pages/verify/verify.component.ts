@@ -9,6 +9,7 @@ interface VerifyResult {
   membershipId: string;
   fullNameAr: string;
   fullNameEn: string;
+  profileImageUrl: string | null;
   status: string;
   isActive: boolean;
   expiresAt: string | null;
