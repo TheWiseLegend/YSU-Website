@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { LocalStorageService } from '../local-storage/local-storage.service';
 import { EmailService } from '../email/email.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class MembersService {
@@ -26,6 +31,40 @@ export class MembersService {
     if (!member) throw new NotFoundException('Member not found');
     const { password, ...memberData } = member;
     return memberData;
+  }
+
+  async changePassword(
+    memberId: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    const member = await this.prisma.member.findUnique({
+      where: { id: memberId },
+    });
+    if (!member) throw new NotFoundException('Member not found');
+
+    // Verify the current password — proof the session owner knows it.
+    const matches = await bcrypt.compare(currentPassword, member.password);
+    if (!matches) {
+      // 400 (not 401) so the Arabic message reaches the UI 
+      throw new BadRequestException('كلمة المرور الحالية غير صحيحة');
+    }
+
+    // Reject reusing the same password.
+    const isSame = await bcrypt.compare(newPassword, member.password);
+    if (isSame) {
+      throw new BadRequestException(
+        'كلمة المرور الجديدة يجب أن تكون مختلفة عن الحالية',
+      );
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await this.prisma.member.update({
+      where: { id: memberId },
+      data: { password: hashed },
+    });
+
+    return { message: 'تم تغيير كلمة المرور بنجاح' };
   }
 
   async updateProfileImage(
@@ -103,7 +142,9 @@ export class MembersService {
     });
 
     // Send receipt email (non-blocking)
-    const member = await this.prisma.member.findUnique({ where: { id: memberId } });
+    const member = await this.prisma.member.findUnique({
+      where: { id: memberId },
+    });
     if (member) {
       this.emailService.sendReceiptEmail({
         toEmail: member.email,

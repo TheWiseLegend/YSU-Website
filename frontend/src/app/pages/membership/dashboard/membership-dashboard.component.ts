@@ -2,7 +2,11 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { LucideDynamicIcon, provideLucideIcons, LucideIcon } from '@lucide/angular';
+import {
+  LucideDynamicIcon,
+  provideLucideIcons,
+  LucideIcon,
+} from '@lucide/angular';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MembershipService } from '../../../services/membership.service';
 import { MemberAuthService } from '../../../services/member-auth.service';
@@ -12,12 +16,22 @@ import { DISCOUNTED_PLACES } from '../../../data/discounted-places';
 import { DiscountedPlace } from '../../../models/discounted-place.model';
 import QRCode from 'qrcode';
 import { PublicVendor } from '../../../models/vendor.model';
-import { ALL_VENDOR_LUCIDE_ICONS, getVendorIcon } from '../../../data/vendor-icons';
+import {
+  ALL_VENDOR_LUCIDE_ICONS,
+  getVendorIcon,
+} from '../../../data/vendor-icons';
 
 @Component({
   selector: 'app-membership-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, LucideDynamicIcon, DatePipe, NgSelectModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    LucideDynamicIcon,
+    DatePipe,
+    NgSelectModule,
+  ],
   providers: [provideLucideIcons(...ALL_VENDOR_LUCIDE_ICONS)],
   templateUrl: './membership-dashboard.component.html',
   styleUrls: ['./membership-dashboard.component.scss'],
@@ -35,6 +49,15 @@ export class MembershipDashboardComponent implements OnInit {
   profileImagePreview: string | null = null;
   isUploadingProfile = false;
   profileUploadError = '';
+  // Change password modal
+  showChangePasswordModal = false;
+  cpCurrentPassword = '';
+  cpNewPassword = '';
+  cpConfirmPassword = '';
+  isChangingPassword = false;
+  changePasswordError = '';
+  changePasswordSuccess = '';
+  cpShowPasswords = false;
 
   // Vendors
   allPlaces: PublicVendor[] = [];
@@ -44,22 +67,22 @@ export class MembershipDashboardComponent implements OnInit {
   searchQuery = '';
   selectedLocation = '';
   selectedType = '';
-  sortBy = '';           // '' | 'recent'
-  discountRange = '';    // '' | '1-10' | '11-20' | '21-50' | '50+'
+  sortBy = ''; // '' | 'recent'
+  discountRange = ''; // '' | '1-10' | '11-20' | '21-50' | '50+'
 
   locationOptions: { value: string; label: string }[] = [];
   typeOptions: { value: string; label: string }[] = [];
 
   readonly discountRangeOptions = [
-    { value: '',      label: 'جميع الخصومات' },
-    { value: '1-10',  label: '١٪ – ١٠٪' },
+    { value: '', label: 'جميع الخصومات' },
+    { value: '1-10', label: '١٪ – ١٠٪' },
     { value: '11-20', label: '١١٪ – ٢٠٪' },
     { value: '21-50', label: '٢١٪ – ٥٠٪' },
-    { value: '50+',   label: 'أكثر من ٥٠٪' },
+    { value: '50+', label: 'أكثر من ٥٠٪' },
   ];
 
   readonly sortOptions = [
-    { value: '',       label: 'الترتيب الافتراضي' },
+    { value: '', label: 'الترتيب الافتراضي' },
     { value: 'recent', label: 'الأحدث أولاً' },
   ];
 
@@ -70,16 +93,15 @@ export class MembershipDashboardComponent implements OnInit {
 
   // Decorative QR pattern (shown while real QR loads)
   readonly qrPattern = [
-    1,1,1,0,1,1,1, 1,0,1,1,0,0,1, 1,0,1,0,1,1,1,
-    0,1,1,1,0,1,0, 1,0,0,1,1,0,1, 0,1,1,0,1,0,1,
-    1,1,1,0,0,1,1,
+    1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1,
+    0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1,
   ];
 
   constructor(
     private membershipService: MembershipService,
     private memberAuthService: MemberAuthService,
     private vendorService: VendorService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -109,7 +131,7 @@ export class MembershipDashboardComponent implements OnInit {
     this.qrCodeDataUrl = await QRCode.toDataURL(verifyUrl, {
       width: 200,
       margin: 2,
-      color: { dark: '#2E3F6E', light: '#FFFFFF' }
+      color: { dark: '#2E3F6E', light: '#FFFFFF' },
     });
   }
 
@@ -132,18 +154,20 @@ export class MembershipDashboardComponent implements OnInit {
   }
 
   private buildFilterOptions(): void {
-    const locations = [...new Set(
-      this.allPlaces
-        .map((v) => v.location)
-        .filter((l): l is string => !!l)
-    )].sort();
+    const locations = [
+      ...new Set(
+        this.allPlaces.map((v) => v.location).filter((l): l is string => !!l),
+      ),
+    ].sort();
 
     this.locationOptions = [
       { value: '', label: 'جميع المناطق' },
       ...locations.map((l) => ({ value: l, label: l })),
     ];
 
-    const types = [...new Set(this.allPlaces.map((v) => v.categoryName))].sort();
+    const types = [
+      ...new Set(this.allPlaces.map((v) => v.categoryName)),
+    ].sort();
 
     this.typeOptions = [
       { value: '', label: 'جميع الأنواع' },
@@ -168,7 +192,7 @@ export class MembershipDashboardComponent implements OnInit {
       pending: 'قيد المراجعة',
       active: 'نشط',
       expired: 'منتهي',
-      cancelled: 'ملغي'
+      cancelled: 'ملغي',
     };
     return map[this.currentStatus] ?? '';
   }
@@ -179,20 +203,24 @@ export class MembershipDashboardComponent implements OnInit {
       pending: 'status-pending',
       active: 'status-active',
       expired: 'status-expired',
-      cancelled: 'status-cancelled'
+      cancelled: 'status-cancelled',
     };
     return map[this.currentStatus] ?? '';
   }
 
   get showCTA(): boolean {
-    return this.currentStatus === 'new' ||
+    return (
+      this.currentStatus === 'new' ||
       this.currentStatus === 'expired' ||
-      this.currentStatus === 'cancelled';
+      this.currentStatus === 'cancelled'
+    );
   }
 
   get memberInitials(): string {
     const parts = (this.member?.fullNameAr ?? '').trim().split(' ');
-    return parts.length >= 2 ? parts[0][0] + parts[1][0] : parts[0]?.slice(0, 2) ?? '';
+    return parts.length >= 2
+      ? parts[0][0] + parts[1][0]
+      : (parts[0]?.slice(0, 2) ?? '');
   }
 
   // ─── Filter methods ──────────────────────────────────────────────────────────
@@ -209,9 +237,12 @@ export class MembershipDashboardComponent implements OnInit {
     let result = this.allPlaces.filter((place) => {
       const searchMatch =
         !this.searchQuery.trim() ||
-        place.name.toLowerCase().includes(this.searchQuery.toLowerCase().trim());
+        place.name
+          .toLowerCase()
+          .includes(this.searchQuery.toLowerCase().trim());
 
-      const typeMatch = !this.selectedType || place.categoryName === this.selectedType;
+      const typeMatch =
+        !this.selectedType || place.categoryName === this.selectedType;
 
       const locationMatch = !this.selectedLocation
         ? true
@@ -224,10 +255,18 @@ export class MembershipDashboardComponent implements OnInit {
           discountMatch = false;
         } else {
           switch (this.discountRange) {
-            case '1-10':  discountMatch = pct >= 1  && pct <= 10;  break;
-            case '11-20': discountMatch = pct >= 11 && pct <= 20;  break;
-            case '21-50': discountMatch = pct >= 21 && pct <= 50;  break;
-            case '50+':   discountMatch = pct > 50;                break;
+            case '1-10':
+              discountMatch = pct >= 1 && pct <= 10;
+              break;
+            case '11-20':
+              discountMatch = pct >= 11 && pct <= 20;
+              break;
+            case '21-50':
+              discountMatch = pct >= 21 && pct <= 50;
+              break;
+            case '50+':
+              discountMatch = pct > 50;
+              break;
           }
         }
       }
@@ -237,7 +276,8 @@ export class MembershipDashboardComponent implements OnInit {
 
     if (this.sortBy === 'recent') {
       result = [...result].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       );
     }
 
@@ -333,6 +373,62 @@ export class MembershipDashboardComponent implements OnInit {
     // Show current profile as the preview
     this.profileImagePreview = this.member?.profileImageUrl ?? null;
     this.showProfileModal = true;
+  }
+
+  openChangePasswordModal(): void {
+    this.showSettings = false;
+    this.changePasswordError = '';
+    this.changePasswordSuccess = '';
+    this.cpCurrentPassword = '';
+    this.cpNewPassword = '';
+    this.cpConfirmPassword = '';
+    this.cpShowPasswords = false;
+    this.showChangePasswordModal = true;
+  }
+
+  dismissChangePasswordModal(): void {
+    this.showChangePasswordModal = false;
+    this.cpCurrentPassword = '';
+    this.cpNewPassword = '';
+    this.cpConfirmPassword = '';
+    this.changePasswordError = '';
+    this.changePasswordSuccess = '';
+  }
+
+  submitChangePassword(): void {
+    if (!this.cpCurrentPassword || !this.cpNewPassword) {
+      this.changePasswordError = 'يرجى تعبئة جميع الحقول';
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(this.cpNewPassword)) {
+      this.changePasswordError =
+        'كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل، حرف كبير، حرف صغير، ورقم';
+      return;
+    }
+
+    if (this.cpNewPassword !== this.cpConfirmPassword) {
+      this.changePasswordError = 'كلمتا المرور غير متطابقتين';
+      return;
+    }
+
+    this.isChangingPassword = true;
+    this.changePasswordError = '';
+
+    this.membershipService
+      .changePassword(this.cpCurrentPassword, this.cpNewPassword)
+      .subscribe({
+        next: () => {
+          this.isChangingPassword = false;
+          this.changePasswordSuccess = 'تم تغيير كلمة المرور بنجاح';
+          setTimeout(() => this.dismissChangePasswordModal(), 1500);
+        },
+        error: (err) => {
+          this.changePasswordError = err;
+          this.isChangingPassword = false;
+        },
+      });
   }
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────

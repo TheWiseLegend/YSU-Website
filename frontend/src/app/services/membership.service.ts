@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
@@ -21,25 +25,27 @@ export interface ApplyFormData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MembershipService {
   private apiUrl = environment.apiUrl;
 
   constructor(
     private http: HttpClient,
-    private memberAuthService: MemberAuthService
+    private memberAuthService: MemberAuthService,
   ) {}
 
   private getHeaders(): HttpHeaders {
     const token = this.memberAuthService.getToken();
-    return new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
   getMe(): Observable<Member> {
-    return this.http.get<Member>(`${this.apiUrl}/members/me`, {
-      headers: this.getHeaders(),
-    }).pipe(catchError(this.handleError));
+    return this.http
+      .get<Member>(`${this.apiUrl}/members/me`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError(this.handleError));
   }
 
   apply(data: ApplyFormData): Observable<MembershipApplication> {
@@ -56,28 +62,41 @@ export class MembershipService {
     formData.append('enrollmentLetter', data.enrollmentLetter);
     formData.append('receipt', data.receipt);
 
-    return this.http.post<MembershipApplication>(
-      `${this.apiUrl}/members/apply`,
-      formData,
-      { headers: this.getHeaders() }
-    ).pipe(catchError(this.handleError));
+    return this.http
+      .post<MembershipApplication>(`${this.apiUrl}/members/apply`, formData, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError(this.handleError));
   }
 
   uploadProfileImage(file: File): Observable<Member> {
     const formData = new FormData();
     formData.append('profileImage', file);
 
-    return this.http.patch<Member>(
-      `${this.apiUrl}/members/profile-image`,
-      formData,
-      { headers: this.getHeaders() }
-    ).pipe(catchError(this.handleError));
+    return this.http
+      .patch<Member>(`${this.apiUrl}/members/profile-image`, formData, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError(this.handleError));
+  }
+
+  changePassword(
+    currentPassword: string,
+    newPassword: string,
+  ): Observable<{ message: string }> {
+    return this.http
+      .patch<{
+        message: string;
+      }>(`${this.apiUrl}/members/change-password`, { currentPassword, newPassword }, { headers: this.getHeaders() })
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'حدث خطأ غير متوقع';
-    if (error.status === 400) errorMessage = error.error?.message ?? 'بيانات غير صحيحة';
-    else if (error.status === 401) errorMessage = 'انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً';
+    if (error.status === 400)
+      errorMessage = error.error?.message ?? 'بيانات غير صحيحة';
+    else if (error.status === 401)
+      errorMessage = 'انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً';
     else if (error.status === 0) errorMessage = 'خطأ في الاتصال بالخادم';
     return throwError(() => errorMessage);
   }

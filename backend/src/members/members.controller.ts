@@ -7,12 +7,14 @@ import {
   UseGuards,
   BadRequestException,
   InternalServerErrorException,
+  Body,
 } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { MemberJwtGuard } from '../member-auth/guard/member-jwt.guard';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('members')
 @UseGuards(MemberJwtGuard)
@@ -22,6 +24,15 @@ export class MembersController {
   @Get('me')
   getMe(@Req() req: any) {
     return this.membersService.getMe(req.user.sub);
+  }
+
+  @Patch('change-password')
+  changePassword(@Req() req: any, @Body() dto: ChangePasswordDto) {
+    return this.membersService.changePassword(
+      req.user.sub,
+      dto.currentPassword,
+      dto.newPassword,
+    );
   }
 
   @Patch('profile-image')
