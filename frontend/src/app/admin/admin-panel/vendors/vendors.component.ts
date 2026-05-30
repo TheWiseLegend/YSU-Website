@@ -152,6 +152,8 @@ export class AdminVendorsComponent implements OnInit {
     this.galleryImages = [...(vendor.images ?? [])];
     this.pendingGalleryFiles = [];
     this.pendingGalleryPreviews = [];
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // ─── Main logo upload ────────────────────────────────────────────────────────
