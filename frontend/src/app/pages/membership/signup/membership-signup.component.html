@@ -142,27 +142,11 @@
           </div>
         </div>
 
-        <div class="agreement-box">
-          <label class="agreement-label">
-            <input
-              type="checkbox"
-              [(ngModel)]="dataAgreement"
-              name="dataAgreement"
-              [disabled]="isLoading"
-            />
-            <span>
-              أقر بأن جميع البيانات المدخلة صحيحة وأتعهد بالالتزام بأنظمة ولوائح
-              اتحاد الطلبة اليمنيين في ماليزيا.
-            </span>
-          </label>
-        </div>
-
         <button
           type="submit"
           class="auth-btn"
           [disabled]="
             isLoading ||
-            !dataAgreement ||
             !fullNameAr ||
             !fullNameEn ||
             !email ||
