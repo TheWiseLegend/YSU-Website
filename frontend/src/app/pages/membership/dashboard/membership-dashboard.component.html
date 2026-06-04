@@ -47,19 +47,22 @@
 
           <!-- Content -->
           <div class="member-card__content">
-            <!-- Identity side -->
-            <div class="member-card__identity">
-              <div class="member-card__top-row">
-                <img
-                  src="/logo/ysu_logo_cropped.webp"
-                  alt="YSU"
-                  class="member-card__badge-ysu"
-                />
-                <div class="member-card__subtitle">عضوية الاتحاد · ماليزيا</div>
-              </div>
 
-              <!-- Profile photo + name row -->
-              <div class="member-card__profile-row">
+            <!-- Header row: logo + subtitle -->
+            <div class="member-card__top-row">
+              <img
+                src="/logo/ysu_logo_cropped.webp"
+                alt="YSU"
+                class="member-card__badge-ysu"
+              />
+              <div class="member-card__subtitle">عضوية الاتحاد · ماليزيا</div>
+            </div>
+
+            <!-- Two-column body -->
+            <div class="member-card__body-row">
+
+              <!-- Photo column: photo → name → status -->
+              <div class="member-card__photo-col">
                 <div class="member-card__photo">
                   <img
                     *ngIf="member.profileImageUrl"
@@ -88,157 +91,68 @@
                     />
                   </svg>
                 </div>
-                <div>
-                  <div class="member-card__role">عضو الاتحاد</div>
-                  <h2 class="member-card__name">{{ member.fullNameAr }}</h2>
-                  <div class="member-card__status-pill" [ngClass]="statusClass">
-                    <!-- Icon changes per status -->
-                    <svg
-                      *ngIf="currentStatus === 'active'"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                    <svg
-                      *ngIf="currentStatus === 'pending'"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      />
-                      <path
-                        d="M12 6v6l4 2"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                    <svg
-                      *ngIf="currentStatus === 'expired'"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      />
-                      <path
-                        d="M12 8v4M12 16h.01"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                    <svg
-                      *ngIf="currentStatus === 'cancelled'"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      />
-                      <path
-                        d="M15 9l-6 6M9 9l6 6"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                    <svg
-                      *ngIf="currentStatus === 'new'"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                    {{ statusLabel }}
-                  </div>
+                <div class="member-card__role">عضو الاتحاد</div>
+                <h2 class="member-card__name">{{ member.fullNameAr }}</h2>
+                <div class="member-card__status-pill" [ngClass]="statusClass">
+                  <svg *ngIf="currentStatus === 'active'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <svg *ngIf="currentStatus === 'pending'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <svg *ngIf="currentStatus === 'expired'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  <svg *ngIf="currentStatus === 'cancelled'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  <svg *ngIf="currentStatus === 'new'" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ statusLabel }}
                 </div>
-              </div>
-
-              <div class="member-card__meta">
-                <div class="member-card__meta-item">
-                  <div class="member-card__meta-label">رقم العضوية</div>
-                  <div
-                    class="member-card__meta-value member-card__meta-value--mono"
-                  >
-                    {{ member.membershipId }}
-                  </div>
-                </div>
-                <div
-                  class="member-card__meta-item"
-                  *ngIf="latestApplication?.expiresAt"
-                >
-                  <div class="member-card__meta-label">صالح حتى</div>
-                  <div class="member-card__meta-value">
-                    {{ latestApplication!.expiresAt | date: "dd/MM/yyyy" }}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- QR side -->
-            <div class="member-card__qr-side">
-              <div class="member-card__qr-wrap">
-                <div class="member-card__qr-glow"></div>
-                <div class="member-card__qr-inner">
-                  <img
-                    *ngIf="qrCodeDataUrl"
-                    [src]="qrCodeDataUrl"
-                    alt="QR Code"
-                    class="member-card__qr-img"
-                  />
-                  <div
-                    *ngIf="!qrCodeDataUrl"
-                    class="member-card__qr-placeholder"
-                  >
-                    <div class="qr-art">
-                      <div
-                        *ngFor="let cell of qrPattern"
-                        class="qr-cell"
-                        [class.qr-cell--filled]="cell === 1"
-                      ></div>
+                <div class="member-card__meta" *ngIf="latestApplication?.expiresAt">
+                  <div class="member-card__meta-item">
+                    <div class="member-card__meta-label">صالح حتى</div>
+                    <div class="member-card__meta-value">
+                      {{ latestApplication!.expiresAt | date: "dd/MM/yyyy" }}
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="member-card__qr-label">امسح للتحقق من العضوية</div>
+
+              <!-- QR column: QR code → membership ID -->
+              <div class="member-card__qr-col">
+                <div class="member-card__qr-wrap">
+                  <div class="member-card__qr-glow"></div>
+                  <div class="member-card__qr-inner">
+                    <img
+                      *ngIf="qrCodeDataUrl"
+                      [src]="qrCodeDataUrl"
+                      alt="QR Code"
+                      class="member-card__qr-img"
+                    />
+                    <div
+                      *ngIf="!qrCodeDataUrl"
+                      class="member-card__qr-placeholder"
+                    >
+                      <div class="qr-art">
+                        <div
+                          *ngFor="let cell of qrPattern"
+                          class="qr-cell"
+                          [class.qr-cell--filled]="cell === 1"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="member-card__qr-id">{{ member.membershipId }}</div>
+                <div class="member-card__qr-label">امسح للتحقق من العضوية</div>
+              </div>
+
             </div>
           </div>
         </div>
