@@ -459,8 +459,9 @@
         <div class="places-grid" *ngIf="filteredPlaces.length > 0">
           <a
             *ngFor="let place of filteredPlaces"
-            [routerLink]="['/membership/vendor', place.id]"
+            (click)="navigateToVendor(place.id)"
             class="place-card"
+            style="cursor: pointer;"
           >
             <!-- Image -->
             <div class="place-card__image">

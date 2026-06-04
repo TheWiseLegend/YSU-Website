@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { CommonModule, DatePipe, Location } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
   LucideDynamicIcon,
@@ -103,9 +103,19 @@ export class MembershipDashboardComponent implements OnInit {
     private memberAuthService: MemberAuthService,
     private vendorService: VendorService,
     private router: Router,
+    private route: ActivatedRoute,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
+    // Restore filter state from query params
+    const qp = this.route.snapshot.queryParams;
+    if (qp['q'])        this.searchQuery      = qp['q'];
+    if (qp['location']) this.selectedLocation = qp['location'];
+    if (qp['type'])     this.selectedType     = qp['type'];
+    if (qp['sort'])     this.sortBy           = qp['sort'];
+    if (qp['discount']) this.discountRange    = qp['discount'];
+
     this.membershipService.getMe().subscribe({
       next: (member) => {
         this.member = member;
@@ -146,6 +156,11 @@ export class MembershipDashboardComponent implements OnInit {
         this.buildFilterOptions();
         this.applyFilters();
         this.isLoadingVendors = false;
+        // Restore scroll after vendors render (vendors are the main content below the fold)
+        const scrollY = history.state?.scrollY;
+        if (scrollY) {
+          setTimeout(() => window.scrollTo({ top: scrollY, behavior: 'instant' as ScrollBehavior }), 0);
+        }
       },
       error: () => {
         this.vendorsError = true;
@@ -276,6 +291,21 @@ export class MembershipDashboardComponent implements OnInit {
     }
 
     this.filteredPlaces = result;
+
+    // Persist active filters in the URL without triggering router navigation (avoids scroll-to-top)
+    // Pass history.state as the third argument so scrollY is not wiped out
+    const params = new URLSearchParams();
+    if (this.searchQuery)      params.set('q',        this.searchQuery);
+    if (this.selectedLocation) params.set('location', this.selectedLocation);
+    if (this.selectedType)     params.set('type',     this.selectedType);
+    if (this.sortBy)           params.set('sort',     this.sortBy);
+    if (this.discountRange)    params.set('discount', this.discountRange);
+    const qs = params.toString();
+    this.location.replaceState(
+      '/membership/dashboard' + (qs ? '?' + qs : ''),
+      '',
+      history.state,
+    );
   }
 
   clearFilters(): void {
@@ -424,6 +454,17 @@ export class MembershipDashboardComponent implements OnInit {
   }
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+  navigateToVendor(vendorId: string): void {
+    // Save current scroll position into the current history entry before leaving
+    const currentState = { ...history.state, scrollY: window.scrollY };
+    this.location.replaceState(
+      this.location.path(true),
+      '',
+      currentState,
+    );
+    this.router.navigate(['/membership/vendor', vendorId]);
+  }
 
   getPlaceIcon(place: PublicVendor): LucideIcon {
     return getVendorIcon(place.categoryIcon);
