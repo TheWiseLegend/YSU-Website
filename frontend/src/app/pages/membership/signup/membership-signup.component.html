@@ -119,7 +119,7 @@
           />
         </div>
 
-        <div class="form-row">
+        <div class="form-row password-row">
           <div class="form-group">
             <label>كلمة المرور</label>
             <input
@@ -129,7 +129,41 @@
               placeholder="••••••••"
               [disabled]="isLoading"
             />
+
+            <div class="password-strength" *ngIf="password">
+              <div class="strength-bars">
+                <div
+                  class="strength-bar"
+                  [ngClass]="
+                    passwordStrength !== 'empty' ? passwordStrength : ''
+                  "
+                ></div>
+                <div
+                  class="strength-bar"
+                  [ngClass]="
+                    passwordStrength === 'medium' ||
+                    passwordStrength === 'strong'
+                      ? passwordStrength
+                      : ''
+                  "
+                ></div>
+                <div
+                  class="strength-bar"
+                  [ngClass]="passwordStrength === 'strong' ? 'strong' : ''"
+                ></div>
+              </div>
+              <span class="strength-label" [ngClass]="passwordStrength">
+                {{ passwordStrengthLabel }}
+              </span>
+            </div>
+
+            <ul class="password-rules" *ngIf="password">
+              <li [class.valid]="password.length >= 8">٨ أحرف على الأقل</li>
+              <li [class.valid]="hasUppercase">حرف كبير واحد على الأقل</li>
+              <li [class.valid]="hasNumber">رقم واحد على الأقل</li>
+            </ul>
           </div>
+
           <div class="form-group">
             <label>تأكيد كلمة المرور</label>
             <input
@@ -152,7 +186,8 @@
             !email ||
             !password ||
             !confirmPassword ||
-            !profileImageFile
+            !profileImageFile ||
+            passwordStrength !== 'strong'
           "
         >
           <span *ngIf="!isLoading">إنشاء الحساب</span>

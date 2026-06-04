@@ -33,6 +33,35 @@ export class MembershipSignupComponent {
   resendCooldown = 0;
   private resendInterval: any = null;
 
+  // ─── Password strength ──────────────────────────────────────────────────────
+
+  get passwordStrength(): 'empty' | 'weak' | 'medium' | 'strong' {
+    if (!this.password) return 'empty';
+    const hasMin8 = this.password.length >= 8;
+    const hasUpper = /[A-Z]/.test(this.password);
+    const hasNum = /\d/.test(this.password);
+    if (!hasMin8) return 'weak';
+    if (hasUpper && hasNum) return 'strong';
+    return 'medium';
+  }
+
+  get passwordStrengthLabel(): string {
+    const map: Record<string, string> = {
+      weak: 'ضعيف',
+      medium: 'متوسط',
+      strong: 'قوي',
+    };
+    return map[this.passwordStrength] ?? '';
+  }
+
+  get hasUppercase(): boolean {
+    return /[A-Z]/.test(this.password);
+  }
+
+  get hasNumber(): boolean {
+    return /\d/.test(this.password);
+  }
+
   constructor(
     private memberAuthService: MemberAuthService,
     private router: Router,
