@@ -111,16 +111,25 @@ export class MemberAuthService {
       .pipe(catchError(this.handleError));
   }
 
-  login(email: string, password: string): Observable<MemberLoginResponse> {
+  login(
+    email: string,
+    password: string,
+    rememberMe: boolean,
+  ): Observable<MemberLoginResponse> {
     return this.http
       .post<MemberLoginResponse>(`${this.apiUrl}/member-auth/login`, {
         email,
         password,
+        rememberMe,
       })
       .pipe(
         tap((response) => {
           localStorage.removeItem('admin_token');
-          this.setToken(response.access_token);
+          if (rememberMe) {
+            localStorage.setItem(this.tokenKey, response.access_token);
+          } else {
+            sessionStorage.setItem(this.tokenKey, response.access_token);
+          }
         }),
         catchError(this.handleError),
       );
@@ -131,7 +140,10 @@ export class MemberAuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return (
+      localStorage.getItem(this.tokenKey) ??
+      sessionStorage.getItem(this.tokenKey)
+    );
   }
 
   isLoggedIn(): boolean {
@@ -140,6 +152,7 @@ export class MemberAuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem(this.tokenKey);
   }
 
   private handleError(error: HttpErrorResponse) {

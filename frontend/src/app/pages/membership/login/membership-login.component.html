@@ -47,9 +47,20 @@
         </div>
       </div>
 
-      <p class="forgot-link">
-        <a routerLink="/membership/forgot-password">نسيت كلمة المرور؟</a>
-      </p>
+      <div class="form-footer">
+        <label class="remember-me">
+          <input
+            type="checkbox"
+            [(ngModel)]="rememberMe"
+            name="rememberMe"
+            [disabled]="isLoading"
+          />
+          تذكرني
+        </label>
+        <a routerLink="/membership/forgot-password" class="forgot-link">
+          نسيت كلمة المرور؟
+        </a>
+      </div>
 
       <button type="submit" class="auth-btn" [disabled]="isLoading">
         <span *ngIf="!isLoading">تسجيل الدخول</span>

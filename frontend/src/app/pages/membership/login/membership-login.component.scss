@@ -200,16 +200,39 @@
   }
 }
 
-.forgot-link {
-  text-align: left; // sits opposite the RTL label flow
-  margin: -0.5rem 0 1rem;
-  font-size: 0.85rem;
+// ─── Form footer (remember me + forgot password) ──────────────────────────────
 
-  a {
-    color: var(--primary-color);
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -0.25rem 0 1.25rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #4a5568;
+  cursor: pointer;
+  user-select: none;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+}
+
+.forgot-link {
+  font-size: 0.85rem;
+  color: var(--primary-color);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 }

@@ -31,7 +31,6 @@ export class MemberAuthService {
     });
     if (existing) {
       if (!existing.isEmailVerified) {
-
         // latest submission, so a user is never trapped by an old password.
         const hashedPassword = await bcrypt.hash(dto.password, 10);
 
@@ -307,7 +306,12 @@ export class MemberAuthService {
       throw new UnauthorizedException('email_not_verified');
     }
 
-    return this.signToken(member.id, member.email, member.membershipId);
+    return this.signToken(
+      member.id,
+      member.email,
+      member.membershipId,
+      dto.rememberMe ?? false,
+    );
   }
 
   private generateOtp(): string {
@@ -318,20 +322,34 @@ export class MemberAuthService {
     memberId: string,
     email: string,
     membershipId: string,
+    rememberMe = false,
   ) {
     const payload = { sub: memberId, email, membershipId, role: 'member' };
     const token = await this.jwt.signAsync(payload, {
       secret: this.config.get('JWT_SECRET'),
-      expiresIn: '7d',
+      expiresIn: rememberMe ? '30d' : '7d',
     });
     return { access_token: token, token_type: 'bearer' };
   }
 
   private async generateMembershipId(): Promise<string> {
-    const MONTH_LETTERS = ['J', 'F', 'M', 'A', 'Y', 'N', 'L', 'G', 'S', 'O', 'V', 'D'];
+    const MONTH_LETTERS = [
+      'J',
+      'F',
+      'M',
+      'A',
+      'Y',
+      'N',
+      'L',
+      'G',
+      'S',
+      'O',
+      'V',
+      'D',
+    ];
     const now = new Date();
-    const year = String(now.getFullYear()).slice(-2);   // e.g. "26"
-    const month = MONTH_LETTERS[now.getMonth()];        // e.g. "N" for June
+    const year = String(now.getFullYear()).slice(-2); // e.g. "26"
+    const month = MONTH_LETTERS[now.getMonth()]; // e.g. "N" for June
 
     let membershipId = '';
     let exists = true;
