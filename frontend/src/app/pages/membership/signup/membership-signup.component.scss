@@ -197,11 +197,10 @@
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
   }
+}
 
-  .password-row {
-    align-items: flex-start;
-  }
-  
+.password-row {
+  align-items: flex-start;
 }
 
 .form-group {
@@ -233,6 +232,42 @@
     &:disabled {
       background: #f7fafc;
     }
+  }
+}
+
+// ─── Password field with toggle ───────────────────────────────────────────────
+
+.password-field {
+  position: relative;
+
+  input {
+    padding-left: 3rem;
+    box-sizing: border-box;
+    width: 100%;
+  }
+}
+
+.password-toggle {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #a0aec0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--secondary-color);
+  }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
 

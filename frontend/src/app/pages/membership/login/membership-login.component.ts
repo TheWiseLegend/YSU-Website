@@ -2,12 +2,18 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, NavigationExtras } from '@angular/router';
+import {
+  LucideEye,
+  LucideEyeOff,
+  LucideDynamicIcon,
+  LucideIcon,
+} from '@lucide/angular';
 import { MemberAuthService } from '../../../services/member-auth.service';
 
 @Component({
   selector: 'app-membership-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, LucideDynamicIcon],
   templateUrl: './membership-login.component.html',
   styleUrls: ['./membership-login.component.scss'],
 })
@@ -16,11 +22,19 @@ export class MembershipLoginComponent {
   password = '';
   isLoading = false;
   errorMessage = '';
+  showPassword = false;
+
+  readonly eyeIcon: LucideIcon = LucideEye;
+  readonly eyeOffIcon: LucideIcon = LucideEyeOff;
 
   constructor(
     private memberAuthService: MemberAuthService,
     private router: Router,
   ) {}
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit(): void {
     if (!this.email || !this.password) {

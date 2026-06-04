@@ -25,19 +25,32 @@
 
       <div class="form-group">
         <label>كلمة المرور</label>
-        <input
-          type="password"
-          [(ngModel)]="password"
-          name="password"
-          placeholder="••••••••"
-          [disabled]="isLoading"
-        />
+        <div class="password-field">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="••••••••"
+            [disabled]="isLoading"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePassword()"
+            [disabled]="isLoading"
+          >
+            <svg
+              [lucideIcon]="showPassword ? eyeOffIcon : eyeIcon"
+              [size]="18"
+            ></svg>
+          </button>
+        </div>
       </div>
 
       <p class="forgot-link">
         <a routerLink="/membership/forgot-password">نسيت كلمة المرور؟</a>
       </p>
-      
+
       <button type="submit" class="auth-btn" [disabled]="isLoading">
         <span *ngIf="!isLoading">تسجيل الدخول</span>
         <span *ngIf="isLoading" class="spinner"></span>

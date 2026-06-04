@@ -120,15 +120,29 @@
         </div>
 
         <div class="form-row password-row">
+          <!-- Password field -->
           <div class="form-group">
             <label>كلمة المرور</label>
-            <input
-              type="password"
-              [(ngModel)]="password"
-              name="password"
-              placeholder="••••••••"
-              [disabled]="isLoading"
-            />
+            <div class="password-field">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="password"
+                name="password"
+                placeholder="••••••••"
+                [disabled]="isLoading"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePassword()"
+                [disabled]="isLoading"
+              >
+                <svg
+                  [lucideIcon]="showPassword ? eyeOffIcon : eyeIcon"
+                  [size]="18"
+                ></svg>
+              </button>
+            </div>
 
             <div class="password-strength" *ngIf="password">
               <div class="strength-bars">
@@ -164,15 +178,29 @@
             </ul>
           </div>
 
+          <!-- Confirm password field -->
           <div class="form-group">
             <label>تأكيد كلمة المرور</label>
-            <input
-              type="password"
-              [(ngModel)]="confirmPassword"
-              name="confirmPassword"
-              placeholder="••••••••"
-              [disabled]="isLoading"
-            />
+            <div class="password-field">
+              <input
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                [(ngModel)]="confirmPassword"
+                name="confirmPassword"
+                placeholder="••••••••"
+                [disabled]="isLoading"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="toggleConfirmPassword()"
+                [disabled]="isLoading"
+              >
+                <svg
+                  [lucideIcon]="showConfirmPassword ? eyeOffIcon : eyeIcon"
+                  [size]="18"
+                ></svg>
+              </button>
+            </div>
           </div>
         </div>
 

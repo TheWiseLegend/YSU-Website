@@ -2,12 +2,18 @@ import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import {
+  LucideEye,
+  LucideEyeOff,
+  LucideDynamicIcon,
+  LucideIcon,
+} from '@lucide/angular';
 import { MemberAuthService } from '../../../services/member-auth.service';
 
 @Component({
   selector: 'app-membership-forgot-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, LucideDynamicIcon],
   templateUrl: './membership-forgot-password.component.html',
   styleUrls: ['./membership-forgot-password.component.scss'],
 })
@@ -23,6 +29,9 @@ export class MembershipForgotPasswordComponent implements OnDestroy {
   errorMessage = '';
   successMessage = '';
   showPassword = false;
+
+  readonly eyeIcon: LucideIcon = LucideEye;
+  readonly eyeOffIcon: LucideIcon = LucideEyeOff;
 
   resendCooldown = 0;
   private resendInterval: any = null;

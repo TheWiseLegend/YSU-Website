@@ -6,7 +6,10 @@ import {
   LucideDynamicIcon,
   provideLucideIcons,
   LucideIcon,
+  LucideEye,
+  LucideEyeOff,
 } from '@lucide/angular';
+
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MembershipService } from '../../../services/membership.service';
 import { MemberAuthService } from '../../../services/member-auth.service';
@@ -62,6 +65,9 @@ export class MembershipDashboardComponent implements OnInit {
   changePasswordSuccess = '';
   cpShowPasswords = false;
 
+  readonly eyeIcon: LucideIcon = LucideEye;
+  readonly eyeOffIcon: LucideIcon = LucideEyeOff;
+
   // Vendors
   allPlaces: PublicVendor[] = [];
   filteredPlaces: PublicVendor[] = [];
@@ -112,11 +118,11 @@ export class MembershipDashboardComponent implements OnInit {
   ngOnInit(): void {
     // Restore filter state from query params
     const qp = this.route.snapshot.queryParams;
-    if (qp['q'])        this.searchQuery      = qp['q'];
+    if (qp['q']) this.searchQuery = qp['q'];
     if (qp['location']) this.selectedLocation = qp['location'];
-    if (qp['type'])     this.selectedType     = qp['type'];
-    if (qp['sort'])     this.sortBy           = qp['sort'];
-    if (qp['discount']) this.discountRange    = qp['discount'];
+    if (qp['type']) this.selectedType = qp['type'];
+    if (qp['sort']) this.sortBy = qp['sort'];
+    if (qp['discount']) this.discountRange = qp['discount'];
 
     this.membershipService.getMe().subscribe({
       next: (member) => {
@@ -161,7 +167,14 @@ export class MembershipDashboardComponent implements OnInit {
         // Restore scroll after vendors render (vendors are the main content below the fold)
         const scrollY = history.state?.scrollY;
         if (scrollY) {
-          setTimeout(() => window.scrollTo({ top: scrollY, behavior: 'instant' as ScrollBehavior }), 0);
+          setTimeout(
+            () =>
+              window.scrollTo({
+                top: scrollY,
+                behavior: 'instant' as ScrollBehavior,
+              }),
+            0,
+          );
         }
       },
       error: () => {
@@ -297,11 +310,11 @@ export class MembershipDashboardComponent implements OnInit {
     // Persist active filters in the URL without triggering router navigation (avoids scroll-to-top)
     // Pass history.state as the third argument so scrollY is not wiped out
     const params = new URLSearchParams();
-    if (this.searchQuery)      params.set('q',        this.searchQuery);
+    if (this.searchQuery) params.set('q', this.searchQuery);
     if (this.selectedLocation) params.set('location', this.selectedLocation);
-    if (this.selectedType)     params.set('type',     this.selectedType);
-    if (this.sortBy)           params.set('sort',     this.sortBy);
-    if (this.discountRange)    params.set('discount', this.discountRange);
+    if (this.selectedType) params.set('type', this.selectedType);
+    if (this.sortBy) params.set('sort', this.sortBy);
+    if (this.discountRange) params.set('discount', this.discountRange);
     const qs = params.toString();
     this.location.replaceState(
       '/membership/dashboard' + (qs ? '?' + qs : ''),
@@ -460,11 +473,7 @@ export class MembershipDashboardComponent implements OnInit {
   navigateToVendor(vendorId: string): void {
     // Save current scroll position into the current history entry before leaving
     const currentState = { ...history.state, scrollY: window.scrollY };
-    this.location.replaceState(
-      this.location.path(true),
-      '',
-      currentState,
-    );
+    this.location.replaceState(this.location.path(true), '', currentState);
     this.router.navigate(['/membership/vendor', vendorId]);
   }
 

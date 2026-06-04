@@ -2,12 +2,18 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import {
+  LucideEye,
+  LucideEyeOff,
+  LucideDynamicIcon,
+  LucideIcon,
+} from '@lucide/angular';
 import { MemberAuthService } from '../../../services/member-auth.service';
 
 @Component({
   selector: 'app-membership-signup',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, LucideDynamicIcon],
   templateUrl: './membership-signup.component.html',
   styleUrls: ['./membership-signup.component.scss'],
 })
@@ -32,6 +38,19 @@ export class MembershipSignupComponent {
   otpSuccess = '';
   resendCooldown = 0;
   private resendInterval: any = null;
+
+  // Password visibility
+  showPassword = false;
+  showConfirmPassword = false;
+  readonly eyeIcon: LucideIcon = LucideEye;
+  readonly eyeOffIcon: LucideIcon = LucideEyeOff;
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
 
   // ─── Password strength ──────────────────────────────────────────────────────
 
@@ -100,7 +119,6 @@ export class MembershipSignupComponent {
   }
 
   onSubmit(): void {
-    // Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.email)) {
       this.setError('صيغة البريد الإلكتروني غير صحيحة');

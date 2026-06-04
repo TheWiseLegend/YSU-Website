@@ -376,7 +376,7 @@
     gap: 0.6rem;
     color: white;
     text-align: center;
-    margin-left: auto;  // pushes the whole column to the right in the flex row
+    margin-left: auto; // pushes the whole column to the right in the flex row
   }
 
   &__photo {
@@ -1478,6 +1478,27 @@
       &:disabled {
         background: #f7fafc;
       }
+    }
+  }
+
+  .cp-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #4a5568;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
     }
   }
 

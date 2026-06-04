@@ -3,7 +3,8 @@
   <app-membership-header
     [member]="member"
     (changeProfilePhoto)="openChangeProfileModal()"
-    (changePassword)="openChangePasswordModal()">
+    (changePassword)="openChangePasswordModal()"
+  >
   </app-membership-header>
 
   <!-- Loading -->
@@ -47,7 +48,6 @@
 
           <!-- Content -->
           <div class="member-card__content">
-
             <!-- Header row: logo + subtitle -->
             <div class="member-card__top-row">
               <img
@@ -60,7 +60,6 @@
 
             <!-- Two-column body -->
             <div class="member-card__body-row">
-
               <!-- Photo column: photo → name → status -->
               <div class="member-card__photo-col">
                 <div class="member-card__photo">
@@ -94,27 +93,106 @@
                 <div class="member-card__role">عضو الاتحاد</div>
                 <h2 class="member-card__name">{{ member.fullNameAr }}</h2>
                 <div class="member-card__status-pill" [ngClass]="statusClass">
-                  <svg *ngIf="currentStatus === 'active'" width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg
+                    *ngIf="currentStatus === 'active'"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
-                  <svg *ngIf="currentStatus === 'pending'" width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                    <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg
+                    *ngIf="currentStatus === 'pending'"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M12 6v6l4 2"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
-                  <svg *ngIf="currentStatus === 'expired'" width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                    <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <svg
+                    *ngIf="currentStatus === 'expired'"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M12 8v4M12 16h.01"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
                   </svg>
-                  <svg *ngIf="currentStatus === 'cancelled'" width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                    <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <svg
+                    *ngIf="currentStatus === 'cancelled'"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M15 9l-6 6M9 9l6 6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
                   </svg>
-                  <svg *ngIf="currentStatus === 'new'" width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg
+                    *ngIf="currentStatus === 'new'"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
                   </svg>
                   {{ statusLabel }}
                 </div>
-                <div class="member-card__meta" *ngIf="latestApplication?.expiresAt">
+                <div
+                  class="member-card__meta"
+                  *ngIf="latestApplication?.expiresAt"
+                >
                   <div class="member-card__meta-item">
                     <div class="member-card__meta-label">صالح حتى</div>
                     <div class="member-card__meta-value">
@@ -152,7 +230,6 @@
                 <div class="member-card__qr-id">{{ member.membershipId }}</div>
                 <div class="member-card__qr-label">امسح للتحقق من العضوية</div>
               </div>
-
             </div>
           </div>
         </div>
@@ -461,7 +538,7 @@
             *ngFor="let place of filteredPlaces"
             (click)="navigateToVendor(place.id)"
             class="place-card"
-            style="cursor: pointer;"
+            style="cursor: pointer"
           >
             <!-- Image -->
             <div class="place-card__image">
@@ -499,7 +576,12 @@
             </div>
             <!-- Body -->
             <div class="place-card__body">
-              <h4 class="place-card__name" [class]="place.name | vendorNameSize">{{ place.name }}</h4>
+              <h4
+                class="place-card__name"
+                [class]="place.name | vendorNameSize"
+              >
+                {{ place.name }}
+              </h4>
               <div class="place-card__location" *ngIf="place.location">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
                   <path
@@ -714,14 +796,17 @@
         />
       </div>
 
-      <label class="cp-show-toggle">
-        <input
-          type="checkbox"
-          [(ngModel)]="cpShowPasswords"
-          name="cpShowPasswords"
-        />
-        إظهار كلمات المرور
-      </label>
+      <button
+        type="button"
+        class="cp-toggle-btn"
+        (click)="cpShowPasswords = !cpShowPasswords"
+      >
+        <svg
+          [lucideIcon]="cpShowPasswords ? eyeOffIcon : eyeIcon"
+          [size]="16"
+        ></svg>
+        {{ cpShowPasswords ? "إخفاء كلمات المرور" : "إظهار كلمات المرور" }}
+      </button>
 
       <button type="submit" class="auth-btn" [disabled]="isChangingPassword">
         <span *ngIf="!isChangingPassword">تغيير كلمة المرور</span>
