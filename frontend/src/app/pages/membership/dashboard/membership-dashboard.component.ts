@@ -21,6 +21,7 @@ import {
   getVendorIcon,
 } from '../../../data/vendor-icons';
 import { MembershipHeaderComponent } from '../shared/membership-header/membership-header.component';
+import { VendorNameSizePipe } from './vendor-name-size.pipe';
 
 @Component({
   selector: 'app-membership-dashboard',
@@ -33,6 +34,7 @@ import { MembershipHeaderComponent } from '../shared/membership-header/membershi
     DatePipe,
     NgSelectModule,
     MembershipHeaderComponent,
+    VendorNameSizePipe,
   ],
   providers: [provideLucideIcons(...ALL_VENDOR_LUCIDE_ICONS)],
   templateUrl: './membership-dashboard.component.html',

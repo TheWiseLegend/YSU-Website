@@ -499,7 +499,7 @@
             </div>
             <!-- Body -->
             <div class="place-card__body">
-              <h4 class="place-card__name">{{ place.name }}</h4>
+              <h4 class="place-card__name" [class]="place.name | vendorNameSize">{{ place.name }}</h4>
               <div class="place-card__location" *ngIf="place.location">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
                   <path
