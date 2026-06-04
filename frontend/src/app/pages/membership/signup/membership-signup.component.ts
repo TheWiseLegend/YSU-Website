@@ -20,7 +20,6 @@ export class MembershipSignupComponent {
   fullNameEn = '';
   profileImageFile: File | null = null;
   profileImagePreview: string | null = null;
-  dataAgreement = false;
 
   // UI state
   isLoading = false;
@@ -101,11 +100,6 @@ export class MembershipSignupComponent {
     const englishRegex = /^[a-zA-Z\s]+$/;
     if (!englishRegex.test(this.fullNameEn.trim())) {
       this.setError('الاسم بالإنجليزية يجب أن يحتوي على حروف إنجليزية فقط');
-      return;
-    }
-
-    if (!this.dataAgreement) {
-      this.setError('يجب الموافقة على إقرار صحة البيانات');
       return;
     }
 

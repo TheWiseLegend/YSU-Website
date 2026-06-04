@@ -94,7 +94,7 @@ enum MembershipStatus {
 
 model Member {
   id              String   @id @default(cuid())
-  membershipId    String   @unique
+  membershipId    String   @unique @db.VarChar(11)
   email           String   @unique
   password        String
   fullNameAr      String
