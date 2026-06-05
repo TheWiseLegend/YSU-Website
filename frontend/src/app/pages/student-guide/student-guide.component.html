@@ -1,154 +1,480 @@
-<!-- src/app/pages/student-guide/student-guide.component.html -->
-<app-page-header titleFirst="دليل" titleSecond=" الطالب"></app-page-header>
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE HEADER
+════════════════════════════════════════════════════════════ -->
+<app-page-header titleFirst="دليل" titleSecond="الطالب"></app-page-header>
 
-<div class="container">
-  <!-- الإقامة والسكن Section -->
-  <section class="student-section">
-    <h2 class="section-title">الإقامة والسكن</h2>
-    <div class="title-underline"></div>
-    <div class="section-box">
-      <p>
-        تُعد الإقامة من أبرز الأولويات التي يحرص عليها الطالب بعد وصوله إلى ماليزيا. تختلف أنواع السكن المتاحة بحسب المدينة والجامعة، وكذلك حسب الميزانية والإمكانات الشخصية. وتشمل أنواع السكن:
-      </p>
-      <ul>
-        <li><strong>السكن الجامعي</strong>: توفر معظم الجامعات الماليزية غرفًا للطلاب داخل الحرم الجامعي بأسعار تتراوح من 300 إلى 1000 رنجيت شهريًا. يشمل السكن عادةً خدمات مثل الكهرباء، الإنترنت، والتنظيف.</li>
-        <li><strong>الشقق الخاصة</strong>: يختار العديد من الطلاب السكن في شقق خاصة مع زملائهم، وتتميز هذه الشقق بمساحات أكبر وحرية أكثر. تتراوح الأسعار بين 1200 إلى 2500 رنجيت ماليزي شهريًا حسب الموقع والمرافق.</li>
-        <li><strong>السكن المشترك (Shared Apartments)</strong>: خيار مناسب لمن يرغب في خفض التكلفة، حيث يتقاسم السكن عدد من الطلاب، ويتم تقسيم الإيجار والخدمات فيما بينهم.</li>
-      </ul>
-      <p><strong>نصائح مهمة:</strong></p>
-      <ul>
-        <li>اقرأ عقد الإيجار بعناية وتأكد من البنود قبل التوقيع.</li>
+<!-- ═══════════════════════════════════════════════════════════
+     INTRO STRIP
+════════════════════════════════════════════════════════════ -->
+<section class="guide-intro">
+  <div class="container">
+    <p class="guide-intro__text">
+      كل ما تحتاجه كطالب يمني في ماليزيا — من السكن والمواصلات إلى الصحة والتأشيرات — في مكان واحد.
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     1. HOUSING  (bg-card)
+════════════════════════════════════════════════════════════ -->
+<section class="guide-section guide-section--light" id="housing">
+  <div class="container">
+
+    <div class="section-label">
+      <span class="section-label__line"></span>
+      <h2 class="section-title">الإقامة والسكن</h2>
+      <span class="section-label__line"></span>
+    </div>
+
+    <div class="guide-grid guide-grid--3">
+
+      <div class="guide-card">
+        <div class="guide-card__icon">
+          <!-- University building icon -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M3 21h18M3 7l9-4 9 4M5 21V7M19 21V7M9 21V13h6v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="guide-card__title">السكن الجامعي</h3>
+        <p class="guide-card__text">
+          توفر معظم الجامعات الماليزية غرفًا داخل الحرم الجامعي بأسعار تتراوح بين
+          <strong>300 – 1000 رنجيت</strong> شهريًا، وتشمل الكهرباء والإنترنت والتنظيف.
+        </p>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card__icon">
+          <!-- Apartment icon -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8 21V12h8v9M2 9h20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="guide-card__title">الشقق الخاصة</h3>
+        <p class="guide-card__text">
+          توفر مساحات أكبر وحرية أكثر. تتراوح الأسعار بين
+          <strong>1200 – 2500 رنجيت</strong> شهريًا حسب الموقع والمرافق.
+        </p>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-card__icon">
+          <!-- Shared/people icon -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="guide-card__title">السكن المشترك</h3>
+        <p class="guide-card__text">
+          خيار اقتصادي يُتقاسم فيه عدد من الطلاب الإيجار والمرافق، مما يُخفّض التكلفة الفردية بشكل ملحوظ.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="guide-tips">
+      <div class="guide-tips__header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2a7 7 0 0 1 7 7c0 2.8-1.6 5.2-4 6.4V17a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-1.6C6.6 14.2 5 11.8 5 9a7 7 0 0 1 7-7zM9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>نصائح مهمة</span>
+      </div>
+      <ul class="guide-tips__list">
+        <li>اقرأ عقد الإيجار بعناية وتأكد من جميع البنود قبل التوقيع.</li>
         <li>تحقق من قرب السكن من الجامعة أو وسائل النقل العامة.</li>
         <li>استفسر من الطلاب اليمنيين السابقين حول أفضل المناطق وأكثرها أمانًا.</li>
       </ul>
     </div>
-  </section>
 
-  <!-- المواصلات العامة Section -->
-  <section class="student-section">
-    <h2 class="section-title">المواصلات العامة</h2>
-    <div class="title-underline"></div>
-    <div class="section-box">
-      <p>
-        توفر ماليزيا نظام مواصلات عام ممتاز، خاصة في المدن الكبرى مثل كوالالمبور وبينانج. يتيح هذا النظام التنقل بسهولة وبتكلفة منخفضة. تشمل وسائل النقل:
-      </p>
-      <ul>
-        <li><strong>القطارات</strong>: مثل LRT، MRT، KTM، وهي تغطي معظم مناطق المدينة وتُعد وسيلة آمنة وسريعة.</li>
-        <li><strong>الحافلات</strong>: خيار اقتصادي متاح في كافة المدن تقريبًا.</li>
-        <li><strong>تطبيق Grab</strong>: هو الأكثر شهرة في ماليزيا ويوفر خدمة التوصيل الخاصة بأسعار مناسبة.</li>
-      </ul>
-      <p><strong>تكاليف النقل الشهرية:</strong></p>
-      <ul>
-        <li>بطاقة Touch 'n Go تُستخدم في القطارات والباصات.</li>
-        <li>من 1.10 رنجت إلى 6.40 رنجت للرحلات الفردية، وذلك حسب المسافة بين المحطات.</li>
-      </ul>
-      <p><strong>نصائح للتنقل:</strong></p>
-      <ul>
-        <li>استخدام تطبيقات مثل Moovit و Google Maps لتحديد الطريق والوقت.</li>
-        <li>تجنّب أوقات الذروة لتفادي الازدحام.</li>
-      </ul>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     2. TRANSPORT  (bg-muted)
+════════════════════════════════════════════════════════════ -->
+<section class="guide-section guide-section--muted" id="transport">
+  <div class="container">
+
+    <div class="section-label">
+      <span class="section-label__line"></span>
+      <h2 class="section-title">المواصلات العامة</h2>
+      <span class="section-label__line"></span>
     </div>
-  </section>
 
-  <!-- المعيشة والمصاريف اليومية Section -->
-  <section class="student-section">
-    <h2 class="section-title">المعيشة والمصاريف اليومية</h2>
-    <div class="title-underline"></div>
-    <div class="section-box">
-      <p>
-        تُعتبر تكلفة المعيشة في ماليزيا معتدلة مقارنةً بكثير من الدول الأخرى، إلا أن إدارة الميزانية بحكمة أمر ضروري للطلاب.
-      </p>
-      <p><strong>متوسط المصروف الشهري للطالب:</strong></p>
-      <ul>
-        <li>السكن: من 500 إلى 1200 رنجيت</li>
-        <li>الطعام: من 900 إلى 1800 رنجيت</li>
-        <li>المواصلات: من 100 إلى 150 رنجيت</li>
-        <li>الإنترنت والهاتف: من 20 إلى 100 رنجيت</li>
-      </ul>
-      <p><strong>خيارات الطعام:</strong></p>
-      <ul>
+    <div class="guide-grid guide-grid--2-info">
+
+      <!-- Modes of transport -->
+      <div class="guide-info-block">
+        <h3 class="guide-info-block__subtitle">وسائل التنقل</h3>
+        <div class="transport-list">
+
+          <div class="transport-item">
+            <div class="transport-item__badge">LRT · MRT · KTM</div>
+            <div class="transport-item__body">
+              <strong>القطارات</strong>
+              <p>تغطي معظم مناطق كوالالمبور — سريعة وآمنة وبأسعار مناسبة.</p>
+            </div>
+          </div>
+
+          <div class="transport-item">
+            <div class="transport-item__badge">Bus</div>
+            <div class="transport-item__body">
+              <strong>الحافلات</strong>
+              <p>خيار اقتصادي متاح في كافة المدن تقريبًا.</p>
+            </div>
+          </div>
+
+          <div class="transport-item">
+            <div class="transport-item__badge">Grab</div>
+            <div class="transport-item__body">
+              <strong>تطبيق Grab</strong>
+              <p>الأكثر شهرة في ماليزيا، يوفر خدمة التوصيل الخاص بأسعار مناسبة.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Cost + tips -->
+      <div class="guide-info-block">
+        <h3 class="guide-info-block__subtitle">التكاليف والنصائح</h3>
+
+        <div class="cost-badge-row">
+          <div class="cost-badge">
+            <span class="cost-badge__value">1.10 – 6.40</span>
+            <span class="cost-badge__unit">رنجيت / رحلة</span>
+          </div>
+          <p class="cost-badge__note">بطاقة Touch 'n Go تُستخدم في القطارات والباصات</p>
+        </div>
+
+        <div class="guide-tips guide-tips--inline">
+          <div class="guide-tips__header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2a7 7 0 0 1 7 7c0 2.8-1.6 5.2-4 6.4V17a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-1.6C6.6 14.2 5 11.8 5 9a7 7 0 0 1 7-7zM9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>نصائح للتنقل</span>
+          </div>
+          <ul class="guide-tips__list">
+            <li>استخدم <strong>Moovit</strong> أو <strong>Google Maps</strong> لتحديد الطريق والوقت.</li>
+            <li>تجنّب أوقات الذروة للحد من الازدحام.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     3. LIVING COSTS  (bg-card — dark banner)
+════════════════════════════════════════════════════════════ -->
+<section class="guide-section guide-section--dark" id="living">
+  <div class="container">
+
+    <div class="section-label section-label--light">
+      <span class="section-label__line"></span>
+      <h2 class="section-title section-title--light">المعيشة والمصاريف</h2>
+      <span class="section-label__line"></span>
+    </div>
+
+    <p class="guide-dark-intro">
+      تُعتبر تكلفة المعيشة في ماليزيا معتدلة مقارنةً بكثير من الدول الأخرى،
+      غير أن إدارة الميزانية بحكمة أمر ضروري.
+    </p>
+
+    <div class="budget-grid">
+
+      <div class="budget-item">
+        <div class="budget-item__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="budget-item__label">السكن</span>
+        <span class="budget-item__range">500 – 1200 RM</span>
+      </div>
+
+      <div class="budget-item">
+        <div class="budget-item__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="budget-item__label">الطعام</span>
+        <span class="budget-item__range">900 – 1800 RM</span>
+      </div>
+
+      <div class="budget-item">
+        <div class="budget-item__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="4" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8 21l4-3 4 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="budget-item__label">المواصلات</span>
+        <span class="budget-item__range">100 – 150 RM</span>
+      </div>
+
+      <div class="budget-item">
+        <div class="budget-item__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M12 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="budget-item__label">الإنترنت والهاتف</span>
+        <span class="budget-item__range">20 – 100 RM</span>
+      </div>
+
+    </div>
+
+    <div class="guide-tips guide-tips--dark">
+      <div class="guide-tips__header">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2a7 7 0 0 1 7 7c0 2.8-1.6 5.2-4 6.4V17a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-1.6C6.6 14.2 5 11.8 5 9a7 7 0 0 1 7-7zM9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>خيارات الطعام</span>
+      </div>
+      <ul class="guide-tips__list">
         <li>توجد مطاعم عربية ويمنية متوفرة في عدة مناطق.</li>
-        <li>الطعام الماليزي متنوع ورخيص (من 6 إلى 15 رنجيت للوجبة).</li>
-        <li>يُفضل الطهي المنزلي لتوفير المال وتحقيق توازن غذائي أفضل.</li>
+        <li>الطعام الماليزي متنوع ورخيص — من <strong>6 إلى 15 رنجيت</strong> للوجبة.</li>
+        <li>الطهي المنزلي يُوفّر المال ويحقق توازنًا غذائيًا أفضل.</li>
       </ul>
     </div>
-  </section>
 
-  <!-- التأشيرات والإجراءات القانونية Section -->
-  <section class="student-section">
-    <h2 class="section-title">التأشيرات والإجراءات القانونية</h2>
-    <div class="title-underline"></div>
-    <div class="section-box">
-      <p>
-        جميع الطلاب الدوليين في ماليزيا يحتاجون إلى تأشيرة طالب صالحة طوال فترة الدراسة. وتُشرف الجامعات على عملية إصدار وتجديد التأشيرات.
-      </p>
-      <p><strong>ما يجب معرفته:</strong></p>
-      <ul>
-        <li>التأشيرة تصدر بعد قبول الطالب في الجامعة ودفع الرسوم.</li>
-        <li>يجب تجديد التأشيرة قبل انتهائها لتجنّب الغرامات أو الترحيل.</li>
-        <li>في حال تغيير الجامعة أو البرنامج الدراسي، يجب إبلاغ إدارة الهجرة.</li>
-      </ul>
-      <p><strong>نصائح قانونية:</strong></p>
-      <ul>
-        <li>لا تعمل بدون إذن رسمي، حيث إن العمل للطلاب محدود بـ20 ساعة أسبوعيًا خلال اجازة الفصل الدراسي.</li>
-        <li>حافظ على نسخة إلكترونية وورقية من جواز السفر والتأشيرة دائمًا.</li>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     4. VISA  (bg-muted)
+════════════════════════════════════════════════════════════ -->
+<section class="guide-section guide-section--muted" id="visa">
+  <div class="container">
+
+    <div class="section-label">
+      <span class="section-label__line"></span>
+      <h2 class="section-title">التأشيرات والإجراءات القانونية</h2>
+      <span class="section-label__line"></span>
+    </div>
+
+    <div class="guide-grid guide-grid--steps">
+
+      <div class="step-card">
+        <div class="step-card__number">١</div>
+        <h3 class="step-card__title">إصدار التأشيرة</h3>
+        <p class="step-card__text">
+          تصدر التأشيرة بعد قبول الطالب في الجامعة ودفع الرسوم المطلوبة، وتُشرف الجامعة على العملية.
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card__number">٢</div>
+        <h3 class="step-card__title">تجديد التأشيرة</h3>
+        <p class="step-card__text">
+          يجب تجديد التأشيرة قبل انتهائها لتجنّب الغرامات أو الترحيل. راجع الجامعة مسبقًا.
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-card__number">٣</div>
+        <h3 class="step-card__title">تغيير البرنامج</h3>
+        <p class="step-card__text">
+          في حال تغيير الجامعة أو البرنامج الدراسي، يجب إبلاغ إدارة الهجرة فورًا.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="guide-tips">
+      <div class="guide-tips__header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2a7 7 0 0 1 7 7c0 2.8-1.6 5.2-4 6.4V17a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-1.6C6.6 14.2 5 11.8 5 9a7 7 0 0 1 7-7zM9 21h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>نصائح قانونية</span>
+      </div>
+      <ul class="guide-tips__list">
+        <li>لا تعمل بدون إذن رسمي — العمل محدود بـ<strong>20 ساعة أسبوعيًا</strong> خلال إجازة الفصل الدراسي.</li>
+        <li>احتفظ بنسخة إلكترونية وورقية من جواز السفر والتأشيرة دائمًا.</li>
         <li>تواصل مع مكتب الطلاب الدوليين في جامعتك لأي دعم قانوني.</li>
       </ul>
     </div>
-  </section>
 
-  <!-- الرعاية الصحية Section -->
-  <section class="student-section">
-    <h2 class="section-title">الرعاية الصحية</h2>
-    <div class="title-underline"></div>
-    <div class="section-box">
-      <p>
-        تتوفر في ماليزيا مرافق طبية عالية الجودة تشمل المستشفيات الحكومية والخاصة، إلى جانب العيادات الجامعية التي تُقدم خدمات أساسية بأسعار رمزية.
-      </p>
-      <p><strong>التأمين الصحي:</strong></p>
-      <ul>
-        <li>معظم الجامعات توفر تأمينًا طبيًا إلزاميًا للطلاب الأجانب.</li>
-        <li>التأمين يغطي زيارات الطبيب، الفحوصات، وبعض العمليات البسيطة.</li>
-      </ul>
-      <p><strong>أهم المستشفيات في كوالالمبور:</strong></p>
-      <ul>
-        <li>Hospital Kuala Lumpur (HKL)</li>
-        <li>KPJ Damansara Specialist Hospital</li>
-        <li>Prince Court Medical Centre</li>
-      </ul>
-      <p><strong>نصائح صحية:</strong></p>
-      <ul>
-        <li>احتفظ بنسخة من بطاقة التأمين معك دائمًا.</li>
-        <li>في حالة الطوارئ، يمكنك الاتصال بالرقم 999.</li>
-        <li>يُفضل استخدام التطبيقات الطبية مثل <strong>Doctor2U</strong> أو <strong>BookDoc</strong> للحجوزات.</li>
-      </ul>
-    </div>
-  </section>
+  </div>
+</section>
 
-  <!-- الثقافة والمجتمع Section -->
-  <section class="student-section">
-    <h2 class="section-title">الثقافة والمجتمع</h2>
-    <div class="title-underline"></div>
-    <div class="section-box">
-      <p>
-        ماليزيا دولة متعددة الأعراق والثقافات، وتتميز بالتسامح والتنوع. تتكون من ثلاث مجموعات رئيسية: الملايو، والصينيين، والهنود، بالإضافة إلى العديد من الجنسيات الأخرى.
-      </p>
-      <p><strong>الاندماج المجتمعي:</strong></p>
-      <ul>
-        <li>المجتمع الماليزي ودود ويرحب بالضيوف، ويمكن التكيف بسرعة مع نمط الحياة.</li>
-        <li>هناك مساجد متوفرة في كل حي تقريبًا، وتتوفر الأطعمة الحلال بسهولة.</li>
-      </ul>
-      <p><strong>الفعاليات الطلابية:</strong></p>
-      <ul>
-        <li>تُقيم الجامعات أنشطة ثقافية ورياضية وترفيهية تُعزز من تفاعل الطلاب.</li>
-        <li>يُنصح بالمشاركة في أنشطة اتحاد الطلبة اليمنيين لبناء علاقات اجتماعية ودعم نفسي وأكاديمي.</li>
-      </ul>
-      <p><strong>نصائح ثقافية:</strong></p>
-      <ul>
-        <li>احترام العادات المحلية، خاصة في الأماكن العامة.</li>
-        <li>تجنب النقاشات الحساسة المتعلقة بالدين أو العرق.</li>
-        <li>اللباس المحتشم يُعد أمرًا محببًا في العديد من الأماكن العامة.</li>
-      </ul>
+
+<!-- ═══════════════════════════════════════════════════════════
+     5. HEALTH  (bg-card)
+════════════════════════════════════════════════════════════ -->
+<section class="guide-section guide-section--light" id="health">
+  <div class="container">
+
+    <div class="section-label">
+      <span class="section-label__line"></span>
+      <h2 class="section-title">الرعاية الصحية</h2>
+      <span class="section-label__line"></span>
     </div>
-  </section>
-</div>
+
+    <div class="guide-grid guide-grid--2-info">
+
+      <div class="guide-info-block">
+        <h3 class="guide-info-block__subtitle">التأمين الصحي</h3>
+        <ul class="guide-check-list">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            معظم الجامعات توفر تأمينًا طبيًا إلزاميًا للطلاب الأجانب.
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            يغطي التأمين زيارات الطبيب والفحوصات وبعض العمليات البسيطة.
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            احتفظ ببطاقة التأمين معك دائمًا.
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            في حالة الطوارئ اتصل بالرقم <strong>999</strong>.
+          </li>
+        </ul>
+      </div>
+
+      <div class="guide-info-block">
+        <h3 class="guide-info-block__subtitle">أبرز المستشفيات في كوالالمبور</h3>
+        <div class="hospital-list">
+          <div class="hospital-item">
+            <div class="hospital-item__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a8 8 0 1 0 0 16A8 8 0 0 0 12 2zM12 8v4M10 10h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <strong>Hospital Kuala Lumpur (HKL)</strong>
+              <p>أكبر مستشفى حكومي في ماليزيا</p>
+            </div>
+          </div>
+          <div class="hospital-item">
+            <div class="hospital-item__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a8 8 0 1 0 0 16A8 8 0 0 0 12 2zM12 8v4M10 10h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <strong>KPJ Damansara Specialist</strong>
+              <p>مستشفى متخصص خاص</p>
+            </div>
+          </div>
+          <div class="hospital-item">
+            <div class="hospital-item__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a8 8 0 1 0 0 16A8 8 0 0 0 12 2zM12 8v4M10 10h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <strong>Prince Court Medical Centre</strong>
+              <p>مستشفى متخصص راقٍ</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-tags">
+          <span class="app-tag">Doctor2U</span>
+          <span class="app-tag">BookDoc</span>
+          <span class="app-tag__label">للحجوزات الطبية</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     6. CULTURE  (bg-muted)
+════════════════════════════════════════════════════════════ -->
+<section class="guide-section guide-section--muted" id="culture">
+  <div class="container">
+
+    <div class="section-label">
+      <span class="section-label__line"></span>
+      <h2 class="section-title">الثقافة والمجتمع</h2>
+      <span class="section-label__line"></span>
+    </div>
+
+    <div class="culture-intro">
+      <p>
+        ماليزيا دولة متعددة الأعراق والثقافات، وتتميز بالتسامح والتنوع. تتكون من ثلاث مجموعات رئيسية:
+        الملايو والصينيين والهنود، بالإضافة إلى العديد من الجنسيات الأخرى.
+      </p>
+    </div>
+
+    <div class="guide-grid guide-grid--3">
+
+      <div class="culture-card">
+        <div class="culture-card__icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="culture-card__title">الاندماج المجتمعي</h3>
+        <p class="culture-card__text">
+          المجتمع الماليزي ودود ويرحب بالضيوف. المساجد متوفرة في كل حي والأطعمة الحلال متاحة بسهولة.
+        </p>
+      </div>
+
+      <div class="culture-card">
+        <div class="culture-card__icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="culture-card__title">الفعاليات الطلابية</h3>
+        <p class="culture-card__text">
+          تُقيم الجامعات أنشطة ثقافية ورياضية وترفيهية. الانضمام لاتحاد الطلبة اليمنيين يبني علاقات ودعمًا متبادلًا.
+        </p>
+      </div>
+
+      <div class="culture-card">
+        <div class="culture-card__icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="culture-card__title">النصائح الثقافية</h3>
+        <p class="culture-card__text">
+          احترم العادات المحلية، تجنّب النقاشات الحساسة في الدين والعرق، واللباس المحتشم محبّب في الأماكن العامة.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     CTA STRIP
+════════════════════════════════════════════════════════════ -->
+<div class="guide-cta-spacer"></div>
+<section class="guide-cta-section">
+  <div class="container">
+    <div class="guide-cta">
+      <h2 class="guide-cta__title">تحتاج مساعدة؟ نحن هنا</h2>
+      <p class="guide-cta__text">
+        تواصل مع اتحاد الطلبة اليمنيين في ماليزيا — سواء كنت قادمًا جديدًا أو طالبًا محتاجًا لدعم.
+      </p>
+      <a routerLink="/contact" class="guide-cta__btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        تواصل معنا
+      </a>
+    </div>
+  </div>
+</section>
