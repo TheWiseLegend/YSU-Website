@@ -1,16 +1,38 @@
-<div class="university-card">
-  <img [src]="university.logo" alt="{{ university.name }}">
-  <h3>{{ university.name }}</h3>
-  <p class="location">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M12 22C16 18 20 14.4183 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 14.4183 8 18 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    {{ university.location }}
-  </p>
-  <p class="details">
-    <span class="university-type">{{ university.type }}</span>
-    <span class="fee">{{ university.tuitionFee.toLocaleString() }} RM / سنوياً</span>
-  </p>
-  <button class="details-button" [routerLink]="['/universities', university.id]">المزيد من التفاصيل</button>
-</div>
+<article class="uni-card">
+
+  <!-- Logo area -->
+  <div class="uni-card__logo">
+    <img [src]="university.logo" [alt]="university.name" loading="lazy">
+  </div>
+
+  <!-- Body -->
+  <div class="uni-card__body">
+
+    <div class="uni-card__type-badge">{{ university.type }}</div>
+
+    <h3 class="uni-card__name">{{ university.name }}</h3>
+
+    <div class="uni-card__meta">
+      <span class="uni-card__location">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+          <path d="M12 13C13.657 13 15 11.657 15 10S13.657 7 12 7 9 8.343 9 10s1.343 3 3 3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 22C16 18 20 14.418 20 10 20 5.582 16.418 2 12 2S4 5.582 4 10c0 4.418 4 8 8 12z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ university.location }}
+      </span>
+      <span class="uni-card__fee">{{ university.tuitionFee.toLocaleString() }} RM / سنوياً</span>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="uni-card__footer">
+    <a [routerLink]="['/universities', university.id]" class="uni-card__link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      تفاصيل الجامعة
+    </a>
+  </div>
+
+</article>
