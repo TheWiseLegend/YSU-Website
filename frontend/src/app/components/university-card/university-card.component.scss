@@ -63,10 +63,13 @@
   line-height: 1.4;
   margin: 0;
   transition: color 0.3s ease;
+  // Clamp to exactly 2 lines so all cards have the same body height
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  // Reserve space for 2 lines even when text is short
+  min-height: calc(1.05rem * 1.4 * 2);
 }
 
 .uni-card__meta {
@@ -107,6 +110,11 @@
   font-weight: 700;
   color: var(--primary-light);
   text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: 'Tajawal', sans-serif;
   transition: gap 0.3s ease, color 0.3s ease;
 
   &:hover {

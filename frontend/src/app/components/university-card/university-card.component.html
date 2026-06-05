@@ -27,12 +27,12 @@
 
   <!-- Footer -->
   <div class="uni-card__footer">
-    <a [routerLink]="['/universities', university.id]" class="uni-card__link">
+    <button type="button" class="uni-card__link" (click)="navigate()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
         <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       تفاصيل الجامعة
-    </a>
+    </button>
   </div>
 
 </article>

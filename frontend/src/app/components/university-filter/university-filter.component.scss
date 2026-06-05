@@ -8,18 +8,57 @@
   gap: 20px;
 }
 
-// ── Filter header ────────────────────────────────────────
+// ── Filter header ─────────────────────────────────────────
 .filter-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   padding-bottom: 18px;
   border-bottom: 2px solid var(--border);
   font-size: 1rem;
   font-weight: 800;
   color: var(--text);
+  // Not clickable on desktop (chevron hidden)
+  cursor: default;
+}
+
+.filter-header__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 
   svg { color: var(--primary-light); flex-shrink: 0; }
+}
+
+.filter-header__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--primary-light);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+// Chevron — hidden on desktop, shown on mobile
+.filter-header__chevron {
+  display: none;
+  color: var(--primary-light);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+
+  &.open { transform: rotate(180deg); }
+}
+
+// filter-body — always visible on desktop, collapsible on mobile
+.filter-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 // ── Vertical divider between groups ──────────────────────
@@ -402,8 +441,46 @@
 
 // ── Responsive ───────────────────────────────────────────
 @media (max-width: 768px) {
+  .filter-section {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .filter-header {
+    cursor: pointer;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .filter-header__chevron {
+    display: block;
+  }
+
+  // Once open, restore normal cursor for the content area
+  .filter-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    gap: 0;
+    padding-top: 0;
+    // Allow text selection inside form elements when open
+    cursor: auto;
+    user-select: auto;
+    -webkit-user-select: auto;
+
+    &.mobile-open {
+      max-height: 2400px;
+      padding-top: 20px;
+      gap: 20px;
+    }
+  }
+
   .filter-row {
     gap: 12px;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .filter-divider {
@@ -415,6 +492,12 @@
   }
 
   .input-field input {
-    width: 100px;
+    width: 100%;
+  }
+
+  .range-inputs {
+    width: 100%;
+
+    .input-field { flex: 1; }
   }
 }

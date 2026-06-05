@@ -1,12 +1,16 @@
 // src/app/pages/universities/universities.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { UniversityCardComponent } from '../../components/university-card/university-card.component';
 import { UniversityFilterComponent } from '../../components/university-filter/university-filter.component';
 import { UNIVERSITIES } from '../../data/universities-data';
 import { University } from '../../models/university.model';
 import { UniversityFilter } from '../../models/university-filter.model';
+
+const FILTER_STORAGE_KEY = 'universities_filter';
 
 @Component({
   selector: 'app-universities',
@@ -15,82 +19,110 @@ import { UniversityFilter } from '../../models/university-filter.model';
     CommonModule,
     PageHeaderComponent,
     UniversityCardComponent,
-    UniversityFilterComponent
+    UniversityFilterComponent,
   ],
   templateUrl: './universities.component.html',
-  styleUrls: ['./universities.component.scss']
+  styleUrls: ['./universities.component.scss'],
 })
-export class UniversitiesComponent implements OnInit {
-  // All universities from our data
+export class UniversitiesComponent implements OnInit, AfterViewInit {
   universities = UNIVERSITIES;
-  
-  // Filtered universities to display
   filteredUniversities: University[] = [];
-  
-  // Current active filters
   activeFilter: UniversityFilter = {};
-  
+
+  /** Passed down to the filter component so it can pre-tick restored state */
+  initialFilter: UniversityFilter = {};
+
+  private pendingScrollY: number | null = null;
+
+  constructor(
+    private router: Router,
+    private location: Location,
+  ) {}
+
   ngOnInit(): void {
-    // Initialize with all universities
-    this.filteredUniversities = [...this.universities];
+    // ── Restore filter from sessionStorage ──────────────────
+    const saved = sessionStorage.getItem(FILTER_STORAGE_KEY);
+    if (saved) {
+      try {
+        this.initialFilter = JSON.parse(saved) as UniversityFilter;
+        this.activeFilter = { ...this.initialFilter };
+      } catch {
+        this.initialFilter = {};
+      }
+    }
+
+    this.applyFilters();
+
+    // ── Stash the scroll target for AfterViewInit ────────────
+    const scrollY = history.state?.scrollY;
+    if (scrollY) {
+      this.pendingScrollY = scrollY;
+    }
   }
-  
-  // Handle filter changes
+
+  ngAfterViewInit(): void {
+    // DOM is fully rendered — now safe to scroll
+    if (this.pendingScrollY !== null) {
+      const target = this.pendingScrollY;
+      this.pendingScrollY = null;
+      // rAF ensures the browser has painted the layout before we jump
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: target, behavior: 'instant' as ScrollBehavior });
+      });
+    }
+  }
+
+  // ── Called by the filter component on every change ───────
   onFiltersChanged(filters: UniversityFilter): void {
-    console.log('Filters changed:', filters);
     this.activeFilter = filters;
     this.applyFilters();
+    sessionStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(filters));
   }
-  
-  // Apply filters to universities list
+
+  // ── Navigate to detail, saving scroll position first ─────
+  navigateToUniversity(universityId: string): void {
+    const currentState = { ...history.state, scrollY: window.scrollY };
+    this.location.replaceState(this.location.path(true), '', currentState);
+    this.router.navigate(['/universities', universityId]);
+  }
+
   private applyFilters(): void {
-    console.log('Applying filters...');
-    this.filteredUniversities = this.universities.filter(university => {
-      // Start with assuming this university passes all filters
-      let matchesFilter = true;
-      
-      // Filter by city
-      if (this.activeFilter.city && this.activeFilter.city.trim() !== '') {
-        matchesFilter = matchesFilter && university.location === this.activeFilter.city;
+    this.filteredUniversities = this.universities.filter((university) => {
+      let match = true;
+
+      if (this.activeFilter.city?.trim()) {
+        match = match && university.location === this.activeFilter.city;
       }
-      
-      // Filter by type
-      if (this.activeFilter.types && this.activeFilter.types.length > 0) {
-        matchesFilter = matchesFilter && this.activeFilter.types.includes(university.type);
+
+      if (this.activeFilter.types?.length) {
+        match = match && this.activeFilter.types.includes(university.type);
       }
-      
-      // Filter by tuition fee range
+
       if (this.activeFilter.minFee !== undefined) {
-        matchesFilter = matchesFilter && university.tuitionFee >= this.activeFilter.minFee;
+        match = match && university.tuitionFee >= this.activeFilter.minFee;
       }
-      
+
       if (this.activeFilter.maxFee !== undefined) {
-        matchesFilter = matchesFilter && university.tuitionFee <= this.activeFilter.maxFee;
+        match = match && university.tuitionFee <= this.activeFilter.maxFee;
       }
-      
-      // Filter by language
-      if (this.activeFilter.languages && this.activeFilter.languages.length > 0) {
-        matchesFilter = matchesFilter && this.hasCommonElement(university.language, this.activeFilter.languages);
+
+      if (this.activeFilter.languages?.length) {
+        match = match && this.hasCommonElement(university.language, this.activeFilter.languages);
       }
-      
-      // Filter by courses
-      if (this.activeFilter.courses && this.activeFilter.courses.length > 0) {
-        matchesFilter = matchesFilter && this.hasCommonElement(university.courses, this.activeFilter.courses);
+
+      if (this.activeFilter.courses?.length) {
+        match = match && this.hasCommonElement(university.courses, this.activeFilter.courses);
       }
-      
-      // Filter by union branch
+
       if (this.activeFilter.hasUnionBranch) {
-        matchesFilter = matchesFilter && university.hasUnionBranch;
+        match = match && university.hasUnionBranch;
       }
-      
-      return matchesFilter;
+
+      return match;
     });
-    
-    console.log('Filtered universities:', this.filteredUniversities.length);
   }
-  
-  // Helper method to check if two arrays have at least one common element
-  private hasCommonElement(array1: string[], array2: string[]): boolean {
-    return array1.some(item => array2.includes(item));
+
+  private hasCommonElement(a: string[], b: string[]): boolean {
+    return a.some((item) => b.includes(item));
   }
 }

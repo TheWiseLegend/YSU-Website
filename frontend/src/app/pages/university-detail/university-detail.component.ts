@@ -2,6 +2,7 @@
   import { Component, OnInit } from '@angular/core';
   import { CommonModule } from '@angular/common';
   import { ActivatedRoute, RouterModule } from '@angular/router';
+  import { Location } from '@angular/common';
   import { PageHeaderComponent } from '../../components/page-header/page-header.component';
   import { UNIVERSITY_DETAILS } from '../../data/university-details';
   import { UniversityDetail } from '../../models/university-detail.model';
@@ -18,13 +19,12 @@
     selectedUniversity: UniversityDetail | null = null;
     notFound: boolean = false;
 
-    constructor(private route: ActivatedRoute) {}
+    constructor(private route: ActivatedRoute, private location: Location) {}
 
     ngOnInit(): void {
-      // Get the university ID from the route parameters
       this.route.paramMap.subscribe(params => {
         this.universityId = params.get('id');
-        
+
         if (this.universityId) {
           const universityKeys = Object.keys(UNIVERSITY_DETAILS);
           if (universityKeys.includes(this.universityId)) {
@@ -36,5 +36,9 @@
           }
         }
       });
+    }
+
+    goBack(): void {
+      this.location.back();
     }
   }

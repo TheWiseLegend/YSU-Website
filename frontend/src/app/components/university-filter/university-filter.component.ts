@@ -1,8 +1,10 @@
 // src/app/components/university-filter/university-filter.component.ts
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, SimpleChanges, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UniversityFilter } from '../../models/university-filter.model';
+
+const FILTER_UI_KEY = 'universities_filter_ui';
 
 @Component({
   selector: 'app-university-filter',
@@ -11,7 +13,8 @@ import { UniversityFilter } from '../../models/university-filter.model';
   templateUrl: './university-filter.component.html',
   styleUrls: ['./university-filter.component.scss']
 })
-export class UniversityFilterComponent {
+export class UniversityFilterComponent implements OnChanges {
+  @Input() initialFilter: UniversityFilter = {};
   @Output() filtersChanged = new EventEmitter<UniversityFilter>();
   
   // Initial filter state
@@ -141,6 +144,86 @@ export class UniversityFilterComponent {
 
   // Expanded courses view
   coursesExpanded = false;
+
+  // Mobile: whether the whole filter panel is open
+  mobileFilterOpen = false;
+
+  toggleMobileFilter(): void {
+    this.mobileFilterOpen = !this.mobileFilterOpen;
+    // Persist so back-navigation restores the same height
+    sessionStorage.setItem(FILTER_UI_KEY, JSON.stringify({ open: this.mobileFilterOpen }));
+  }
+
+  /** Toggle the mobile panel when the outer box is clicked,
+   *  but ignore clicks that originate from interactive elements
+   *  (inputs, selects, buttons, labels) so they keep working. */
+  onSectionClick(event: MouseEvent): void {
+    // Only act on mobile breakpoint
+    if (window.innerWidth > 768) return;
+    // If the panel is open, clicks inside interactive elements should not close it
+    const tag = (event.target as HTMLElement).tagName.toLowerCase();
+    const interactive = ['input', 'select', 'button', 'label', 'option', 'textarea'];
+    if (interactive.includes(tag)) return;
+    // Also ignore clicks inside the open filter-body (so interacting with the content doesn't toggle it)
+    const body = (event.currentTarget as HTMLElement).querySelector('.filter-body');
+    if (this.mobileFilterOpen && body && body.contains(event.target as Node)) return;
+    this.toggleMobileFilter();
+  }
+
+  get activeFilterCount(): number {
+    let count = 0;
+    if (this.filter.city) count++;
+    if (this.filter.minFee !== undefined) count++;
+    if (this.filter.maxFee !== undefined) count++;
+    if (this.filter.hasUnionBranch) count++;
+    if (this.filter.types?.length) count += this.filter.types.length;
+    if (this.filter.languages?.length) count += this.filter.languages.length;
+    if (this.filter.courses?.length) count += this.filter.courses.length;
+    return count;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['initialFilter']) return;
+    const f = changes['initialFilter'].currentValue as UniversityFilter;
+    if (!f || Object.keys(f).length === 0) return;
+
+    if (f.city) this.filter.city = f.city;
+    if (f.minFee !== undefined) this.filter.minFee = f.minFee;
+    if (f.maxFee !== undefined) this.filter.maxFee = f.maxFee;
+    if (f.hasUnionBranch) this.filter.hasUnionBranch = true;
+
+    if (f.types?.length) {
+      this.filter.types = [...f.types];
+      this.typeOptions.forEach(o => { o.checked = f.types!.includes(o.value); });
+    }
+
+    if (f.languages?.length) {
+      this.filter.languages = [...f.languages];
+      this.languageOptions.forEach(o => { o.checked = f.languages!.includes(o.value); });
+    }
+
+    if (f.courses?.length) {
+      this.filter.courses = [...f.courses];
+      this.courseCategories.forEach(cat => {
+        cat.courses.forEach(c => { c.checked = f.courses!.includes(c.value); });
+        if (cat.courses.some(c => c.checked)) cat.expanded = true;
+      });
+      this.coursesExpanded = true;
+    }
+
+    // Restore mobile open state so page height matches what it was when the user left
+    const uiState = sessionStorage.getItem(FILTER_UI_KEY);
+    if (uiState) {
+      try {
+        this.mobileFilterOpen = JSON.parse(uiState).open ?? true;
+      } catch {
+        this.mobileFilterOpen = true;
+      }
+    } else {
+      // First visit with filters — open so the user sees their restored state
+      this.mobileFilterOpen = true;
+    }
+  }
   
   // Method to toggle courses view
   toggleCoursesView() {
@@ -230,9 +313,10 @@ export class UniversityFilterComponent {
       courses: [],
       hasUnionBranch: false
     };
-    
-    // Emit the reset filters
-    console.log("Filters reset");
+
+    // Clear persisted UI state so a fresh visit starts collapsed
+    sessionStorage.removeItem(FILTER_UI_KEY);
+
     this.emitFilters();
   }
 

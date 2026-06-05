@@ -8,7 +8,9 @@
 ════════════════════════════════════════════════════════════ -->
 <section class="filter-section">
   <div class="container">
-    <app-university-filter (filtersChanged)="onFiltersChanged($event)"></app-university-filter>
+    <app-university-filter
+      [initialFilter]="initialFilter"
+      (filtersChanged)="onFiltersChanged($event)"></app-university-filter>
   </div>
 </section>
 
@@ -28,7 +30,8 @@
     <div class="university-grid" *ngIf="filteredUniversities.length > 0">
       <app-university-card
         *ngFor="let uni of filteredUniversities"
-        [university]="uni">
+        [university]="uni"
+        (cardClick)="navigateToUniversity($event)">
       </app-university-card>
     </div>
 

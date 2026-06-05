@@ -12,7 +12,7 @@
       </div>
       <h2>الجامعة غير متوفرة</h2>
       <p>عذراً، لم نتمكن من العثور على معلومات الجامعة المطلوبة.</p>
-      <a routerLink="/universities" class="btn-outline">
+      <a class="btn-outline" (click)="goBack()" style="cursor:pointer">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
           <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -282,7 +282,7 @@
   <!-- ── Back button ───────────────────────────────── -->
   <section class="back-section">
     <div class="container">
-      <a routerLink="/universities" class="btn-outline">
+      <a class="btn-outline" (click)="goBack()" style="cursor:pointer">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
           <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
