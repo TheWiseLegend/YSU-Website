@@ -59,10 +59,20 @@
 }
 
 .about-mission__copy {
-  // section-label inside copy — left-align the lines+title
+  // section-label inside copy — left-align the lines+title on desktop
   .section-label {
     justify-content: flex-start;
     margin-bottom: 24px;
+  }
+
+  // Center on mobile when the grid stacks
+  @media (max-width: 1024px) {
+    .section-label {
+      justify-content: center;
+    }
+
+    h3 { text-align: center; }
+    p  { text-align: center; }
   }
 
   h3 {

@@ -60,8 +60,6 @@
   background: var(--secondary);
   border-radius: var(--radius-xl);
   padding: 40px 36px 44px;
-  position: sticky;
-  top: 100px;
   overflow: hidden;
   min-width: 0;
 
@@ -378,10 +376,6 @@
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 32px;
-  }
-
-  .info-panel {
-    position: static;
   }
 }
 

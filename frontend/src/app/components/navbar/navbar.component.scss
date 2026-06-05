@@ -7,8 +7,9 @@
   z-index: 1000;
   direction: rtl;
   background-color: transparent;
-  box-shadow: none;
-  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0);  // pre-rendered at 0 opacity — no layout shift
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  will-change: background-color;
 
   // ── Scrolled — solid white ───────────────────────────────
   &.scrolled {
