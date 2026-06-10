@@ -1,14 +1,95 @@
 // ─── Light-mode gradient headline override ───────────────────────────
-// The blue→white→gold gradient reads poorly on light bg.
-// On light we use a strong navy→primary gradient instead.
+// On light mode, gradient titles are unreadable. Use solid dark text instead.
 :root[data-theme="light"] {
-  --gradient-headline: linear-gradient(120deg, #1e2d4a 0%, #3d5fa8 50%, #c9a84c 100%);
+  --gradient-headline: linear-gradient(120deg, #1e2d4a 0%, #1e2d4a 100%);
+  --gradient-hairline: linear-gradient(90deg, transparent, rgba(201,168,76,0.7), transparent);
+}
+
+// Gradient clip produces transparent text — override to solid on light mode.
+// :host-context ensures this works with Angular's scoped SCSS.
+:host-context([data-theme="light"]) {
+  .section-title,
+  .about-title {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    color: var(--ink) !important;
+    filter: none !important;
+  }
+}
+
+// ─── Light-mode section overrides ────────────────────────────────────
+// :host-context works inside Angular component SCSS with default encapsulation.
+// Events and Stats use --secondary (navy) in dark — must flip to light surfaces.
+// About and News use --bg (white/muted) — dot patterns must be toned down.
+
+:host-context([data-theme="light"]) {
+  // ── Events section: navy → light muted ──
+  .events-section {
+    background: var(--bg-muted) !important;
+    &::before { opacity: 0.08 !important; }
+  }
+  .events-glow { opacity: 0.35 !important; }
+
+  // ── Stats section: navy → white card ──
+  .stats-section {
+    background: var(--bg-card) !important;
+    border-top: 1px solid var(--border) !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+  .stats-grid-bg {
+    background-image:
+      linear-gradient(rgba(81,116,185,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(81,116,185,0.08) 1px, transparent 1px) !important;
+    opacity: 1 !important;
+  }
+  .stat-item__value { color: var(--text) !important; }
+  .stat-item__suffix { color: var(--primary-light) !important; }
+  .stat-item__label { color: var(--text-muted) !important; }
+
+  // ── About section: reduce dot pattern on white bg ──
+  .about-section::before { opacity: 0.1 !important; }
+  .about-blob--top  { background: rgba(61,95,168,0.08) !important; }
+  .about-blob--bottom { background: rgba(201,168,76,0.05) !important; }
+  // Outer emblem ring barely visible on light bg — use primary tint
+  .about-emblem__ring--outer { border-color: rgba(61,95,168,0.25) !important; }
+
+  // ── News section: use bg-muted to separate from About ──
+  .news-section {
+    background: var(--bg-muted) !important;
+    &::before { opacity: 0.08 !important; }
+  }
+  .news-glow { opacity: 0.25 !important; }
+
+  // ── btn-outline: use primary color on light bg ──
+  .btn-outline {
+    border-color: var(--primary-light) !important;
+    color: var(--primary-light) !important;
+    &:hover {
+      background: var(--primary-light) !important;
+      color: #fff !important;
+      border-color: var(--primary-light) !important;
+    }
+  }
+
+  // ── Event card date badge: solid white on light bg ──
+  .event-card__date {
+    background: #fff !important;
+    border-color: var(--border) !important;
+    backdrop-filter: none !important;
+  }
+
+  // ── Title glow: remove on light (already handled by solid color above) ──
+  // (no-op — solid color set in the gradient override block above)
 }
 
 
+// ═══════════════════════════════════════════════════════════
+// HERO SECTION
+// ═══════════════════════════════════════════════════════════
+
 .hero-section {
   position: relative;
-  // Desktop: dvh works fine
   height: calc(100dvh + 80px);
   min-height: calc(600px + 80px);
   width: 100%;
@@ -17,10 +98,11 @@
   -webkit-user-select: none;
   margin-top: -80px;
   margin-bottom: -1px;
+  // Theme-aware base: dot pattern on the page background colour
+  // Dark → navy canvas with blue dots; Light → white canvas with faint dots
+  background-color: var(--bg);
 
   @media (max-width: 768px) {
-    // Mobile: use the CSS variable set by JS (actual window.innerHeight)
-    // Falls back to 100svh if JS hasn't run yet
     height: calc(var(--vh, 1svh) * 100 + 70px);
     min-height: calc(560px + 70px);
     margin-top: -70px;
@@ -33,6 +115,7 @@
   inset: 0;
   opacity: 0;
   transition: opacity 1400ms ease-in-out;
+  z-index: 2;
 
   &.active {
     opacity: 1;
@@ -51,58 +134,70 @@
   object-fit: cover;
 }
 
-// RTL gradient — symmetric for centered layout
+// RTL gradient — sits above slides, darkens center-to-bottom for text legibility
 .hero-slide__grad-rtl {
   position: absolute;
   inset: 0;
+  z-index: 3;
   background: linear-gradient(
     to bottom,
-    rgba(20, 30, 48, 0.35) 0%,
-    rgba(20, 30, 48, 0.55) 50%,
-    rgba(20, 30, 48, 0.35) 100%
+    rgba(20, 30, 48, 0.25) 0%,
+    rgba(20, 30, 48, 0.45) 50%,
+    rgba(20, 30, 48, 0.25) 100%
   );
 }
 
 .hero-slide__grad-bottom {
   position: absolute;
   inset: 0;
+  z-index: 3;
   background: linear-gradient(
     to top,
-    rgba(20, 30, 48, 0.75) 0%,
+    rgba(20, 30, 48, 0.65) 0%,
     transparent 50%,
-    rgba(20, 30, 48, 0.28) 100%
+    rgba(20, 30, 48, 0.20) 100%
   );
 }
 
-// Dot pattern overlay
+// Dot pattern overlay — sits between bg and slides
+// Theme-aware: dark mode uses blue dots, light mode uses softer primary dots
 .hero-pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.6;
-  pointer-events: none;
   z-index: 1;
+  pointer-events: none;
+  // Dark mode: visible blue dots on navy
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.35) 1px, transparent 0);
+  background-size: 28px 28px;
+  opacity: 1;
 }
 
-// Corner vignette — darkens edges, dark mode only
+:host-context([data-theme="light"]) .hero-pattern {
+  // Light mode: softer dots on white — still visible but gentle
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(61,95,168,0.18) 1px, transparent 0);
+}
+
+// Corner vignette — different per theme, sits above slides
 .hero-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 30%, #141e30 85%);
   pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-
-  :root[data-theme="dark"] & {
-    opacity: 1;
-  }
+  z-index: 3;
+  // Dark mode: deep navy vignette
+  background: radial-gradient(ellipse at center, transparent 25%, rgba(20, 30, 48, 0.80) 80%);
 }
 
-// Soft radial glows
+// Light mode: soft white bloom at edges — subtle, not blinding
+:host-context([data-theme="light"]) .hero-vignette {
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(240, 244, 249, 0.30) 100%);
+}
+
+// Soft radial glows — above slides
 .hero-glow {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 3;
 
   &--top {
     top: -160px;
@@ -128,12 +223,10 @@
 .hero-content {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: center;
-  // No padding — let the absolute positioning handle true center
-  // The navbar is fixed/transparent so it doesn't push content
 }
 
 .hero-body {
@@ -270,8 +363,9 @@
 .hero-controls {
   position: absolute;
   bottom: 0;
-  inset-x: 0;
-  z-index: 3;
+  left: 0;
+  right: 0;
+  z-index: 4;
   padding-bottom: 32px;
 }
 
