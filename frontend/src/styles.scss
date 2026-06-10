@@ -8,7 +8,24 @@
 }
 
 /* ─── Design Tokens ─────────────────────────────────────────── */
+
+/* Theme-independent tokens (same in both themes) */
 :root {
+  /* Gradient tokens */
+  --gradient-headline: linear-gradient(120deg, #7a9dd4 0%, #ffffff 45%, #dfc070 100%);
+  --gradient-hairline: linear-gradient(90deg, transparent, rgba(201,168,76,0.6), transparent);
+
+  /* Radius */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  28px;
+  --radius-full: 9999px;
+}
+
+/* Light theme (default) */
+:root,
+:root[data-theme="light"] {
   /* Brand palette */
   --primary:        #3d5fa8;
   --primary-light:  #5174b9;
@@ -16,6 +33,7 @@
   --secondary:      #1e2d4a;   /* deep navy — used as dark section bg */
   --ink:            #141e30;   /* near-black for text on light */
   --gold:           #c9a84c;   /* accent gold */
+  --gold-light:     #dfc070;
   --accent:         #c0392b;   /* Yemen red accent */
 
   /* Legacy aliases — keep old pages working */
@@ -43,12 +61,80 @@
   --shadow-elegant: 0 24px 60px -16px rgba(20, 30, 48, 0.22);
   --shadow-glow:    0 0 50px rgba(81, 116, 185, 0.28);
 
-  /* Radius */
-  --radius-sm:  8px;
-  --radius-md:  12px;
-  --radius-lg:  20px;
-  --radius-xl:  28px;
-  --radius-full: 9999px;
+  /* Glass surface (light = solid card) */
+  --glass-bg:     var(--bg-card);
+  --glass-border: var(--border);
+  --glass-blur:   none;
+}
+
+/* Dark theme */
+:root[data-theme="dark"] {
+  --primary:        #3d5fa8;
+  --primary-light:  #5174b9;
+  --primary-glow:   #7a9dd4;
+  --secondary:      #1e2d4a;
+  --ink:            #141e30;
+  --gold:           #c9a84c;
+  --gold-light:     #dfc070;
+  --accent:         #c0392b;
+
+  /* Surfaces */
+  --bg:             #141e30;
+  --bg-card:        #1e2d4a;
+  --bg-muted:       #101a2e;
+
+  /* Text */
+  --text:           #ffffff;
+  --text-muted:     rgba(255,255,255,0.72);
+  --text-light:     rgba(255,255,255,0.40);
+
+  /* Borders */
+  --border:         rgba(81,116,185,0.28);
+
+  /* Shadows */
+  --shadow-card:    0 8px 30px -8px rgba(0,0,0,0.45);
+  --shadow-elegant: 0 24px 60px -16px rgba(20,30,48,0.45);
+  --shadow-glow:    0 0 50px rgba(81,116,185,0.28);
+
+  /* Glass surface (dark = translucent) */
+  --glass-bg:     rgba(255,255,255,0.03);
+  --glass-border: rgba(81,116,185,0.28);
+  --glass-blur:   blur(6px);
+}
+
+/* ─── Utility Classes ───────────────────────────────────────── */
+
+// Gradient headline text
+.title-gradient {
+  background: var(--gradient-headline);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 30px rgba(122,157,212,0.35));
+}
+
+// Hairline divider (thin gradient line)
+.hairline {
+  height: 1px;
+  background: var(--gradient-hairline);
+  border: none;
+}
+
+// Dot pattern overlays
+.dot-pattern {
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+.dot-pattern-faint {
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.10) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+// Glass card surface
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
 }
 
 /* ─── Keyframes ─────────────────────────────────────────────── */
@@ -78,6 +164,56 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ─── Animation keyframes (rebrand motifs) ──────────────────── */
+@keyframes spin-slow-kf {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse-kf {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+@keyframes pulse-glow-kf {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 0.9; transform: scale(1.05); }
+}
+
+@keyframes fade-up-kf {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ken-burns-kf {
+  from { transform: scale(1.05); }
+  to   { transform: scale(1.18); }
+}
+
+@keyframes orbit-kf {
+  from { transform: rotate(0deg) translateX(var(--orbit-r, 90px)) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(var(--orbit-r, 90px)) rotate(-360deg); }
+}
+
+/* Animation utility classes */
+.spin-slow    { animation: spin-slow-kf 28s linear infinite; }
+.spin-reverse { animation: spin-reverse-kf 38s linear infinite; }
+.pulse-glow   { animation: pulse-glow-kf 4s ease-in-out infinite; }
+.fade-up      { animation: fade-up-kf 1s ease-out both; }
+.ken-burns    { animation: ken-burns-kf 8s ease-out both; }
+.orbit        { animation: orbit-kf 14s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-slow,
+  .spin-reverse,
+  .pulse-glow,
+  .fade-up,
+  .ken-burns,
+  .orbit {
+    animation: none !important;
+  }
 }
 
 /* ─── Base ──────────────────────────────────────────────────── */

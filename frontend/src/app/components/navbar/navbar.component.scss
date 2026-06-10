@@ -11,45 +11,55 @@
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   will-change: background-color;
 
-  // ── Scrolled — solid white ───────────────────────────────
+  // ── Scrolled — solid (reads from tokens) ────────────────
   &.scrolled {
-    background-color: #fff;
+    background-color: var(--bg-card);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 
-    .menu-toggle span { background-color: #333; }
+    .menu-toggle span { background-color: var(--text); }
 
     .membership-btn {
-      background: #5174b9;
-      border-color: #5174b9;
+      background: var(--primary-light);
+      border-color: var(--primary-light);
       color: #fff !important;
       backdrop-filter: none;
-      &:hover { background: #3f5a8f; }
+      &:hover { background: var(--primary); }
     }
 
-    // Nav links — dark text on white
+    // Nav links — themed text on solid bg
     .nav-links ul li a {
-      color: #333 !important;
+      color: var(--text) !important;
 
-      &::after { background: #5174b9; }
+      &::after { background: var(--primary-light); }
 
       &:hover, &.active {
-        color: #5174b9 !important;
+        color: var(--primary-light) !important;
       }
     }
 
     .more-btn {
-      color: #333 !important;
-      &:hover { color: #5174b9 !important; }
+      color: var(--text) !important;
+      &:hover { color: var(--primary-light) !important; }
+    }
+
+    // Theme toggle solid state
+    .theme-toggle {
+      color: var(--text);
+      &:hover {
+        border-color: var(--border);
+        background: rgba(0, 0, 0, 0.05);
+      }
     }
   }
 
-  // ── Mobile menu open — solid white ──────────────────────
+  // ── Mobile menu open — solid (tokens) ───────────────────
   &.menu-open {
-    background-color: #fff;
+    background-color: var(--bg-card);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    .nav-links ul li a { color: #333 !important; }
-    .more-btn { color: #333 !important; }
-    .menu-toggle span { background-color: #333; }
+    .nav-links ul li a { color: var(--text) !important; }
+    .more-btn { color: var(--text) !important; }
+    .menu-toggle span { background-color: var(--text); }
+    .theme-toggle { color: var(--text); }
   }
 
   // ── Container ────────────────────────────────────────────
@@ -110,6 +120,51 @@
     }
   }
 
+  // ── Theme toggle button ──────────────────────────────────
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.9);
+    transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
+    flex-shrink: 0;
+    z-index: 10;
+
+    svg { display: block; }
+
+    &:hover {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.12);
+      color: var(--gold);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+  }
+
+  // Desktop toggle — positioned to the right of the membership btn (further left visually in RTL)
+  // membership-btn: left:15px + ~120px wide → toggle starts at ~145px
+  .theme-toggle--desktop {
+    position: absolute;
+    left: 145px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  // Mobile toggle — hidden by default, shown only on mobile
+  .theme-toggle--mobile {
+    display: none;
+  }
+
   // ── Hamburger ────────────────────────────────────────────
   .menu-toggle {
     display: none;
@@ -139,7 +194,7 @@
     align-items: center;
     justify-content: center;
     margin-right: 80px;
-    margin-left: 150px;
+    margin-left: 195px;
 
     ul {
       display: flex;
@@ -206,6 +261,18 @@
 
     .membership-btn { display: none; }
 
+    // Desktop toggle hidden on mobile
+    .theme-toggle--desktop { display: none; }
+
+    // Mobile toggle — right side of navbar bar (opposite hamburger which is left)
+    .theme-toggle--mobile {
+      display: flex;
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
     .nav-links {
       position: fixed;
       top: 80px;
@@ -214,7 +281,7 @@
       width: 100%;
       max-height: 0;
       overflow: hidden;
-      background-color: #fff;
+      background-color: var(--bg-card);
       transition: max-height 0.4s ease;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       z-index: 999;
@@ -238,9 +305,9 @@
           a {
             display: block !important;
             padding: 15px 20px !important;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+            border-bottom: 1px solid var(--border) !important;
             font-size: 17px !important;
-            color: #333 !important;
+            color: var(--text) !important;
             text-decoration: none !important;
             background-color: transparent !important;
             font-weight: 500;
@@ -248,7 +315,7 @@
             &::after { display: none !important; }
 
             &:hover, &.active {
-              color: #5174b9 !important;
+              color: var(--primary-light) !important;
               background-color: rgba(81, 116, 185, 0.06) !important;
             }
           }
@@ -289,15 +356,15 @@
   padding: 15px 20px;
   background: none;
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border);
   font-size: 17px;
   font-weight: 500;
-  color: #333;
+  color: var(--text);
   cursor: pointer;
   font-family: 'Tajawal', sans-serif;
   direction: rtl;
 
-  &:hover { color: #5174b9; background: rgba(81, 116, 185, 0.06); }
+  &:hover { color: var(--primary-light); background: rgba(81, 116, 185, 0.06); }
 }
 
 .mobile-more-content {
@@ -311,14 +378,14 @@
   a {
     display: block;
     padding: 13px 32px !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+    border-bottom: 1px solid var(--border) !important;
     font-size: 16px !important;
-    color: #555 !important;
+    color: var(--text-muted) !important;
     text-decoration: none;
     font-weight: 400;
 
     &:hover, &.active {
-      color: #5174b9 !important;
+      color: var(--primary-light) !important;
       background: rgba(81, 116, 185, 0.08) !important;
     }
   }
@@ -329,7 +396,7 @@
   display: block;
   margin: 16px 20px 8px;
   padding: 13px 20px;
-  background: #5174b9;
+  background: var(--primary-light);
   color: #fff !important;
   text-decoration: none;
   border-radius: 50px;
@@ -338,7 +405,7 @@
   text-align: center;
   transition: background 0.3s ease;
 
-  &:hover { background: #3f5a8f; }
+  &:hover { background: var(--primary); }
 }
 
 // ── Desktop more dropdown ────────────────────────────────
@@ -444,19 +511,19 @@
   }
 }
 
-// Scrolled state — white dropdown
+// Scrolled state — tokenized dropdown
 .navbar.scrolled .more-menu {
-  background: #fff;
+  background: var(--bg-card);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border-color: rgba(0, 0, 0, 0.08);
+  border-color: var(--border);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 
   li a {
-    color: #333 !important;
+    color: var(--text) !important;
     &:hover, &.active {
       background: rgba(81, 116, 185, 0.08) !important;
-      color: #5174b9 !important;
+      color: var(--primary-light) !important;
     }
   }
 }
