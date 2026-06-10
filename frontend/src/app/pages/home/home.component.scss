@@ -1,6 +1,10 @@
-// ═══════════════════════════════════════════════════════════
-// HERO SECTION
-// ═══════════════════════════════════════════════════════════
+// ─── Light-mode gradient headline override ───────────────────────────
+// The blue→white→gold gradient reads poorly on light bg.
+// On light we use a strong navy→primary gradient instead.
+:root[data-theme="light"] {
+  --gradient-headline: linear-gradient(120deg, #1e2d4a 0%, #3d5fa8 50%, #c9a84c 100%);
+}
+
 
 .hero-section {
   position: relative;
@@ -74,9 +78,50 @@
 .hero-pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.07;
+  opacity: 0.6;
   pointer-events: none;
   z-index: 1;
+}
+
+// Corner vignette — darkens edges, dark mode only
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, #141e30 85%);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+
+  :root[data-theme="dark"] & {
+    opacity: 1;
+  }
+}
+
+// Soft radial glows
+.hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+
+  &--top {
+    top: -160px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    background: rgba(61, 95, 168, 0.20);
+    filter: blur(140px);
+  }
+
+  &--bottom {
+    bottom: 0;
+    right: 25%;
+    width: 400px;
+    height: 400px;
+    background: rgba(201, 168, 76, 0.10);
+    filter: blur(120px);
+  }
 }
 
 // Content — perfectly centered both axes
@@ -337,18 +382,18 @@
 }
 
 .section-label__line {
-  width: 40px;
+  width: 48px;
   height: 1px;
-  background: var(--primary-light);
+  background: var(--gradient-hairline);
   flex-shrink: 0;
 }
 
 .section-label__text {
   font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--primary-light);
+  color: var(--gold);
 }
 
 .section-title {
@@ -395,13 +440,12 @@
   gap: 6px;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--primary-light);
+  color: var(--gold);
   text-decoration: none;
   transition: gap 0.3s ease, color 0.3s ease;
 
   &:hover {
     gap: 12px;
-    color: var(--primary);
   }
 }
 
@@ -430,20 +474,19 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 36px;
+  padding: 12px 28px;
   border-radius: var(--radius-full);
-  border: 2px solid var(--primary-light);
-  color: var(--primary-light);
+  border: 1px solid var(--border);
+  color: var(--text);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-decoration: none;
   transition: all 0.3s ease;
 
   &:hover {
-    background: var(--primary-light);
-    color: #fff;
+    border-color: var(--gold);
+    color: var(--gold);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-glow);
   }
 }
 
@@ -452,9 +495,34 @@
 // ═══════════════════════════════════════════════════════════
 
 .events-section {
+  position: relative;
   padding: 96px 0;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
+  background: var(--secondary);
+  overflow: hidden;
+
+  // Dot pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+    background-size: 28px 28px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+// Section glow
+.events-glow {
+  position: absolute;
+  top: 0;
+  right: 33%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(61, 95, 168, 0.15);
+  filter: blur(140px);
+  pointer-events: none;
 }
 
 .events-grid {
@@ -470,17 +538,18 @@
   border: 1px solid var(--glass-border);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-card);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
   display: flex;
   flex-direction: column;
 
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-elegant);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-glow);
+    border-color: rgba(201, 168, 76, 0.4);
 
     .event-card__image img,
     .event-card__image app-optimized-image img {
-      transform: scale(1.08);
+      transform: scale(1.10);
     }
   }
 }
@@ -606,9 +675,20 @@
 .about-section {
   position: relative;
   padding: 96px 0;
-  background: var(--secondary);
-  color: #fff;
+  background: var(--bg); // ink/page bg — same as News, alternates with secondary
+  color: var(--text);
   overflow: hidden;
+
+  // Dot pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+    background-size: 28px 28px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
 }
 
 .about-blob {
@@ -619,27 +699,29 @@
   &--top {
     top: -128px;
     right: 0;
-    width: 480px;
-    height: 480px;
-    background: rgba(81, 116, 185, 0.25);
-    filter: blur(120px);
+    width: 600px;
+    height: 600px;
+    background: rgba(61, 95, 168, 0.20);
+    filter: blur(160px);
   }
 
   &--bottom {
     bottom: -128px;
     left: 0;
-    width: 480px;
-    height: 480px;
-    background: rgba(201, 168, 76, 0.12);
-    filter: blur(120px);
+    width: 500px;
+    height: 500px;
+    background: rgba(201, 168, 76, 0.10);
+    filter: blur(160px);
   }
 }
 
 .about-pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.05;
+  opacity: 0.4;
   pointer-events: none;
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+  background-size: 28px 28px;
 }
 
 .about-grid {
@@ -757,7 +839,11 @@
   font-size: clamp(2.2rem, 4vw, 3.4rem);
   font-weight: 900;
   line-height: 1.12;
-  color: #fff;
+  background: var(--gradient-headline);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 30px rgba(122, 157, 212, 0.35));
   margin-bottom: 28px;
 }
 
@@ -765,13 +851,13 @@
   display: block;
   font-size: clamp(1rem, 2vw, 1.3rem);
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   margin-top: 8px;
 }
 
 .about-text {
   font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-muted);
   line-height: 1.85;
   max-width: 600px;
   margin-bottom: 36px;
@@ -795,18 +881,18 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: background 0.3s ease;
+  transition: border-color 0.3s ease, background 0.3s ease;
 
   svg { color: var(--gold); }
 
   span {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--text);
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(201, 168, 76, 0.4);
   }
 }
 
@@ -857,17 +943,19 @@
 .stats-section {
   position: relative;
   padding: 80px 0;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  background: var(--secondary);
   overflow: hidden;
 }
 
 .stats-grid-bg {
   position: absolute;
   inset: 0;
-  opacity: 0.4;
+  opacity: 0.08;
   pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 80px 80px;
 }
 
 .stats-grid {
@@ -885,13 +973,13 @@
 .stat-item__value {
   font-size: clamp(2.4rem, 5vw, 3.6rem);
   font-weight: 900;
-  color: var(--text);
+  color: #fff;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
 .stat-item__suffix {
-  color: var(--primary-light);
+  color: var(--primary-glow);
 }
 
 .stat-item__label {
@@ -900,7 +988,7 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -908,8 +996,34 @@
 // ═══════════════════════════════════════════════════════════
 
 .news-section {
+  position: relative;
   padding: 96px 0;
-  background: var(--bg-muted);
+  background: var(--bg);
+  overflow: hidden;
+
+  // Dot pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+    background-size: 28px 28px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+// Section glow
+.news-glow {
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(61, 95, 168, 0.15);
+  filter: blur(140px);
+  pointer-events: none;
 }
 
 .news-grid {
@@ -928,13 +1042,14 @@
   border: 1px solid var(--glass-border);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-card);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: var(--shadow-elegant);
+    box-shadow: var(--shadow-glow);
+    border-color: rgba(201, 168, 76, 0.4);
 
-    .news-card__image img { transform: scale(1.05); }
+    .news-card__image img { transform: scale(1.10); }
     .news-card__title { color: var(--primary-light); }
   }
 }
