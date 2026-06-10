@@ -27,6 +27,12 @@
   <div class="hero-content">
     <div class="hero-body">
 
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow__line"></span>
+        <span>Yemeni Students Union</span>
+        <span class="hero-eyebrow__line"></span>
+      </div>
+
       <h1 class="hero-title">
         اتحاد الطلبة
         <span class="hero-title__gradient">اليمنيين في ماليزيا</span>
@@ -106,7 +112,7 @@
     <div class="section-header section-header--centered">
       <div class="section-label section-label--centered">
         <span class="section-label__line"></span>
-        <span class="section-label__text">Events · ٢٠٢٦</span>
+        <span class="section-label__text">Events</span>
         <span class="section-label__line"></span>
       </div>
       <h2 class="section-title">الفعاليات القادمة</h2>
@@ -192,9 +198,15 @@
 
       <!-- Emblem -->
       <div class="about-emblem">
-        <div class="about-emblem__ring about-emblem__ring--outer"></div>
-        <div class="about-emblem__ring about-emblem__ring--dashed"></div>
-        <div class="about-emblem__glow"></div>
+        <!-- Pulsing glow -->
+        <div class="about-emblem__glow pulse-glow"></div>
+        <!-- Outer solid ring + traveling gold orbital dot -->
+        <div class="about-emblem__ring about-emblem__ring--outer spin-slow">
+          <span class="about-emblem__orbital-dot"></span>
+        </div>
+        <!-- Inner dashed gold ring (reverse spin) -->
+        <div class="about-emblem__ring about-emblem__ring--dashed spin-reverse"></div>
+        <!-- Core with logo -->
         <div class="about-emblem__circle">
           <img src="/logo/ysu_logo.webp" alt="شعار اتحاد الطلبة اليمنيين في ماليزيا" />
         </div>

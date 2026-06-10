@@ -5,6 +5,11 @@
   direction: rtl;
   width: 100%;
 
+  // In dark mode, deepen the footer to the page's darkest surface
+  :host-context([data-theme="dark"]) & {
+    background-color: var(--bg-muted);
+  }
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
