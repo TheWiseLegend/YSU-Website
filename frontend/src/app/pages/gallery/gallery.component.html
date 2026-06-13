@@ -37,17 +37,16 @@
 
     <!-- Albums grid -->
     <div class="albums-grid" *ngIf="!isLoading && albums.length > 0">
-      <article class="album-card" *ngFor="let album of albums" (click)="openLightbox(album, 0)">
+      <article class="album-card" *ngFor="let album of albums" [routerLink]="['/gallery', album.id]">
 
         <div class="album-card__cover">
           <img [src]="album.mainImage" [alt]="album.title" loading="lazy">
           <div class="album-card__overlay">
             <div class="album-card__overlay-inner">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-                <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>عرض الألبوم</span>
+              <span>فتح الألبوم</span>
             </div>
           </div>
           <!-- Image count badge -->
@@ -74,60 +73,4 @@
 </section>
 
 
-<!-- ═══════════════════════════════════════════════════════════
-     LIGHTBOX
-════════════════════════════════════════════════════════════ -->
-<div class="lightbox" *ngIf="lightboxAlbum" (click)="closeLightbox()">
 
-  <!-- Close -->
-  <button class="lightbox__close" (click)="closeLightbox()" aria-label="إغلاق">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-    </svg>
-  </button>
-
-  <!-- Image -->
-  <div class="lightbox__stage" (click)="$event.stopPropagation()">
-    <img
-      [src]="lightboxAlbum.images[lightboxIndex].url"
-      [alt]="lightboxAlbum.title"
-      class="lightbox__img">
-  </div>
-
-  <!-- Prev / Next -->
-  <button class="lightbox__nav lightbox__nav--prev"
-          (click)="$event.stopPropagation(); prevImage()"
-          aria-label="السابق"
-          *ngIf="lightboxAlbum.images.length > 1">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
-
-  <button class="lightbox__nav lightbox__nav--next"
-          (click)="$event.stopPropagation(); nextImage()"
-          aria-label="التالي"
-          *ngIf="lightboxAlbum.images.length > 1">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
-
-  <!-- Caption + counter -->
-  <div class="lightbox__caption" (click)="$event.stopPropagation()">
-    <span class="lightbox__caption-title">{{ lightboxAlbum.title }}</span>
-    <span class="lightbox__counter">{{ lightboxIndex + 1 }} / {{ lightboxAlbum.images.length }}</span>
-  </div>
-
-  <!-- Thumbnail strip -->
-  <div class="lightbox__thumbs" (click)="$event.stopPropagation()" *ngIf="lightboxAlbum.images.length > 1">
-    <button
-      *ngFor="let img of lightboxAlbum.images; let i = index"
-      class="lightbox__thumb"
-      [class.active]="i === lightboxIndex"
-      (click)="lightboxIndex = i">
-      <img [src]="img.url" [alt]="'صورة ' + (i + 1)" loading="lazy">
-    </button>
-  </div>
-
-</div>

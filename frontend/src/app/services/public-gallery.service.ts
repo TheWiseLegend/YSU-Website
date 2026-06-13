@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
-import { Gallery, GalleryImage } from './gallery.service';
+import { Gallery } from './gallery.service';
 
 @Injectable({
   providedIn: 'root'
