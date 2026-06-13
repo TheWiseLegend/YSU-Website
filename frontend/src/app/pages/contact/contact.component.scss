@@ -56,13 +56,11 @@
 // ══════════════════════════════════════════════════════════
 
 .info-panel {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--secondary);
   border-radius: var(--radius-xl);
   padding: 40px 36px 44px;
   overflow: hidden;
   min-width: 0;
-  position: relative;
 
   // Subtle dot pattern overlay
   &::before {
@@ -71,24 +69,11 @@
     inset: 0;
     background-image: radial-gradient(
       circle at 1.5px 1.5px,
-      rgba(81, 116, 185, 0.08) 1px,
+      rgba(255, 255, 255, 0.06) 1px,
       transparent 0
     );
     background-size: 28px 28px;
     pointer-events: none;
-  }
-}
-
-:root[data-theme="dark"] .info-panel {
-  background: var(--secondary);
-  border-color: transparent;
-
-  &::before {
-    background-image: radial-gradient(
-      circle at 1.5px 1.5px,
-      rgba(255, 255, 255, 0.06) 1px,
-      transparent 0
-    );
   }
 }
 
@@ -98,7 +83,7 @@
 .info-panel__title {
   font-size: clamp(1.8rem, 3.5vw, 2.6rem);
   font-weight: 900;
-  color: var(--text);
+  color: var(--dark-section-title);
   line-height: 1.15;
   margin: 0 0 36px;
   position: relative;
@@ -107,10 +92,6 @@
 .info-panel__title-muted {
   color: var(--text-muted);
 }
-
-// Dark mode: white title on navy
-:root[data-theme="dark"] .info-panel__title { color: #fff; }
-:root[data-theme="dark"] .info-panel__title-muted { color: rgba(255,255,255,0.45); }
 
 // Contact items
 .contact-items {
@@ -131,23 +112,17 @@
   width: 44px;
   height: 44px;
   border-radius: var(--radius-md);
-  background: var(--card-accent-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--card-accent);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--gold);
   display: grid;
   place-items: center;
   flex-shrink: 0;
   transition: background 0.25s;
 
-  .contact-item:hover & { background: rgba(81, 116, 185, 0.18); }
-}
-
-// Dark mode: gold icons on navy
-:root[data-theme="dark"] .contact-item__icon {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: var(--gold);
-  .contact-item:hover & { background: rgba(255, 255, 255, 0.14); }
+  .contact-item:hover & {
+    background: rgba(255, 255, 255, 0.14);
+  }
 }
 
 .contact-item__body {
@@ -167,24 +142,20 @@
 
 .contact-item__value {
   font-size: 0.95rem;
-  color: var(--text);
+  color: var(--dark-section-title);
   font-weight: 500;
 
   &--link {
     text-decoration: none;
     transition: color 0.2s;
-    &:hover { color: var(--primary-light); }
+
+    &:hover { color: var(--gold); }
   }
 }
 
-// Dark mode: white text on navy
-:root[data-theme="dark"] .contact-item__label { color: rgba(255,255,255,0.45); }
-:root[data-theme="dark"] .contact-item__value { color: rgba(255,255,255,0.85); }
-:root[data-theme="dark"] .contact-item__value--link:hover { color: var(--gold); }
-
 // Social block
 .social-block {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 28px;
   position: relative;
 }
@@ -209,31 +180,19 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--bg-muted);
-  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
   display: grid;
   place-items: center;
   text-decoration: none;
   transition: all 0.25s ease;
 
   &:hover {
-    background: var(--primary-light);
+    background: rgba(255, 255, 255, 0.16);
     color: #fff;
-    border-color: var(--primary-light);
+    border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-3px);
-  }
-}
-
-// Dark mode: ghost style on navy
-:root[data-theme="dark"] {
-  .social-block { border-top-color: rgba(255,255,255,0.1); }
-  .social-block__label { color: rgba(255,255,255,0.4); }
-  .social-link {
-    border-color: rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.7);
-    &:hover { background: rgba(255,255,255,0.16); color: #fff; border-color: rgba(255,255,255,0.3); }
   }
 }
 
