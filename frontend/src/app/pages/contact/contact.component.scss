@@ -83,14 +83,14 @@
 .info-panel__title {
   font-size: clamp(1.8rem, 3.5vw, 2.6rem);
   font-weight: 900;
-  color: var(--dark-section-title);
+  color: #fff;
   line-height: 1.15;
   margin: 0 0 36px;
   position: relative;
 }
 
 .info-panel__title-muted {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 // Contact items
@@ -137,18 +137,17 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .contact-item__value {
   font-size: 0.95rem;
-  color: var(--dark-section-title);
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
 
   &--link {
     text-decoration: none;
     transition: color 0.2s;
-
     &:hover { color: var(--gold); }
   }
 }
@@ -166,7 +165,7 @@
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.4);
   margin-bottom: 16px;
 }
 
