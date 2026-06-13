@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LucideDynamicIcon, provideLucideIcons, LucideIcon } from '@lucide/angular';
 import { VendorService } from '../../../services/vendor.service';
 import { UploadService } from '../../../services/upload.service';
@@ -10,7 +10,7 @@ import { VENDOR_ICONS, VendorIconOption, ALL_VENDOR_LUCIDE_ICONS, getVendorIcon 
 @Component({
   selector: 'app-admin-vendors',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideDynamicIcon, DatePipe],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, LucideDynamicIcon, DatePipe],
   providers: [
     provideLucideIcons(...ALL_VENDOR_LUCIDE_ICONS),
   ],
@@ -25,6 +25,10 @@ export class AdminVendorsComponent implements OnInit {
   editingVendorId: string | null = null;
   isLoadingVendors = false;
   showVendorForm = false;
+
+  // Search & filter
+  searchQuery = '';
+  selectedCategoryId = '';
 
   // Main logo upload
   selectedFile: File | null = null;
@@ -394,6 +398,18 @@ export class AdminVendorsComponent implements OnInit {
   }
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+  get filteredVendors(): Vendor[] {
+    const q = this.searchQuery.trim().toLowerCase();
+    return this.vendors.filter(v => {
+      const matchesSearch = !q ||
+        v.name.toLowerCase().includes(q) ||
+        (v.location ?? '').toLowerCase().includes(q);
+      const matchesCategory = !this.selectedCategoryId ||
+        v.categoryId === this.selectedCategoryId;
+      return matchesSearch && matchesCategory;
+    });
+  }
 
   activeCategories(): VendorCategory[] {
     return this.categories.filter((category) => category.isActive);
