@@ -136,7 +136,7 @@
         align-items: stretch;
 
         .form-control {
-          border-radius: 10px 0 0 10px;
+          border-radius: 0 10px 10px 0;
           flex: 1;
           // hide browser spin buttons
           &::-webkit-outer-spin-button,
@@ -150,8 +150,8 @@
           padding: 0 1rem;
           background-color: #f0f2f8;
           border: 1px solid #e5e7eb;
-          border-right: none;
-          border-radius: 0 10px 10px 0;
+          border-left: none;
+          border-radius: 10px 0 0 10px;
           font-weight: 700;
           font-size: 1rem;
           color: var(--primary-color, #5174b9);
