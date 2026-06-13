@@ -272,7 +272,8 @@
 
 .hero-title__gradient {
   display: block;
-  background: var(--gradient-headline);
+  // Hero is always over a dark photo overlay — always use the dark gradient
+  background: linear-gradient(120deg, #7a9dd4 0%, #ffffff 45%, #dfc070 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
