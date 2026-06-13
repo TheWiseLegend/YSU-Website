@@ -12,31 +12,41 @@
 .section-label {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 48px;
+  gap: 12px;
+  margin-bottom: 16px;
   justify-content: center;
-
-  &--light {
-    .section-label__line { background: var(--gold); }
-  }
 }
 
 .section-label__line {
   flex: 1;
-  height: 2px;
-  background: var(--primary-light);
-  max-width: 80px;
-  border-radius: 2px;
+  height: 1px;
+  background: var(--gradient-hairline);
+  max-width: 48px;
+}
+
+.section-label__text {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
 }
 
 .section-title {
   font-size: clamp(1.6rem, 3.5vw, 2.4rem);
   font-weight: 800;
-  color: var(--text);
-  margin: 0;
+  margin: 0 0 40px;
   white-space: nowrap;
+  text-align: center;
 
-  &--light { color: #fff; }
+  // Dark-section title: white on dark, ink on light — never gradient
+  &--light {
+    color: var(--dark-section-title) !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    filter: none !important;
+  }
 }
 
 
@@ -77,12 +87,20 @@
     border-bottom: 1px solid var(--border);
   }
 
+  // Dark mode: navy bg with white text. Light mode: treated like --muted.
   &--dark {
-    background: var(--secondary);
-    color: #fff;
+    background: var(--bg-muted);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     position: relative;
     overflow: hidden;
   }
+}
+
+// Dark mode: restore the navy treatment for --dark section
+:root[data-theme="dark"] .guide-section--dark {
+  background: var(--secondary) !important;
+  border-color: transparent !important;
 }
 
 
@@ -119,10 +137,11 @@
 // ═══════════════════════════════════════════════════════════
 
 .guide-card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-xl);
   padding: 32px 28px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-card);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 
@@ -136,8 +155,8 @@
   width: 52px;
   height: 52px;
   border-radius: var(--radius-lg);
-  background: rgba(81, 116, 185, 0.1);
-  color: var(--primary-light);
+  background: var(--card-accent-bg);
+  color: var(--card-accent);
   display: grid;
   place-items: center;
   margin-bottom: 20px;
@@ -146,7 +165,7 @@
 .guide-card__title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--card-accent);
   margin-bottom: 12px;
 }
 
@@ -162,10 +181,11 @@
 // ═══════════════════════════════════════════════════════════
 
 .step-card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-xl);
   padding: 32px 28px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-card);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   position: relative;
@@ -180,8 +200,8 @@
 .step-card__number {
   font-size: 3.2rem;
   font-weight: 900;
-  color: var(--primary-light);
-  opacity: 0.35;
+  color: var(--card-accent);
+  opacity: 0.65;
   line-height: 1;
   margin-bottom: 12px;
 }
@@ -189,7 +209,7 @@
 .step-card__title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--card-accent);
   margin-bottom: 12px;
 }
 
@@ -330,12 +350,10 @@
   }
 
   &--dark {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(81, 116, 185, 0.05);
+    border-color: rgba(81, 116, 185, 0.15);
 
     .guide-tips__header { color: var(--gold); svg { color: var(--gold); } }
-    .guide-tips__list li { color: rgba(255, 255, 255, 0.82); }
-    .guide-tips__list li::before { background: var(--gold); }
   }
 }
 
@@ -388,7 +406,7 @@
 
 .guide-dark-intro {
   font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-muted);
   line-height: 1.85;
   max-width: 700px;
   margin: 0 auto 48px;
@@ -405,8 +423,9 @@
 .budget-item {
   padding: 24px 20px;
   border-radius: var(--radius-xl);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -414,14 +433,14 @@
   gap: 12px;
   transition: background 0.3s ease;
 
-  &:hover { background: rgba(255, 255, 255, 0.11); }
+  &:hover { box-shadow: var(--shadow-card); }
 }
 
 .budget-item__icon {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(201, 168, 76, 0.15);
+  background: rgba(201, 168, 76, 0.12);
   color: var(--gold);
   display: grid;
   place-items: center;
@@ -430,14 +449,28 @@
 .budget-item__label {
   font-size: 0.85rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--text-muted);
   letter-spacing: 0.05em;
 }
 
 .budget-item__range {
   font-size: 1rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text);
+}
+
+// Dark mode: budget items go back to the white-on-navy treatment
+:root[data-theme="dark"] {
+  .guide-dark-intro { color: rgba(255, 255, 255, 0.72) !important; }
+
+  .budget-item {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    &:hover { background: rgba(255, 255, 255, 0.11) !important; box-shadow: none !important; }
+  }
+
+  .budget-item__label { color: rgba(255, 255, 255, 0.65) !important; }
+  .budget-item__range { color: #fff !important; }
 }
 
 
@@ -557,10 +590,11 @@
 }
 
 .culture-card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-xl);
   padding: 32px 28px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-card);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 
@@ -575,8 +609,8 @@
   width: 52px;
   height: 52px;
   border-radius: var(--radius-lg);
-  background: rgba(81, 116, 185, 0.1);
-  color: var(--primary-light);
+  background: var(--card-accent-bg);
+  color: var(--card-accent);
   display: grid;
   place-items: center;
   margin-bottom: 20px;
@@ -585,7 +619,7 @@
 .culture-card__title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--card-accent);
   margin-bottom: 12px;
 }
 
@@ -718,3 +752,6 @@
     font-size: 0.82rem;
   }
 }
+
+
+// (dark-mode card accent handled via --card-accent / --card-accent-bg tokens in styles.scss)
