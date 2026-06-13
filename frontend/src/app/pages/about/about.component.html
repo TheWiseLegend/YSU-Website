@@ -1,5 +1,8 @@
 <app-page-header titleFirst="من" titleSecond=" نحن"></app-page-header>
 
+<!-- Eyebrow below page header -->
+<div class="page-eyebrow" style="margin-top: 24px;">About Us</div>
+
 <div class="about-page">
 
   <!-- ── Mission Section ──────────────────────────────────── -->
@@ -12,7 +15,7 @@
         <div class="about-mission__copy">
           <div class="section-label section-label--centered">
             <span class="section-label__line"></span>
-            <h2 class="section-title">رسالتنا</h2>
+            <h2 class="section-title title-gradient">رسالتنا</h2>
             <span class="section-label__line"></span>
           </div>
           <p>
@@ -29,9 +32,15 @@
         </div>
 
         <div class="about-emblem">
-          <div class="about-emblem__ring about-emblem__ring--outer"></div>
-          <div class="about-emblem__ring about-emblem__ring--dashed"></div>
-          <div class="about-emblem__glow"></div>
+          <!-- Pulsing glow -->
+          <div class="about-emblem__glow pulse-glow"></div>
+          <!-- Outer solid ring + traveling gold orbital dot -->
+          <div class="about-emblem__ring about-emblem__ring--outer spin-slow">
+            <span class="about-emblem__orbital-dot"></span>
+          </div>
+          <!-- Inner dashed gold ring (reverse spin) -->
+          <div class="about-emblem__ring about-emblem__ring--dashed spin-reverse"></div>
+          <!-- White core with logo -->
           <div class="about-emblem__circle">
             <img src="/logo/ysu_logo.webp" alt="شعار اتحاد الطلبة اليمنيين في ماليزيا" />
           </div>
@@ -50,7 +59,7 @@
     <div class="container">
       <div class="section-label section-label--centered">
         <span class="section-label__line"></span>
-        <h2 class="section-title">الرؤية والأهداف</h2>
+        <h2 class="section-title title-gradient">الرؤية والأهداف</h2>
         <span class="section-label__line"></span>
       </div>
 
@@ -113,7 +122,7 @@
     <div class="container">
       <div class="section-label section-label--centered">
         <span class="section-label__line"></span>
-        <h2 class="section-title">الهيكل التنظيمي الحالي ({{ currentPeriod }})</h2>
+        <h2 class="section-title title-gradient">الهيكل التنظيمي الحالي ({{ currentPeriod }})</h2>
         <span class="section-label__line"></span>
       </div>
 
@@ -182,7 +191,7 @@
     <div class="container">
       <div class="section-label section-label--centered">
         <span class="section-label__line"></span>
-        <h2 class="section-title">الهيئات السابقة</h2>
+        <h2 class="section-title title-gradient">الهيئات السابقة</h2>
         <span class="section-label__line"></span>
       </div>
 
@@ -256,7 +265,7 @@
     <div class="container">
       <div class="section-label section-label--centered section-label--light">
         <span class="section-label__line"></span>
-        <h2 class="section-title section-title--light">عن الموقع</h2>
+        <h2 class="section-title title-gradient">عن الموقع</h2>
         <span class="section-label__line"></span>
       </div>
 

@@ -1,29 +1,4 @@
-// ─── Light-mode gradient headline override ───────────────────────────
-// :host-context is unreliable in Angular 19 — use :global selector instead.
-// In Angular, component SCSS with default encapsulation can escape via :global()
-// but the cleanest approach is to target the host attribute selector directly.
-// We use the data-theme on <html> (= :root) and rely on CSS specificity.
-
-// When light mode active, strip gradient clip and use solid readable colors.
-// The [data-theme=light] is on :root (html), so we use a global override
-// that is scoped tightly enough not to bleed to other components.
-:root[data-theme="light"] {
-  // Angular scoped attrs don't help here — use !important to beat the gradient
-  // on .section-title and .about-title rendered by this component.
-  // This is safe because only home.component renders these class names under
-  // the home route, so there's no unintended bleed.
-}
-
-// The actual fix: since the gradient token is now correctly set per-theme
-// in styles.scss (:root[data-theme=light] and :root[data-theme=dark]),
-// we just need color:transparent to work. The light gradient (#1e2d4a→#3d5fa8→#c9a84c)
-// IS readable on light backgrounds — so we keep gradient clip in both modes.
-// Remove the old override that was stripping it entirely.
-
 // ─── Light-mode section overrides ────────────────────────────────────
-// :host-context works inside Angular component SCSS with default encapsulation.
-// Events and Stats use --secondary (navy) in dark — must flip to light surfaces.
-// About and News use --bg (white/muted) — dot patterns must be toned down.
 
 :host-context([data-theme="light"]) {
   // ── Events section: navy → light muted ──
@@ -52,9 +27,11 @@
   // ── About section: reduce dot pattern on white bg ──
   .about-section::before { opacity: 0.1 !important; }
   .about-blob--top  { background: rgba(61,95,168,0.08) !important; }
-  .about-blob--bottom { background: rgba(201,168,76,0.05) !important; }
+  .about-blob--bottom { background: rgba(201,168,76,0.02) !important; }
   // Outer emblem ring barely visible on light bg — use primary tint
   .about-emblem__ring--outer { border-color: rgba(61,95,168,0.25) !important; }
+  // Kill the gold glow on the orbital dot — too harsh on white bg
+  .about-emblem__orbital-dot { box-shadow: none !important; }
 
   // ── News section: use bg-muted to separate from About ──
   .news-section {
@@ -81,8 +58,10 @@
     backdrop-filter: none !important;
   }
 
-  // ── Title glow: remove on light (already handled by solid color above) ──
-  // (no-op — solid color set in the gradient override block above)
+  // ── Hero: lighten the slide image in light mode so it looks visibly different ──
+  .hero-slide__img {
+    filter: brightness(1.4) saturate(0.7) !important;
+  }
 }
 
 
@@ -1144,7 +1123,7 @@
 .news-section {
   position: relative;
   padding: 96px 0;
-  background: var(--bg);
+  background: var(--secondary); // elevated navy — separates from footer (--bg-muted) in dark mode
   overflow: hidden;
 
   // Dot pattern overlay

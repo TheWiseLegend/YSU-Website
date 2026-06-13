@@ -45,7 +45,7 @@ export class NewsDetailComponent implements OnInit {
           
           document.title = `${news.title} - اتحاد الطلبة اليمنيين في ماليزيا`;
         },
-        error: (error) => {
+        error: () => {
           this.newsItem = undefined;
           this.notFound = true;
           this.isLoading = false;

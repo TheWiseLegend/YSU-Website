@@ -16,23 +16,12 @@ import { Branch } from '../../services/branches.service';
   styleUrls: ['./branches.component.scss']
 })
 export class BranchesComponent implements OnInit {
-  // All branches data
   allBranches: Branch[] = [];
-  
-  // Filtered branches to display
   filteredBranches: Branch[] = [];
-  
-  // List of cities for the filter
   cities: string[] = [];
-  
-  // Selected city filter
-  selectedCity: string = 'الكل';
-
-  // Loading state
-  isLoading: boolean = true;
-
-  // Error message
-  errorMessage: string = '';
+  selectedCity = 'الكل';
+  isLoading = true;
+  errorMessage = '';
 
   constructor(private publicBranchesService: PublicBranchesService) { }
 
@@ -45,43 +34,27 @@ export class BranchesComponent implements OnInit {
     this.publicBranchesService.getAllBranches().subscribe({
       next: (branches) => {
         this.allBranches = branches;
-        this.filteredBranches = [...this.allBranches];
-        
-        // Extract unique cities from branches
+        this.filteredBranches = [...branches];
         this.extractCities();
-        
         this.isLoading = false;
       },
-      error: (error) => {
-        console.error('Error loading branches:', error);
+      error: () => {
         this.errorMessage = 'فشل في تحميل الفروع. يرجى المحاولة مرة أخرى لاحقًا.';
         this.isLoading = false;
       }
     });
   }
-  
-  // Extract unique cities from branches
+
   extractCities(): void {
-    const citySet = new Set<string>();
-    citySet.add('الكل'); 
-    
-    this.allBranches.forEach(branch => {
-      if (branch.city) {
-        citySet.add(branch.city);
-      }
-    });
-    
+    const citySet = new Set<string>(['الكل']);
+    this.allBranches.forEach(b => { if (b.city) citySet.add(b.city); });
     this.cities = Array.from(citySet);
   }
-  
-  // Filter branches by city
+
   filterByCity(city: string): void {
     this.selectedCity = city;
-    
-    if (city === 'الكل') {
-      this.filteredBranches = [...this.allBranches];
-    } else {
-      this.filteredBranches = this.allBranches.filter(branch => branch.city === city);
-    }
+    this.filteredBranches = city === 'الكل'
+      ? [...this.allBranches]
+      : this.allBranches.filter(b => b.city === city);
   }
 }

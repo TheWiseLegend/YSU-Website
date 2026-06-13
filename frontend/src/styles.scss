@@ -154,6 +154,27 @@
   backdrop-filter: var(--glass-blur);
 }
 
+// Eyebrow label: gold in dark mode, primary blue in light mode
+:root[data-theme="light"] .section-label__text {
+  color: var(--primary-light);
+}
+
+// Home page section-label__text also uses gold — override to blue in light
+:root[data-theme="light"] .section-label__text,
+:root[data-theme="light"] .section-label--light .section-label__text {
+  color: var(--primary-light);
+}
+
+// Hairline lines: blue gradient in light mode instead of gold
+:root[data-theme="light"] .section-label__line {
+  background: linear-gradient(90deg, transparent, rgba(81, 116, 185, 0.5), transparent);
+}
+
+// Also override --gradient-hairline token for light mode (used by .hairline class)
+:root[data-theme="light"] {
+  --gradient-hairline: linear-gradient(90deg, transparent, rgba(81, 116, 185, 0.5), transparent);
+}
+
 /* ─── Keyframes ─────────────────────────────────────────────── */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(28px); }

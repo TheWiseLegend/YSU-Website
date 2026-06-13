@@ -5,9 +5,10 @@
   direction: rtl;
   width: 100%;
 
-  // In dark mode, deepen the footer to the page's darkest surface
+  // In dark mode, deepen the footer to the page's darkest surface + add separator
   :host-context([data-theme="dark"]) & {
     background-color: var(--bg-muted);
+    border-top: 1px solid var(--border);
   }
 
   .container {

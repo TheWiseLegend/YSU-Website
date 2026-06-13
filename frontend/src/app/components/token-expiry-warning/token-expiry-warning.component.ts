@@ -27,60 +27,63 @@ import { Subscription, interval } from 'rxjs';
       top: 0;
       left: 0;
       right: 0;
-      background-color: #fef3c7;
-      border-bottom: 1px solid #fcd34d;
+      background-color: var(--bg-muted);
+      border-bottom: 1px solid var(--border);
       padding: 1rem;
       z-index: 1000;
       direction: rtl;
-      
-      .warning-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        
-        .warning-icon {
-          font-size: 1.5rem;
-        }
-        
-        .warning-message {
-          flex: 1;
-          color: #92400e;
-          font-weight: 500;
-        }
-        
-        .warning-actions {
-          display: flex;
-          gap: 0.5rem;
-          
-          button {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            
-            &.extend-btn {
-              background-color: #3b82f6;
-              color: white;
-              
-              &:hover {
-                background-color: #2563eb;
-              }
-            }
-            
-            &.logout-btn {
-              background-color: #9ca3af;
-              color: white;
-              
-              &:hover {
-                background-color: #6b7280;
-              }
-            }
-          }
-        }
-      }
+    }
+
+    .warning-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .warning-icon {
+      font-size: 1.5rem;
+    }
+
+    .warning-message {
+      flex: 1;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .warning-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .warning-actions button {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      font-family: 'Tajawal', Arial, sans-serif;
+    }
+
+    .extend-btn {
+      background-color: var(--primary-light);
+      color: #fff;
+    }
+
+    .extend-btn:hover {
+      background-color: var(--primary);
+    }
+
+    .logout-btn {
+      background-color: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border) !important;
+    }
+
+    .logout-btn:hover {
+      color: var(--text);
+      border-color: var(--text-muted) !important;
     }
   `]
 })
