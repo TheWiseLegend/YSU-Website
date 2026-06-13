@@ -2,6 +2,15 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('ysu-theme') || 'dark';
+        if (t !== 'dark' && t !== 'light') t = 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
   <meta charset="utf-8">
   <title>اتحاد الطلبة اليمنيين في ماليزيا</title>
   <base href="/">

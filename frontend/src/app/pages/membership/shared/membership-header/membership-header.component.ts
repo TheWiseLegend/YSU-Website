@@ -2,6 +2,7 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MemberAuthService } from '../../../../services/member-auth.service';
+import { ThemeService } from '../../../../services/theme.service';
 import { Member } from '../../../../models/member.model';
 
 @Component({
@@ -21,6 +22,7 @@ export class MembershipHeaderComponent {
   constructor(
     private memberAuthService: MemberAuthService,
     private router: Router,
+    public themeService: ThemeService,
   ) {}
 
   get memberInitials(): string {

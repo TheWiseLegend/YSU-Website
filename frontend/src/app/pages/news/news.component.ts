@@ -32,31 +32,27 @@ export class NewsComponent implements OnInit {
   loadNews(): void {
     this.publicNewsService.getAllNews().subscribe({
       next: (news) => {
-        this.newsItems = news.sort((a, b) => 
+        this.newsItems = news.sort((a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         this.isLoading = false;
-        
-        // Preload all news images to improve perceived performance
+
         if (this.newsItems.length > 0) {
-          // Preload visible items with priority
           const priorityUrls = this.newsItems.slice(0, this.visibleItems).map(item => item.imageUrl);
           this.imagePreloadService.addImages(priorityUrls, true);
-          
-          // Preload remaining items without priority
           if (this.newsItems.length > this.visibleItems) {
             const remainingUrls = this.newsItems.slice(this.visibleItems).map(item => item.imageUrl);
             this.imagePreloadService.addImages(remainingUrls);
           }
         }
       },
-      error: (error) => {
+      error: () => {
         this.errorMessage = 'فشل في تحميل الأخبار';
         this.isLoading = false;
       }
     });
   }
-  
+
   loadMoreItems(): void {
     this.visibleItems += 6;
   }

@@ -71,8 +71,7 @@ export class BranchDetailComponent implements OnInit {
         // Load team members after branch details are loaded
         this.loadTeamMembers(id);
       },
-      error: (error) => {
-        console.error('Error loading branch details:', error);
+      error: () => {
         this.branch = undefined;
         this.notFound = true;
         this.isLoading = false;

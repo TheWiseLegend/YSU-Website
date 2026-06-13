@@ -49,7 +49,7 @@ export class EventDetailComponent implements OnInit {
         
         document.title = `${event.title} - اتحاد الطلبة اليمنيين في ماليزيا`;
       },
-      error: (error) => {
+      error: () => {
         this.event = undefined;
         this.notFound = true;
         this.isLoading = false;

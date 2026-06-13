@@ -8,7 +8,24 @@
 }
 
 /* ─── Design Tokens ─────────────────────────────────────────── */
+
+/* Theme-independent tokens (same in both themes) */
 :root {
+  /* Gradient tokens — dark default */
+  --gradient-headline: linear-gradient(120deg, #7a9dd4 0%, #ffffff 45%, #dfc070 100%);
+  --gradient-hairline: linear-gradient(90deg, transparent, rgba(201,168,76,0.6), transparent);
+
+  /* Radius */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  28px;
+  --radius-full: 9999px;
+}
+
+/* Light theme (default) */
+:root,
+:root[data-theme="light"] {
   /* Brand palette */
   --primary:        #3d5fa8;
   --primary-light:  #5174b9;
@@ -16,6 +33,7 @@
   --secondary:      #1e2d4a;   /* deep navy — used as dark section bg */
   --ink:            #141e30;   /* near-black for text on light */
   --gold:           #c9a84c;   /* accent gold */
+  --gold-light:     #dfc070;
   --accent:         #c0392b;   /* Yemen red accent */
 
   /* Legacy aliases — keep old pages working */
@@ -43,12 +61,140 @@
   --shadow-elegant: 0 24px 60px -16px rgba(20, 30, 48, 0.22);
   --shadow-glow:    0 0 50px rgba(81, 116, 185, 0.28);
 
-  /* Radius */
-  --radius-sm:  8px;
-  --radius-md:  12px;
-  --radius-lg:  20px;
-  --radius-xl:  28px;
-  --radius-full: 9999px;
+  /* Glass surface (light = solid card) */
+  --glass-bg:     var(--bg-card);
+  --glass-border: var(--border);
+  --glass-blur:   none;
+
+  /* Card accent — blue in light mode */
+  --card-accent:       var(--primary-light);
+  --card-accent-bg:    rgba(81, 116, 185, 0.1);
+
+  /* Dark-section title — ink on light, white on dark */
+  --dark-section-title: var(--ink);
+
+  /* Active/success badge color */
+  --badge-active-color: #4A7C4E;
+  --badge-active-bg:    rgba(74, 124, 78, 0.12);
+
+  /* Light mode: section titles are solid ink — no gradient clip on white bg */
+  --gradient-headline: none;
+}
+
+/* Dark theme */
+:root[data-theme="dark"] {
+  --primary:        #3d5fa8;
+  --primary-light:  #5174b9;
+  --primary-glow:   #7a9dd4;
+  --secondary:      #1e2d4a;
+  --ink:            #141e30;
+  --gold:           #c9a84c;
+  --gold-light:     #dfc070;
+  --accent:         #c0392b;
+
+  /* Surfaces */
+  --bg:             #141e30;
+  --bg-card:        #1e2d4a;
+  --bg-muted:       #101a2e;
+
+  /* Text */
+  --text:           #ffffff;
+  --text-muted:     rgba(255,255,255,0.72);
+  --text-light:     rgba(255,255,255,0.40);
+
+  /* Borders */
+  --border:         rgba(81,116,185,0.28);
+
+  /* Shadows */
+  --shadow-card:    0 8px 30px -8px rgba(0,0,0,0.45);
+  --shadow-elegant: 0 24px 60px -16px rgba(20,30,48,0.45);
+  --shadow-glow:    0 0 50px rgba(81,116,185,0.28);
+
+  /* Glass surface (dark = translucent) */
+  --glass-bg:     rgba(255,255,255,0.03);
+  --glass-border: rgba(81,116,185,0.28);
+  --glass-blur:   blur(6px);
+
+  /* Card accent — gold in dark mode */
+  --card-accent:       var(--gold);
+  --card-accent-bg:    rgba(201, 168, 76, 0.12);
+
+  /* Dark-section title — white on dark */
+  --dark-section-title: #ffffff;
+
+  /* Active/success badge color — brighter green on dark */
+  --badge-active-color: #6fcf7a;
+  --badge-active-bg:    rgba(74, 124, 78, 0.18);
+
+  /* Restore the proper headline gradient for dark mode —
+     the light-mode override in :root/:root[data-theme=light] has equal
+     specificity but comes later in source order, so we must re-declare here. */
+  --gradient-headline: linear-gradient(120deg, #7a9dd4 0%, #ffffff 45%, #dfc070 100%);
+}
+
+/* ─── Utility Classes ───────────────────────────────────────── */
+
+// Gradient headline text — dark mode only
+.title-gradient {
+  background: var(--gradient-headline);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+// Light mode: strip gradient, render as solid ink
+:root[data-theme="light"] .title-gradient,
+:root[data-theme="light"] .section-title,
+:root[data-theme="light"] .about-title {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--ink);
+}
+
+// Hairline divider (thin gradient line)
+.hairline {
+  height: 1px;
+  background: var(--gradient-hairline);
+  border: none;
+}
+
+// Dot pattern overlays
+.dot-pattern {
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+.dot-pattern-faint {
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.10) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+// Glass card surface
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+}
+
+// Eyebrow label: gold in dark mode, primary blue in light mode
+:root[data-theme="light"] .section-label__text {
+  color: var(--primary-light);
+}
+
+// Home page section-label__text also uses gold — override to blue in light
+:root[data-theme="light"] .section-label__text,
+:root[data-theme="light"] .section-label--light .section-label__text {
+  color: var(--primary-light);
+}
+
+// Hairline lines: blue gradient in light mode instead of gold
+:root[data-theme="light"] .section-label__line {
+  background: linear-gradient(90deg, transparent, rgba(81, 116, 185, 0.5), transparent);
+}
+
+// Also override --gradient-hairline token for light mode (used by .hairline class)
+:root[data-theme="light"] {
+  --gradient-hairline: linear-gradient(90deg, transparent, rgba(81, 116, 185, 0.5), transparent);
 }
 
 /* ─── Keyframes ─────────────────────────────────────────────── */
@@ -78,6 +224,56 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ─── Animation keyframes (rebrand motifs) ──────────────────── */
+@keyframes spin-slow-kf {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse-kf {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+@keyframes pulse-glow-kf {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 0.9; transform: scale(1.05); }
+}
+
+@keyframes fade-up-kf {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ken-burns-kf {
+  from { transform: scale(1.05); }
+  to   { transform: scale(1.18); }
+}
+
+@keyframes orbit-kf {
+  from { transform: rotate(0deg) translateX(var(--orbit-r, 90px)) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(var(--orbit-r, 90px)) rotate(-360deg); }
+}
+
+/* Animation utility classes */
+.spin-slow    { animation: spin-slow-kf 28s linear infinite; }
+.spin-reverse { animation: spin-reverse-kf 38s linear infinite; }
+.pulse-glow   { animation: pulse-glow-kf 4s ease-in-out infinite; }
+.fade-up      { animation: fade-up-kf 1s ease-out both; }
+.ken-burns    { animation: ken-burns-kf 8s ease-out both; }
+.orbit        { animation: orbit-kf 14s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-slow,
+  .spin-reverse,
+  .pulse-glow,
+  .fade-up,
+  .ken-burns,
+  .orbit {
+    animation: none !important;
+  }
 }
 
 /* ─── Base ──────────────────────────────────────────────────── */
@@ -145,8 +341,8 @@ app-navbar {
 /* ─── Navbar overrides (mobile) ─────────────────────────── */
 @media (max-width: 991px) {
   .navbar .nav-links.active ul li a {
-    color: #333 !important;
-    background-color: #fff !important;
+    color: var(--text) !important;
+    background-color: var(--bg-card) !important;
 
     &:hover, &.active {
       color: var(--primary-light) !important;
@@ -160,15 +356,15 @@ app-navbar {
 .filter-select {
   &.ng-select .ng-select-container {
     border-radius: 999px;
-    border: 1px solid #e5eaf2;
-    background: white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-card);
     min-height: 42px;
     height: 42px;
     font-family: 'Tajawal', Arial, sans-serif;
     font-size: 0.88rem;
     font-weight: 500;
-    color: #2d3e5f;
+    color: var(--text);
     direction: rtl;
     transition: border-color 0.2s, box-shadow 0.2s;
     cursor: pointer;
@@ -190,7 +386,7 @@ app-navbar {
     }
 
     .ng-placeholder {
-      color: rgba(81, 116, 185, 0.6);
+      color: var(--text-light);
       line-height: 1;
     }
 
@@ -212,7 +408,7 @@ app-navbar {
       .ng-arrow {
         display: block;
         border-style: solid;
-        border-color: #5174b9 transparent transparent;
+        border-color: var(--primary-light) transparent transparent;
         border-width: 5px 4px 0;
         height: 0;
         width: 0;
@@ -233,39 +429,39 @@ app-navbar {
   }
 
   &.ng-select.ng-select-opened .ng-select-container {
-    border-color: #5174b9;
+    border-color: var(--primary-light);
     box-shadow: 0 0 0 3px rgba(81, 116, 185, 0.15);
     border-radius: 999px;
 
     .ng-arrow-wrapper .ng-arrow {
-      border-color: transparent transparent #5174b9;
+      border-color: transparent transparent var(--primary-light);
       border-width: 0 4px 5px;
     }
   }
 
   &.ng-select:hover .ng-select-container {
-    border-color: #5174b9;
+    border-color: var(--primary-light);
   }
 }
 
 /* Dropdown panel — appended to <body> by appendTo="body", so must be global */
 .ng-dropdown-panel {
-  border: 1px solid #e5eaf2 !important;
+  border: 1px solid var(--border) !important;
   border-radius: 16px !important;
-  box-shadow: 0 8px 30px rgba(45, 62, 95, 0.12) !important;
+  box-shadow: var(--shadow-elegant) !important;
   overflow: hidden;
   direction: rtl;
   font-family: 'Tajawal', Arial, sans-serif;
   margin-top: 4px;
   z-index: 9999;
-  background: #ffffff !important;
+  background: var(--bg-card) !important;
   opacity: 1 !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 
   .ng-dropdown-panel-items {
     padding: 6px;
-    background: #ffffff;
+    background: var(--bg-card);
   }
 
   .ng-option {
@@ -273,7 +469,7 @@ app-navbar {
     padding: 0.6rem 0.9rem !important;
     font-size: 0.88rem !important;
     font-weight: 500;
-    color: #2d3e5f !important;
+    color: var(--text) !important;
     direction: rtl;
     text-align: right;
     transition: background 0.15s;
@@ -281,18 +477,89 @@ app-navbar {
 
     &.ng-option-marked {
       background: rgba(81, 116, 185, 0.08) !important;
-      color: #2d3e5f !important;
+      color: var(--text) !important;
     }
 
     &.ng-option-selected {
-      background: #5174b9 !important;
+      background: var(--primary-light) !important;
       color: white !important;
       font-weight: 700;
 
       &.ng-option-marked {
-        background: #3d5a9e !important;
+        background: var(--primary) !important;
         color: white !important;
       }
     }
+  }
+}
+
+/* ─── ng-select dark mode ──────────────────────────────────── */
+/* The dropdown panel is appended to <body> so it can't be
+   styled from within the component. Global overrides are needed. */
+
+:root[data-theme="dark"] {
+  /* The dropdown panel container */
+  .ng-dropdown-panel {
+    background: #1e2d4a;
+    border: 1px solid rgba(81, 116, 185, 0.28);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .ng-dropdown-panel .ng-dropdown-panel-items {
+    background: #1e2d4a;
+  }
+
+  .ng-dropdown-panel .ng-option {
+    background: #1e2d4a;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Tajawal', sans-serif;
+
+    &:hover,
+    &.ng-option-marked {
+      background: rgba(81, 116, 185, 0.18);
+      color: #fff;
+    }
+
+    &.ng-option-selected,
+    &.ng-option-selected.ng-option-marked {
+      background: rgba(81, 116, 185, 0.3);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    &.ng-option-disabled {
+      color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  /* The trigger/control itself */
+  .ng-select .ng-select-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(81, 116, 185, 0.28);
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+  }
+
+  .ng-select.ng-select-opened .ng-select-container {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(81, 116, 185, 0.5);
+  }
+
+  .ng-select .ng-select-container .ng-value-container .ng-placeholder {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .ng-select .ng-select-container .ng-value-container .ng-value {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .ng-select .ng-arrow-wrapper .ng-arrow {
+    border-color: rgba(255, 255, 255, 0.5) transparent transparent;
+  }
+
+  .ng-select.ng-select-opened .ng-arrow-wrapper .ng-arrow {
+    border-color: transparent transparent rgba(255, 255, 255, 0.5);
   }
 }

@@ -2,6 +2,7 @@ import { Component, HostListener, ViewEncapsulation } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
+import { ThemeService } from '../../services/theme.service';
 
 // Routes where the navbar should always be solid (no dark hero behind it)
 const SOLID_NAV_ROUTES = ['/verify', '/digital-library'];
@@ -21,12 +22,18 @@ export class NavbarComponent {
   isScrolled = false;
   forceSolid = false;
 
-  constructor(private router: Router) {
+  get isDark() { return this.themeService.isDark; }
+
+  constructor(private router: Router, private themeService: ThemeService) {
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd)
     ).subscribe((e: any) => {
       this.forceSolid = SOLID_NAV_ROUTES.some(r => e.urlAfterRedirects.startsWith(r));
     });
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggle();
   }
 
   toggleMenu(): void {

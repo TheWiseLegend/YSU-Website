@@ -2,11 +2,42 @@
   direction: rtl;
 }
 
+// ── Light-mode: section titles — solid ink, no gradient
+:root[data-theme="light"] .section-title {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--ink);
+}
+
 // ── Shared section utilities ─────────────────────────────
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+}
+
+// Eyebrow label: English uppercase tracked text flanked by hairlines
+.page-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--primary-glow);
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    max-width: 48px;
+    height: 1px;
+    background: var(--gradient-hairline);
+  }
 }
 
 // Section label: lines on both sides of the title
@@ -20,7 +51,7 @@
 
   &--light {
     .section-label__line { background: var(--gold); }
-    .section-title { color: #fff; }
+    // title color handled by .title-gradient or var(--text) on overlaid section
   }
 }
 
@@ -35,12 +66,9 @@
 .section-title {
   font-size: clamp(1.6rem, 3.5vw, 2.4rem);
   font-weight: 800;
-  color: var(--text);
   line-height: 1.15;
   margin: 0; // title is inline inside section-label flex row
   white-space: nowrap;
-
-  &--light { color: #fff; }
 }
 
 // ── Mission Section ──────────────────────────────────────
@@ -90,7 +118,7 @@
   }
 }
 
-// Emblem (reuse home page pattern)
+// ── Orbital Emblem ───────────────────────────────────────
 .about-emblem {
   position: relative;
   width: min(360px, 100%);
@@ -104,29 +132,42 @@
   border-radius: 50%;
 
   &--outer {
-    border: 1px solid rgba(81, 116, 185, 0.2);
-    animation: spin-slow 40s linear infinite;
+    border: 1px solid var(--border);
+    // spin-slow class from global styles
   }
 
   &--dashed {
     inset: 24px;
-    border: 1px dashed rgba(81, 116, 185, 0.15);
+    border: 1px dashed rgba(201, 168, 76, 0.55); // gold dashed — intentional brand color
   }
+}
+
+.about-emblem__orbital-dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 14px rgba(201, 168, 76, 0.9);
 }
 
 .about-emblem__glow {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(81, 116, 185, 0.15), transparent 70%);
+  background: radial-gradient(circle, rgba(122, 157, 212, 0.3), transparent 70%);
   filter: blur(24px);
+  // pulse-glow class from global styles
 }
 
 .about-emblem__circle {
   position: absolute;
   inset: 40px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--bg-card);
   display: grid;
   place-items: center;
   box-shadow: var(--shadow-elegant);
@@ -154,9 +195,10 @@
   &--est {
     top: 16px;
     left: -8px;
-    background: #fff;
-    color: var(--ink);
-    border: 1px solid var(--border);
+    background: var(--glass-bg);
+    color: var(--text);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
   }
 
   &--nonprofit {
@@ -225,15 +267,16 @@
     gap: 14px;
     padding: 12px 16px;
     border-radius: var(--radius-md);
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
     font-size: 1rem;
     color: var(--text);
     transition: all 0.3s ease;
 
     &:hover {
       border-color: var(--primary-light);
-      background: rgba(81, 116, 185, 0.04);
+      background: rgba(81, 116, 185, 0.08);
       transform: translateX(-4px);
     }
   }
@@ -243,7 +286,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(81, 116, 185, 0.1);
+  background: rgba(81, 116, 185, 0.12);
   color: var(--primary-light);
   display: grid;
   place-items: center;
@@ -310,12 +353,13 @@
   gap: 28px;
 }
 
-// Member card
+// Member card — glass surface
 .member-card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
@@ -383,6 +427,7 @@
   display: inline-block;
   font-size: 0.8rem;
   font-weight: 600;
+  // secondary is #1e2d4a (deep navy) in both themes — always needs white text for contrast
   color: #fff;
   background: var(--secondary);
   padding: 4px 14px;
@@ -402,9 +447,10 @@
 }
 
 .accordion__item {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   overflow: hidden;
   box-shadow: var(--shadow-card);
 }
@@ -426,7 +472,7 @@
   transition: background 0.2s ease, color 0.2s ease;
 
   &:hover {
-    background: var(--bg-muted);
+    background: rgba(81, 116, 185, 0.06);
     color: var(--primary-light);
   }
 }
@@ -451,11 +497,12 @@
   }
 }
 
-// ── Website Section ──────────────────────────────────────
+// ── Website Section (dark navy overlay) ─────────────────
 .website-section {
   position: relative;
   padding: 96px 0;
   overflow: hidden;
+  background: var(--secondary);
 
   .container { position: relative; z-index: 2; }
 }
@@ -471,7 +518,7 @@
 .website-section__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(20, 30, 48, 0.88);
+  background: rgba(20, 30, 48, 0.88); // intentional: image overlay, theme-independent
   z-index: 1;
 }
 
@@ -482,7 +529,8 @@
 }
 
 .website-info__text {
-  color: rgba(255, 255, 255, 0.78);
+  // This section always has a dark image overlay — always needs light text
+  color: rgba(255, 255, 255, 0.80);
   line-height: 1.9;
   font-size: 1.05rem;
   margin-bottom: 40px;
@@ -498,12 +546,16 @@
 .website-info__detail {
   padding: 16px 28px;
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06); // always dark-glass — section has dark photo overlay
   border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
   text-align: center;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease;
 
-  &:hover { background: rgba(255, 255, 255, 0.14); }
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--gold);
+  }
 }
 
 .website-info__label {
@@ -520,7 +572,17 @@
   display: block;
   font-size: 1.1rem;
   font-weight: 700;
+  // Always on dark photo overlay — always white
   color: #fff;
+}
+
+// ── Dot pattern overlay (decorative) ────────────────────
+.about-mission__dots,
+.about-vision__dots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 // ── Responsive ───────────────────────────────────────────
@@ -588,9 +650,4 @@
 
   .about-badge--est { left: 0; }
   .about-badge--nonprofit { right: 0; }
-}
-
-// ── Animations ───────────────────────────────────────────
-@keyframes spin-slow {
-  to { transform: rotate(360deg); }
 }

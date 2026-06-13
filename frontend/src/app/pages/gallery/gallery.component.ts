@@ -1,5 +1,5 @@
 // src/app/pages/gallery/gallery.component.ts
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
@@ -17,10 +17,6 @@ export class GalleryComponent implements OnInit {
   albums: Gallery[] = [];
   isLoading = true;
   errorMessage = '';
-
-  // Lightbox
-  lightboxAlbum: Gallery | null = null;
-  lightboxIndex = 0;
 
   constructor(private publicGalleryService: PublicGalleryService) {}
 
@@ -42,38 +38,6 @@ export class GalleryComponent implements OnInit {
         this.isLoading = false;
       },
     });
-  }
-
-  // ── Lightbox ────────────────────────────────────────────
-
-  openLightbox(album: Gallery, index = 0): void {
-    this.lightboxAlbum = album;
-    this.lightboxIndex = index;
-    document.body.style.overflow = 'hidden';
-  }
-
-  closeLightbox(): void {
-    this.lightboxAlbum = null;
-    document.body.style.overflow = '';
-  }
-
-  prevImage(): void {
-    if (!this.lightboxAlbum) return;
-    const len = this.lightboxAlbum.images.length;
-    this.lightboxIndex = (this.lightboxIndex - 1 + len) % len;
-  }
-
-  nextImage(): void {
-    if (!this.lightboxAlbum) return;
-    this.lightboxIndex = (this.lightboxIndex + 1) % this.lightboxAlbum.images.length;
-  }
-
-  @HostListener('document:keydown', ['$event'])
-  onKey(e: KeyboardEvent): void {
-    if (!this.lightboxAlbum) return;
-    if (e.key === 'Escape') this.closeLightbox();
-    if (e.key === 'ArrowLeft') this.nextImage();   // RTL: left = next
-    if (e.key === 'ArrowRight') this.prevImage();  // RTL: right = prev
   }
 
   formatDate(dateStr: string): string {

@@ -1,10 +1,76 @@
+// ─── Light-mode section overrides ────────────────────────────────────
+
+:host-context([data-theme="light"]) {
+  // ── Events section: navy → light muted ──
+  .events-section {
+    background: var(--bg-muted) !important;
+    &::before { opacity: 0.08 !important; }
+  }
+  .events-glow { opacity: 0.35 !important; }
+
+  // ── Stats section: navy → white card ──
+  .stats-section {
+    background: var(--bg-card) !important;
+    border-top: 1px solid var(--border) !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+  .stats-grid-bg {
+    background-image:
+      linear-gradient(rgba(81,116,185,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(81,116,185,0.08) 1px, transparent 1px) !important;
+    opacity: 1 !important;
+  }
+  .stat-item__value { color: var(--text) !important; }
+  .stat-item__suffix { color: var(--primary-light) !important; }
+  .stat-item__label { color: var(--text-muted) !important; }
+
+  // ── About section: reduce dot pattern on white bg ──
+  .about-section::before { opacity: 0.1 !important; }
+  .about-blob--top  { background: rgba(61,95,168,0.08) !important; }
+  .about-blob--bottom { background: rgba(201,168,76,0.02) !important; }
+  // Outer emblem ring barely visible on light bg — use primary tint
+  .about-emblem__ring--outer { border-color: rgba(61,95,168,0.25) !important; }
+  // Kill the gold glow on the orbital dot — too harsh on white bg
+  .about-emblem__orbital-dot { box-shadow: none !important; }
+
+  // ── News section: use bg-muted to separate from About ──
+  .news-section {
+    background: var(--bg-muted) !important;
+    &::before { opacity: 0.08 !important; }
+  }
+  .news-glow { opacity: 0.25 !important; }
+
+  // ── btn-outline: use primary color on light bg ──
+  .btn-outline {
+    border-color: var(--primary-light) !important;
+    color: var(--primary-light) !important;
+    &:hover {
+      background: var(--primary-light) !important;
+      color: #fff !important;
+      border-color: var(--primary-light) !important;
+    }
+  }
+
+  // ── Event card date badge: solid white on light bg ──
+  .event-card__date {
+    background: #fff !important;
+    border-color: var(--border) !important;
+    backdrop-filter: none !important;
+  }
+
+  // ── Hero: lighten the slide image in light mode so it looks visibly different ──
+  .hero-slide__img {
+    filter: brightness(1.4) saturate(0.7) !important;
+  }
+}
+
+
 // ═══════════════════════════════════════════════════════════
 // HERO SECTION
 // ═══════════════════════════════════════════════════════════
 
 .hero-section {
   position: relative;
-  // Desktop: dvh works fine
   height: calc(100dvh + 80px);
   min-height: calc(600px + 80px);
   width: 100%;
@@ -13,10 +79,11 @@
   -webkit-user-select: none;
   margin-top: -80px;
   margin-bottom: -1px;
+  // Theme-aware base: dot pattern on the page background colour
+  // Dark → navy canvas with blue dots; Light → white canvas with faint dots
+  background-color: var(--bg);
 
   @media (max-width: 768px) {
-    // Mobile: use the CSS variable set by JS (actual window.innerHeight)
-    // Falls back to 100svh if JS hasn't run yet
     height: calc(var(--vh, 1svh) * 100 + 70px);
     min-height: calc(560px + 70px);
     margin-top: -70px;
@@ -29,6 +96,7 @@
   inset: 0;
   opacity: 0;
   transition: opacity 1400ms ease-in-out;
+  z-index: 2;
 
   &.active {
     opacity: 1;
@@ -47,48 +115,120 @@
   object-fit: cover;
 }
 
-// RTL gradient — symmetric for centered layout
+// RTL gradient — sits above slides, darkens for text legibility
+// Stronger values ensure white text readable over any photo in both themes
 .hero-slide__grad-rtl {
   position: absolute;
   inset: 0;
+  z-index: 3;
   background: linear-gradient(
     to bottom,
-    rgba(20, 30, 48, 0.35) 0%,
-    rgba(20, 30, 48, 0.55) 50%,
-    rgba(20, 30, 48, 0.35) 100%
+    rgba(20, 30, 48, 0.55) 0%,
+    rgba(20, 30, 48, 0.65) 50%,
+    rgba(20, 30, 48, 0.55) 100%
+  );
+}
+
+// Light mode: much softer navy wash — lets the photo breathe, feels like daytime
+:root[data-theme="light"] .hero-slide__grad-rtl {
+  background: linear-gradient(
+    to bottom,
+    rgba(240, 244, 249, 0.35) 0%,
+    rgba(20, 30, 48, 0.30) 50%,
+    rgba(240, 244, 249, 0.35) 100%
   );
 }
 
 .hero-slide__grad-bottom {
   position: absolute;
   inset: 0;
+  z-index: 3;
   background: linear-gradient(
     to top,
-    rgba(20, 30, 48, 0.75) 0%,
-    transparent 50%,
-    rgba(20, 30, 48, 0.28) 100%
+    rgba(20, 30, 48, 0.80) 0%,
+    rgba(20, 30, 48, 0.30) 50%,
+    rgba(20, 30, 48, 0.40) 100%
   );
 }
 
-// Dot pattern overlay
+// Light mode: warm light fade at bottom instead of dark navy
+:root[data-theme="light"] .hero-slide__grad-bottom {
+  background: linear-gradient(
+    to top,
+    rgba(248, 249, 252, 0.85) 0%,
+    rgba(20, 30, 48, 0.20) 40%,
+    transparent 100%
+  );
+}
+
+// Dot pattern overlay — sits between bg and slides
+// Theme-aware: dark mode uses blue dots, light mode uses softer primary dots
 .hero-pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.07;
-  pointer-events: none;
   z-index: 1;
+  pointer-events: none;
+  // Dark mode: visible blue dots on navy
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.35) 1px, transparent 0);
+  background-size: 28px 28px;
+  opacity: 1;
+}
+
+:host-context([data-theme="light"]) .hero-pattern {
+  // Light mode: softer dots on white — still visible but gentle
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(61,95,168,0.18) 1px, transparent 0);
+}
+
+// Corner vignette — dark radial from edges to center
+// Strong enough in light mode to keep text readable over bright photos
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: radial-gradient(ellipse at center, transparent 25%, rgba(20, 30, 48, 0.85) 85%);
+}
+
+// Light mode: bright bloom from center — photo looks like daylight, clearly distinct from dark mode
+:root[data-theme="light"] .hero-vignette {
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.45) 0%, transparent 60%);
+}
+
+// Soft radial glows — above slides
+.hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+
+  &--top {
+    top: -160px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    background: rgba(61, 95, 168, 0.20);
+    filter: blur(140px);
+  }
+
+  &--bottom {
+    bottom: 0;
+    right: 25%;
+    width: 400px;
+    height: 400px;
+    background: rgba(201, 168, 76, 0.10);
+    filter: blur(120px);
+  }
 }
 
 // Content — perfectly centered both axes
 .hero-content {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: center;
-  // No padding — let the absolute positioning handle true center
-  // The navbar is fixed/transparent so it doesn't push content
 }
 
 .hero-body {
@@ -114,14 +254,40 @@
   text-align: center;
 }
 
+// Light mode: dark text since overlay is light
+:root[data-theme="light"] .hero-title {
+  color: var(--ink);
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 20px;
+  animation: fade-up 0.7s ease-out both;
+
+  .hero-eyebrow__line {
+    flex: 1;
+    max-width: 48px;
+    height: 1px;
+    background: var(--gradient-hairline);
+  }
+}
+
+// Light mode eyebrow: dark text
+:root[data-theme="light"] .hero-eyebrow {
+  color: rgba(20, 30, 48, 0.70);
+}
+
 .hero-title__gradient {
   display: block;
-  background: linear-gradient(
-    to left,
-    var(--primary-glow),
-    #fff,
-    var(--gold)
-  );
+  // Hero is always over a dark photo overlay — always use the dark gradient
+  background: linear-gradient(120deg, #7a9dd4 0%, #ffffff 45%, #dfc070 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -136,6 +302,10 @@
   max-width: 560px;
   text-align: center;
   animation: fade-up 1.1s ease-out both;
+}
+
+:root[data-theme="light"] .hero-subtitle {
+  color: rgba(20, 30, 48, 0.72);
 }
 
 // CTAs
@@ -210,8 +380,9 @@
 .hero-controls {
   position: absolute;
   bottom: 0;
-  inset-x: 0;
-  z-index: 3;
+  left: 0;
+  right: 0;
+  z-index: 4;
   padding-bottom: 32px;
 }
 
@@ -322,25 +493,44 @@
 }
 
 .section-label__line {
-  width: 40px;
+  width: 48px;
   height: 1px;
-  background: var(--primary-light);
+  background: var(--gradient-hairline);
   flex-shrink: 0;
 }
 
 .section-label__text {
   font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--primary-light);
+  color: var(--gold);
 }
 
 .section-title {
   font-size: clamp(1.8rem, 4vw, 2.8rem);
   font-weight: 800;
-  color: var(--text);
   line-height: 1.15;
+  background: var(--gradient-headline);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+// Light mode: --gradient-headline is none, so background-clip produces invisible text.
+// Use a global selector (not :host-context) to override — targets the rendered DOM directly.
+:root[data-theme="light"] .section-title {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--ink);
+}
+
+:root[data-theme="light"] .about-title {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--ink);
 }
 
 .section-subtitle {
@@ -376,13 +566,12 @@
   gap: 6px;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--primary-light);
+  color: var(--gold);
   text-decoration: none;
   transition: gap 0.3s ease, color 0.3s ease;
 
   &:hover {
     gap: 12px;
-    color: var(--primary);
   }
 }
 
@@ -411,20 +600,19 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 36px;
+  padding: 12px 28px;
   border-radius: var(--radius-full);
-  border: 2px solid var(--primary-light);
-  color: var(--primary-light);
+  border: 1px solid var(--border);
+  color: var(--text);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-decoration: none;
   transition: all 0.3s ease;
 
   &:hover {
-    background: var(--primary-light);
-    color: #fff;
+    border-color: var(--gold);
+    color: var(--gold);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-glow);
   }
 }
 
@@ -433,9 +621,34 @@
 // ═══════════════════════════════════════════════════════════
 
 .events-section {
+  position: relative;
   padding: 96px 0;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
+  background: var(--secondary);
+  overflow: hidden;
+
+  // Dot pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+    background-size: 28px 28px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+// Section glow
+.events-glow {
+  position: absolute;
+  top: 0;
+  right: 33%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(61, 95, 168, 0.15);
+  filter: blur(140px);
+  pointer-events: none;
 }
 
 .events-grid {
@@ -445,22 +658,24 @@
 }
 
 .event-card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-card);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
   display: flex;
   flex-direction: column;
 
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-elegant);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-glow);
+    border-color: rgba(201, 168, 76, 0.4);
 
     .event-card__image img,
     .event-card__image app-optimized-image img {
-      transform: scale(1.08);
+      transform: scale(1.10);
     }
   }
 }
@@ -497,13 +712,14 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-md);
   padding: 10px 14px;
   text-align: center;
   min-width: 64px;
   box-shadow: var(--shadow-elegant);
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
 }
 
 .event-card__day {
@@ -585,9 +801,20 @@
 .about-section {
   position: relative;
   padding: 96px 0;
-  background: var(--secondary);
-  color: #fff;
+  background: var(--bg); // ink/page bg — same as News, alternates with secondary
+  color: var(--text);
   overflow: hidden;
+
+  // Dot pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+    background-size: 28px 28px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
 }
 
 .about-blob {
@@ -598,27 +825,29 @@
   &--top {
     top: -128px;
     right: 0;
-    width: 480px;
-    height: 480px;
-    background: rgba(81, 116, 185, 0.25);
-    filter: blur(120px);
+    width: 600px;
+    height: 600px;
+    background: rgba(61, 95, 168, 0.20);
+    filter: blur(160px);
   }
 
   &--bottom {
     bottom: -128px;
     left: 0;
-    width: 480px;
-    height: 480px;
-    background: rgba(201, 168, 76, 0.12);
-    filter: blur(120px);
+    width: 500px;
+    height: 500px;
+    background: rgba(201, 168, 76, 0.10);
+    filter: blur(160px);
   }
 }
 
 .about-pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.05;
+  opacity: 0.4;
   pointer-events: none;
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+  background-size: 28px 28px;
 }
 
 .about-grid {
@@ -643,32 +872,46 @@
   border-radius: 50%;
 
   &--outer {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: spin-slow 40s linear infinite;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    // spin-slow animation class applied in HTML
   }
 
   &--dashed {
     inset: 24px;
-    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border: 1px dashed rgba(201, 168, 76, 0.55); // gold dashed ring
+    // spin-reverse animation class applied in HTML
   }
+}
+
+.about-emblem__orbital-dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 14px rgba(201, 168, 76, 0.9);
 }
 
 .about-emblem__glow {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(81, 116, 185, 0.3), transparent 70%);
+  background: radial-gradient(circle, rgba(122, 157, 212, 0.35), transparent 65%);
   filter: blur(24px);
+  // pulse-glow animation class applied in HTML
 }
 
 .about-emblem__circle {
   position: absolute;
-  inset: 40px;
+  inset: 18%;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.95);
   display: grid;
   place-items: center;
-  box-shadow: var(--shadow-elegant);
+  box-shadow: 0 0 60px rgba(122, 157, 212, 0.45);
   overflow: hidden;
 
   img {
@@ -722,7 +965,10 @@
   font-size: clamp(2.2rem, 4vw, 3.4rem);
   font-weight: 900;
   line-height: 1.12;
-  color: #fff;
+  background: var(--gradient-headline);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   margin-bottom: 28px;
 }
 
@@ -730,13 +976,13 @@
   display: block;
   font-size: clamp(1rem, 2vw, 1.3rem);
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   margin-top: 8px;
 }
 
 .about-text {
   font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-muted);
   line-height: 1.85;
   max-width: 600px;
   margin-bottom: 36px;
@@ -754,23 +1000,24 @@
 .about-feature {
   padding: 16px;
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: background 0.3s ease;
+  transition: border-color 0.3s ease, background 0.3s ease;
 
   svg { color: var(--gold); }
 
   span {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--text);
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(201, 168, 76, 0.4);
   }
 }
 
@@ -821,17 +1068,19 @@
 .stats-section {
   position: relative;
   padding: 80px 0;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  background: var(--secondary);
   overflow: hidden;
 }
 
 .stats-grid-bg {
   position: absolute;
   inset: 0;
-  opacity: 0.4;
+  opacity: 0.08;
   pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 80px 80px;
 }
 
 .stats-grid {
@@ -855,7 +1104,7 @@
 }
 
 .stat-item__suffix {
-  color: var(--primary-light);
+  color: var(--primary-glow);
 }
 
 .stat-item__label {
@@ -872,8 +1121,34 @@
 // ═══════════════════════════════════════════════════════════
 
 .news-section {
+  position: relative;
   padding: 96px 0;
-  background: var(--bg-muted);
+  background: var(--secondary); // elevated navy — separates from footer (--bg-muted) in dark mode
+  overflow: hidden;
+
+  // Dot pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1.5px 1.5px, rgba(81,116,185,0.18) 1px, transparent 0);
+    background-size: 28px 28px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+// Section glow
+.news-glow {
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(61, 95, 168, 0.15);
+  filter: blur(140px);
+  pointer-events: none;
 }
 
 .news-grid {
@@ -886,18 +1161,20 @@
 .news-card {
   display: flex;
   flex-direction: column;
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-card);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: var(--shadow-elegant);
+    box-shadow: var(--shadow-glow);
+    border-color: rgba(201, 168, 76, 0.4);
 
-    .news-card__image img { transform: scale(1.05); }
+    .news-card__image img { transform: scale(1.10); }
     .news-card__title { color: var(--primary-light); }
   }
 }

@@ -10,29 +10,36 @@
   padding: 0 20px;
 }
 
-// ── Section label ────────────────────────────────────────
+// ── Section label — matches home page eyebrow pattern ────
 .section-label {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 40px;
+  gap: 12px;
+  margin-bottom: 16px;
 
   &--centered { justify-content: center; }
 }
 
 .section-label__line {
   flex: 1;
-  height: 2px;
-  background: var(--primary-light);
-  max-width: 80px;
-  border-radius: 2px;
+  height: 1px;
+  background: var(--gradient-hairline);
+  max-width: 48px;
+}
+
+.section-label__text {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
 }
 
 .section-title {
   font-size: clamp(1.6rem, 3.5vw, 2.4rem);
   font-weight: 800;
-  color: var(--text);
-  margin: 0;
+  margin: 0 0 40px;
+  text-align: center;
   white-space: nowrap;
 }
 
@@ -57,10 +64,11 @@
 
 // ── Event Card ───────────────────────────────────────────
 .event-card {
-  background: var(--bg-card);
+  background: var(--glass-bg);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-card);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   display: flex;
@@ -81,8 +89,7 @@
 
   &--past {
     opacity: 0.82;
-
-    .event-card__date { background: #6c757d; }
+    .event-card__date { background: var(--bg-muted); }
   }
 }
 
@@ -127,28 +134,28 @@
 // Date badge
 .event-card__date {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 12px;
+  right: 12px;
   background: var(--bg-card);
   border-radius: var(--radius-md);
-  padding: 10px 14px;
+  padding: 7px 10px;
   text-align: center;
-  min-width: 60px;
+  min-width: 48px;
   box-shadow: var(--shadow-elegant);
   border: 1px solid var(--border);
 
   &--past {
-    background: #6c757d;
-    border-color: #6c757d;
+    background: var(--bg-muted);
+    border-color: var(--border);
 
     .event-card__day,
-    .event-card__month { color: #fff; }
+    .event-card__month { color: var(--text-muted); }
   }
 }
 
 .event-card__day {
   display: block;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--primary-light);
   line-height: 1;
@@ -156,12 +163,12 @@
 
 .event-card__month {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 // "انتهى" badge

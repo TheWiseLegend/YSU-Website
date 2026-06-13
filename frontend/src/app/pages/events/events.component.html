@@ -31,9 +31,10 @@
       <section class="events-section" *ngIf="upcomingEvents.length > 0">
         <div class="section-label section-label--centered">
           <span class="section-label__line"></span>
-          <h2 class="section-title">الفعاليات القادمة</h2>
+          <span class="section-label__text">Events</span>
           <span class="section-label__line"></span>
         </div>
+        <h2 class="section-title title-gradient">الفعاليات القادمة</h2>
 
         <div class="events-grid">
           <article class="event-card" *ngFor="let event of upcomingEvents">
@@ -84,7 +85,7 @@
       <section class="events-section events-section--past" *ngIf="pastEvents.length > 0">
         <div class="section-label section-label--centered">
           <span class="section-label__line"></span>
-          <h2 class="section-title">الفعاليات السابقة</h2>
+          <h2 class="section-title title-gradient">الفعاليات السابقة</h2>
           <span class="section-label__line"></span>
         </div>
 

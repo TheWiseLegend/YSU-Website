@@ -2,9 +2,9 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #2d3e5f;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 4px 20px rgba(45,62,95,0.25);
+  background: var(--secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(45, 62, 95, 0.25);
 }
 
 .portal-header__inner {
@@ -39,19 +39,47 @@
 .portal-header__brand-name {
   font-weight: 700;
   font-size: 0.9rem;
-  color: white;
+  color: #fff;
 }
 
 .portal-header__brand-sub {
   font-size: 0.65rem;
   letter-spacing: 0.25em;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.75);
   font-family: monospace;
   text-transform: uppercase;
   margin-top: 3px;
 }
 
-// ─── Settings dropdown ────────────────────────────────────────────────────────
+// ── Right controls (theme toggle + avatar) ───────────────────
+.portal-header__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+// ── Theme toggle — matches navbar style exactly ───────────────
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+  }
+}
+
+// ── Settings dropdown ─────────────────────────────────────────
 
 .settings-wrapper { position: relative; }
 
@@ -59,15 +87,15 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
   padding: 0.25rem 0.75rem 0.25rem 0.25rem;
   cursor: pointer;
-  color: white;
+  color: #fff;
   transition: background 0.2s;
 
-  &:hover { background: rgba(255,255,255,0.12); }
+  &:hover { background: rgba(255, 255, 255, 0.12); }
 
   svg { transition: transform 0.2s; &.rotated { transform: rotate(180deg); } }
 
@@ -89,7 +117,7 @@
   justify-content: center;
   font-weight: 700;
   font-size: 0.85rem;
-  color: white;
+  color: #fff;
   flex-shrink: 0;
   overflow: hidden;
 
@@ -104,13 +132,13 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  box-shadow: var(--shadow-elegant);
   min-width: 220px;
   overflow: hidden;
   z-index: 200;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid var(--border);
   animation: fadeUp 0.15s ease;
 }
 
@@ -121,11 +149,11 @@
 
 .dropdown-info {
   padding: 1rem 1.25rem;
-  background: linear-gradient(to bottom, #f5f7fa, white);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border);
 
-  .dropdown-name { font-weight: 700; color: #2d3e5f; margin: 0 0 0.2rem; font-size: 0.95rem; }
-  .dropdown-id { font-size: 0.8rem; color: #5174b9; margin: 0; font-family: monospace; }
+  .dropdown-name { font-weight: 700; color: var(--text); margin: 0 0 0.2rem; font-size: 0.95rem; }
+  .dropdown-id   { font-size: 0.8rem; color: var(--primary-light); margin: 0; font-family: monospace; }
 }
 
 .dropdown-item {
@@ -141,8 +169,14 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #4a5568;
+  color: var(--text-muted);
 
-  &:hover { background: #f7fafc; }
-  &.logout { color: #e53e3e; &:hover { background: #fff5f5; } }
+  &:hover { background: var(--bg-muted); color: var(--text); }
+  &.logout { color: var(--accent); &:hover { background: rgba(192, 57, 43, 0.07); } }
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
 }

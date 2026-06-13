@@ -44,25 +44,27 @@
       <!-- City -->
       <div class="filter-group">
         <span class="filter-label">المدينة</span>
-        <div class="select-container">
-          <select class="custom-select" [(ngModel)]="filter.city" name="city" (change)="onCityChange($event)">
-            <option value="">كل المدن</option>
-            <option value="كوالالمبور">كوالالمبور</option>
-            <option value="جوهور باهرو">جوهور باهرو</option>
-            <option value="سايبرجايا">سايبرجايا</option>
-            <option value="سيردانج">سيردانغ</option>
-            <option value="بوتراجايا">بوتراجايا</option>
-            <option value="ملاكا">ملاكا</option>
-            <option value="ألور ستار">ألور ستار</option>
-            <option value="كنغار">كنغار</option>
-            <option value="باتو باهات">باتو باهات</option>
-            <option value="جورج تاون">جورج تاون</option>
-            <option value="كوتا دامانسارا">كوتا دامانسارا</option>
-            <option value="غومباك">غومباك</option>
-            <option value="بندر ساوجانا بوترا">بندر ساوجانا بوترا</option>
-            <option value="سوبانج جايا">سوبانغ جايا</option>
-            <option value="سيبانج">سيبانغ</option>
-          </select>
+        <div class="city-dropdown" [class.open]="cityDropdownOpen">
+          <button
+            type="button"
+            class="courses-toggle-btn"
+            [class.active]="filter.city"
+            (click)="toggleCityDropdown($event)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M12 13C13.657 13 15 11.657 15 10S13.657 7 12 7 9 8.343 9 10s1.343 3 3 3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 22C16 18 20 14.418 20 10 20 5.582 16.418 2 12 2S4 5.582 4 10c0 4.418 4 8 8 12z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{{ filter.city || 'كل المدن' }}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" [class.open]="cityDropdownOpen">
+              <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="city-dropdown__panel" *ngIf="cityDropdownOpen" (click)="$event.stopPropagation()">
+            <button type="button" class="city-option" [class.selected]="!filter.city" (click)="clearCity($event)">كل المدن</button>
+            <button type="button" class="city-option" *ngFor="let city of cityOptions"
+              [class.selected]="filter.city === city"
+              (click)="selectCity(city, $event)">{{ city }}</button>
+          </div>
         </div>
       </div>
 
@@ -130,23 +132,59 @@
 
       <div class="filter-divider"></div>
 
-      <!-- Courses toggle -->
-      <div class="filter-group">
-        <span class="filter-label">التخصصات</span>
-        <button
-          type="button"
-          class="courses-toggle-btn"
-          [class.active]="coursesExpanded"
-          (click)="toggleCoursesView()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span>التخصصات</span>
-          <span class="badge" *ngIf="getTotalCheckedCoursesCount() > 0">{{ getTotalCheckedCoursesCount() }}</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" [class.open]="coursesExpanded">
-            <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+      <!-- Courses toggle + panel inline wrapper -->
+      <div class="courses-wrapper">
+        <div class="filter-group">
+          <span class="filter-label">التخصصات</span>
+          <button
+            type="button"
+            class="courses-toggle-btn"
+            [class.active]="coursesExpanded"
+            (click)="toggleCoursesView()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>التخصصات</span>
+            <span class="badge" *ngIf="getTotalCheckedCoursesCount() > 0">{{ getTotalCheckedCoursesCount() }}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" [class.open]="coursesExpanded">
+              <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- ── Courses panel ──────────────────────────── -->
+        <div class="courses-panel" [class.open]="coursesExpanded">
+          <div class="courses-panel__inner">
+            <div class="course-category" *ngFor="let category of courseCategories; trackBy: trackByCategory">
+
+              <div class="category-header" (click)="toggleCategoryExpansion(category.id)">
+                <span class="category-title">
+                  {{ category.title }}
+                  <span class="badge" style="margin-right:6px" *ngIf="getCategoryCheckedCount(category.id) > 0">{{ getCategoryCheckedCount(category.id) }}</span>
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     class="expand-icon" [class.expanded]="category.expanded">
+                  <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+
+              <div class="category-courses" [class.expanded]="category.expanded">
+                <div class="checkbox-group">
+                  <div class="custom-checkbox" *ngFor="let course of category.courses">
+                    <input
+                      type="checkbox"
+                      [id]="course.id"
+                      [(ngModel)]="course.checked"
+                      [name]="course.id"
+                      (change)="onCheckboxChange($event, 'course', course.value)">
+                    <label [for]="course.id">{{ course.value }}</label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Reset — pushed to the end -->
@@ -161,40 +199,6 @@
         </button>
       </div>
 
-    </div>
-
-    <!-- ── Courses panel ──────────────────────────────── -->
-    <div class="courses-panel" [class.open]="coursesExpanded">
-      <div class="courses-panel__inner">
-        <div class="course-category" *ngFor="let category of courseCategories; trackBy: trackByCategory">
-
-          <div class="category-header" (click)="toggleCategoryExpansion(category.id)">
-            <span class="category-title">
-              {{ category.title }}
-              <span class="badge" style="margin-right:6px" *ngIf="getCategoryCheckedCount(category.id) > 0">{{ getCategoryCheckedCount(category.id) }}</span>
-            </span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                 class="expand-icon" [class.expanded]="category.expanded">
-              <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-
-          <div class="category-courses" [class.expanded]="category.expanded">
-            <div class="checkbox-group">
-              <div class="custom-checkbox" *ngFor="let course of category.courses">
-                <input
-                  type="checkbox"
-                  [id]="course.id"
-                  [(ngModel)]="course.checked"
-                  [name]="course.id"
-                  (change)="onCheckboxChange($event, 'course', course.value)">
-                <label [for]="course.id">{{ course.value }}</label>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
     </div>
 
   </div><!-- /filter-body -->

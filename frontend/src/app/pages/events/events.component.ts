@@ -32,54 +32,39 @@ export class EventsComponent implements OnInit {
     this.publicEventsService.getAllEvents().subscribe({
       next: (events) => {
         this.events = events;
-        
-        // Get current date to filter past events
         const now = new Date();
-        
-        // Split events into upcoming and past
         this.upcomingEvents = events
-          .filter(event => new Date(event.date) >= now)
+          .filter(e => new Date(e.date) >= now)
           .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        
         this.pastEvents = events
-          .filter(event => new Date(event.date) < now)
+          .filter(e => new Date(e.date) < now)
           .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        
         this.isLoading = false;
       },
-      error: (error) => {
+      error: () => {
         this.errorMessage = 'فشل في تحميل الفعاليات';
         this.isLoading = false;
       }
     });
   }
-  
-  // Format date to extract day
+
   formatDay(dateString: string): string {
-    const date = new Date(dateString);
-    return date.getDate().toString();
+    return new Date(dateString).getDate().toString();
   }
-  
-  // Format date to extract month
+
   formatMonth(dateString: string): string {
-    const date = new Date(dateString);
-    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
-    return months[date.getMonth()];
+    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    return months[new Date(dateString).getMonth()];
   }
-  
-  // Format date to full readable format
+
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ar-SA', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString('ar-SA', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
   }
+
   isPastEvent(event: Event): boolean {
-    const now = new Date();
-    const eventDate = new Date(event.date);
-    return eventDate < now;
+    return new Date(event.date) < new Date();
   }
 }

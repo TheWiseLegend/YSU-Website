@@ -145,6 +145,16 @@ export class UniversityFilterComponent implements OnChanges {
   // Expanded courses view
   coursesExpanded = false;
 
+  // City dropdown open state
+  cityDropdownOpen = false;
+
+  // City options
+  cityOptions = [
+    'كوالالمبور', 'جوهور باهرو', 'سايبرجايا', 'سيردانغ', 'بوتراجايا',
+    'ملاكا', 'ألور ستار', 'كنغار', 'باتو باهات', 'جورج تاون',
+    'كوتا دامانسارا', 'غومباك', 'بندر ساوجانا بوترا', 'سوبانغ جايا', 'سيبانغ'
+  ];
+
   // Mobile: whether the whole filter panel is open
   mobileFilterOpen = false;
 
@@ -168,6 +178,8 @@ export class UniversityFilterComponent implements OnChanges {
     const body = (event.currentTarget as HTMLElement).querySelector('.filter-body');
     if (this.mobileFilterOpen && body && body.contains(event.target as Node)) return;
     this.toggleMobileFilter();
+    // Close city dropdown on section toggle
+    this.cityDropdownOpen = false;
   }
 
   get activeFilterCount(): number {
@@ -228,6 +240,28 @@ export class UniversityFilterComponent implements OnChanges {
   // Method to toggle courses view
   toggleCoursesView() {
     this.coursesExpanded = !this.coursesExpanded;
+  }
+
+  // Toggle city dropdown
+  toggleCityDropdown(event: MouseEvent) {
+    event.stopPropagation();
+    this.cityDropdownOpen = !this.cityDropdownOpen;
+  }
+
+  // Select a city from custom dropdown
+  selectCity(city: string, event: MouseEvent) {
+    event.stopPropagation();
+    this.filter.city = city;
+    this.cityDropdownOpen = false;
+    this.emitFilters();
+  }
+
+  // Clear city
+  clearCity(event: MouseEvent) {
+    event.stopPropagation();
+    this.filter.city = '';
+    this.cityDropdownOpen = false;
+    this.emitFilters();
   }
 
   // Method to toggle course category expansion
@@ -316,6 +350,7 @@ export class UniversityFilterComponent implements OnChanges {
 
     // Clear persisted UI state so a fresh visit starts collapsed
     sessionStorage.removeItem(FILTER_UI_KEY);
+    this.cityDropdownOpen = false;
 
     this.emitFilters();
   }
