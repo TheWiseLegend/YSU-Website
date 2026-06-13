@@ -2,28 +2,12 @@
   direction: rtl;
 }
 
-// ── Light-mode: section titles and gradient text ──────────
-// The gradient-headline token is overridden globally in styles.scss for light mode,
-// but gradient-clip text still needs filter:none to avoid invisible text on white.
-:host-context([data-theme="light"]) {
-  .section-title {
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    background-clip: unset !important;
-    color: var(--ink) !important;
-    filter: none !important;
-  }
-
-  // Sections that use --secondary (navy) as bg must flip to lighter surfaces
-  .website-section {
-    background: var(--secondary) !important; // keep — has dark photo overlay on top
-  }
-
-  // Dot pattern: reduce opacity on white bg
-  .about-mission__dots,
-  .about-vision__dots {
-    opacity: 0.15 !important;
-  }
+// ── Light-mode: section titles — solid ink, no gradient
+:root[data-theme="light"] .section-title {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--ink);
 }
 
 // ── Shared section utilities ─────────────────────────────

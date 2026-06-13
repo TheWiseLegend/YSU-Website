@@ -66,8 +66,8 @@
   --glass-border: var(--border);
   --glass-blur:   none;
 
-  /* On light backgrounds, use primary blue → gold — clear, branded, readable on white. */
-  --gradient-headline: linear-gradient(120deg, #3d5fa8 0%, #c9a84c 100%);
+  /* Light mode: section titles are solid ink — no gradient clip on white bg */
+  --gradient-headline: none;
 }
 
 /* Dark theme */
@@ -112,13 +112,22 @@
 
 /* ─── Utility Classes ───────────────────────────────────────── */
 
-// Gradient headline text
+// Gradient headline text — dark mode only
 .title-gradient {
   background: var(--gradient-headline);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  // No filter here — drop-shadow on background-clip:text renders as ghost on Chrome/Safari
+}
+
+// Light mode: strip gradient, render as solid ink
+:root[data-theme="light"] .title-gradient,
+:root[data-theme="light"] .section-title,
+:root[data-theme="light"] .about-title {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--ink);
 }
 
 // Hairline divider (thin gradient line)

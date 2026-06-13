@@ -497,9 +497,22 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  // drop-shadow on background-clip:text causes near-invisible ghost on Chrome/Safari.
-  // Use a soft text-shadow on the pseudo — we skip the glow entirely here; the
-  // gradient contrast is sufficient. If a glow is needed, wrap in a <span> instead.
+}
+
+// Light mode: --gradient-headline is none, so background-clip produces invisible text.
+// Use a global selector (not :host-context) to override — targets the rendered DOM directly.
+:root[data-theme="light"] .section-title {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--ink);
+}
+
+:root[data-theme="light"] .about-title {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--ink);
 }
 
 .section-subtitle {
