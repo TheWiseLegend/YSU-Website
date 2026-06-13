@@ -99,50 +99,56 @@
   color: var(--text-muted);
 }
 
-// ── Select (city) ────────────────────────────────────────
-.select-container {
+// ── City custom dropdown ──────────────────────────────────
+.city-dropdown {
   position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 6px solid var(--text-muted);
-    pointer-events: none;
-    transition: border-top-color 0.2s;
-  }
-
-  &:hover::after { border-top-color: var(--primary-light); }
 }
 
-.custom-select {
-  appearance: none;
-  padding: 10px 14px 10px 36px;
-  border-radius: var(--radius-full);
-  border: 2px solid var(--border);
+.city-dropdown__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 200;
   background: var(--bg-card);
-  font-family: 'Tajawal', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  min-width: 160px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elegant);
+  min-width: 180px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
 
-  &:hover { border-color: var(--primary-light); }
-  &:focus {
-    border-color: var(--primary-light);
-    box-shadow: 0 0 0 3px rgba(81, 116, 185, 0.12);
+.city-option {
+  display: block;
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: right;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: rgba(81, 116, 185, 0.08);
+    color: var(--primary-light);
   }
 
-  option { font-weight: 500; }
+  &.selected {
+    background: rgba(81, 116, 185, 0.1);
+    color: var(--primary-light);
+    font-weight: 700;
+  }
 }
 
 // ── Fee range inputs ─────────────────────────────────────
@@ -294,11 +300,19 @@
   }
 }
 
+// ── Courses wrapper (toggle + panel as a unit) ────────────
+.courses-wrapper {
+  display: contents; // transparent on desktop — children flow normally in filter-row
+}
+
 // ── Courses panel (dropdown) ──────────────────────────────
 .courses-panel {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s ease;
+  // On desktop: spans full width below the filter-row
+  width: 100%;
+  flex-basis: 100%;
 
   &.open {
     max-height: 600px;
@@ -481,6 +495,20 @@
     gap: 12px;
     flex-direction: column;
     align-items: stretch;
+  }
+
+  // On mobile: wrapper is a real column so panel sits under its button
+  .courses-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    .filter-group { margin-bottom: 0; }
+  }
+
+  .courses-panel {
+    width: 100%;
+    flex-basis: auto;
   }
 
   .filter-divider {

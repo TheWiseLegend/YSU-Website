@@ -67,11 +67,15 @@
   --glass-blur:   none;
 
   /* Card accent — blue in light mode */
-  --card-accent:    var(--primary-light);
-  --card-accent-bg: rgba(81, 116, 185, 0.1);
+  --card-accent:       var(--primary-light);
+  --card-accent-bg:    rgba(81, 116, 185, 0.1);
 
   /* Dark-section title — ink on light, white on dark */
   --dark-section-title: var(--ink);
+
+  /* Active/success badge color */
+  --badge-active-color: #4A7C4E;
+  --badge-active-bg:    rgba(74, 124, 78, 0.12);
 
   /* Light mode: section titles are solid ink — no gradient clip on white bg */
   --gradient-headline: none;
@@ -112,11 +116,15 @@
   --glass-blur:   blur(6px);
 
   /* Card accent — gold in dark mode */
-  --card-accent:    var(--gold);
-  --card-accent-bg: rgba(201, 168, 76, 0.12);
+  --card-accent:       var(--gold);
+  --card-accent-bg:    rgba(201, 168, 76, 0.12);
 
   /* Dark-section title — white on dark */
   --dark-section-title: #ffffff;
+
+  /* Active/success badge color — brighter green on dark */
+  --badge-active-color: #6fcf7a;
+  --badge-active-bg:    rgba(74, 124, 78, 0.18);
 
   /* Restore the proper headline gradient for dark mode —
      the light-mode override in :root/:root[data-theme=light] has equal
