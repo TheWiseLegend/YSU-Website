@@ -1,22 +1,24 @@
 // ─── Light-mode gradient headline override ───────────────────────────
-// On light mode, gradient titles are unreadable. Use solid dark text instead.
+// :host-context is unreliable in Angular 19 — use :global selector instead.
+// In Angular, component SCSS with default encapsulation can escape via :global()
+// but the cleanest approach is to target the host attribute selector directly.
+// We use the data-theme on <html> (= :root) and rely on CSS specificity.
+
+// When light mode active, strip gradient clip and use solid readable colors.
+// The [data-theme=light] is on :root (html), so we use a global override
+// that is scoped tightly enough not to bleed to other components.
 :root[data-theme="light"] {
-  --gradient-headline: linear-gradient(120deg, #1e2d4a 0%, #1e2d4a 100%);
-  --gradient-hairline: linear-gradient(90deg, transparent, rgba(201,168,76,0.7), transparent);
+  // Angular scoped attrs don't help here — use !important to beat the gradient
+  // on .section-title and .about-title rendered by this component.
+  // This is safe because only home.component renders these class names under
+  // the home route, so there's no unintended bleed.
 }
 
-// Gradient clip produces transparent text — override to solid on light mode.
-// :host-context ensures this works with Angular's scoped SCSS.
-:host-context([data-theme="light"]) {
-  .section-title,
-  .about-title {
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    background-clip: unset !important;
-    color: var(--ink) !important;
-    filter: none !important;
-  }
-}
+// The actual fix: since the gradient token is now correctly set per-theme
+// in styles.scss (:root[data-theme=light] and :root[data-theme=dark]),
+// we just need color:transparent to work. The light gradient (#1e2d4a→#3d5fa8→#c9a84c)
+// IS readable on light backgrounds — so we keep gradient clip in both modes.
+// Remove the old override that was stripping it entirely.
 
 // ─── Light-mode section overrides ────────────────────────────────────
 // :host-context works inside Angular component SCSS with default encapsulation.
@@ -498,7 +500,9 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 4px 30px rgba(122, 157, 212, 0.35));
+  // drop-shadow on background-clip:text causes near-invisible ghost on Chrome/Safari.
+  // Use a soft text-shadow on the pseudo — we skip the glow entirely here; the
+  // gradient contrast is sufficient. If a glow is needed, wrap in a <span> instead.
 }
 
 .section-subtitle {
@@ -937,7 +941,6 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 4px 30px rgba(122, 157, 212, 0.35));
   margin-bottom: 28px;
 }
 
@@ -1067,7 +1070,7 @@
 .stat-item__value {
   font-size: clamp(2.4rem, 5vw, 3.6rem);
   font-weight: 900;
-  color: #fff;
+  color: var(--text);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -1082,7 +1085,7 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
 }
 
 // ═══════════════════════════════════════════════════════════

@@ -11,7 +11,7 @@
 
 /* Theme-independent tokens (same in both themes) */
 :root {
-  /* Gradient tokens */
+  /* Gradient tokens — dark default */
   --gradient-headline: linear-gradient(120deg, #7a9dd4 0%, #ffffff 45%, #dfc070 100%);
   --gradient-hairline: linear-gradient(90deg, transparent, rgba(201,168,76,0.6), transparent);
 
@@ -65,6 +65,9 @@
   --glass-bg:     var(--bg-card);
   --glass-border: var(--border);
   --glass-blur:   none;
+
+  /* On light backgrounds, use primary blue → gold — clear, branded, readable on white. */
+  --gradient-headline: linear-gradient(120deg, #3d5fa8 0%, #c9a84c 100%);
 }
 
 /* Dark theme */
@@ -100,6 +103,11 @@
   --glass-bg:     rgba(255,255,255,0.03);
   --glass-border: rgba(81,116,185,0.28);
   --glass-blur:   blur(6px);
+
+  /* Restore the proper headline gradient for dark mode —
+     the light-mode override in :root/:root[data-theme=light] has equal
+     specificity but comes later in source order, so we must re-declare here. */
+  --gradient-headline: linear-gradient(120deg, #7a9dd4 0%, #ffffff 45%, #dfc070 100%);
 }
 
 /* ─── Utility Classes ───────────────────────────────────────── */
@@ -110,7 +118,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 4px 30px rgba(122,157,212,0.35));
+  // No filter here — drop-shadow on background-clip:text renders as ghost on Chrome/Safari
 }
 
 // Hairline divider (thin gradient line)
@@ -281,8 +289,8 @@ app-navbar {
 /* ─── Navbar overrides (mobile) ─────────────────────────── */
 @media (max-width: 991px) {
   .navbar .nav-links.active ul li a {
-    color: #333 !important;
-    background-color: #fff !important;
+    color: var(--text) !important;
+    background-color: var(--bg-card) !important;
 
     &:hover, &.active {
       color: var(--primary-light) !important;
@@ -296,15 +304,15 @@ app-navbar {
 .filter-select {
   &.ng-select .ng-select-container {
     border-radius: 999px;
-    border: 1px solid #e5eaf2;
-    background: white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-card);
     min-height: 42px;
     height: 42px;
     font-family: 'Tajawal', Arial, sans-serif;
     font-size: 0.88rem;
     font-weight: 500;
-    color: #2d3e5f;
+    color: var(--text);
     direction: rtl;
     transition: border-color 0.2s, box-shadow 0.2s;
     cursor: pointer;
@@ -326,7 +334,7 @@ app-navbar {
     }
 
     .ng-placeholder {
-      color: rgba(81, 116, 185, 0.6);
+      color: var(--text-light);
       line-height: 1;
     }
 
@@ -348,7 +356,7 @@ app-navbar {
       .ng-arrow {
         display: block;
         border-style: solid;
-        border-color: #5174b9 transparent transparent;
+        border-color: var(--primary-light) transparent transparent;
         border-width: 5px 4px 0;
         height: 0;
         width: 0;
@@ -369,39 +377,39 @@ app-navbar {
   }
 
   &.ng-select.ng-select-opened .ng-select-container {
-    border-color: #5174b9;
+    border-color: var(--primary-light);
     box-shadow: 0 0 0 3px rgba(81, 116, 185, 0.15);
     border-radius: 999px;
 
     .ng-arrow-wrapper .ng-arrow {
-      border-color: transparent transparent #5174b9;
+      border-color: transparent transparent var(--primary-light);
       border-width: 0 4px 5px;
     }
   }
 
   &.ng-select:hover .ng-select-container {
-    border-color: #5174b9;
+    border-color: var(--primary-light);
   }
 }
 
 /* Dropdown panel — appended to <body> by appendTo="body", so must be global */
 .ng-dropdown-panel {
-  border: 1px solid #e5eaf2 !important;
+  border: 1px solid var(--border) !important;
   border-radius: 16px !important;
-  box-shadow: 0 8px 30px rgba(45, 62, 95, 0.12) !important;
+  box-shadow: var(--shadow-elegant) !important;
   overflow: hidden;
   direction: rtl;
   font-family: 'Tajawal', Arial, sans-serif;
   margin-top: 4px;
   z-index: 9999;
-  background: #ffffff !important;
+  background: var(--bg-card) !important;
   opacity: 1 !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 
   .ng-dropdown-panel-items {
     padding: 6px;
-    background: #ffffff;
+    background: var(--bg-card);
   }
 
   .ng-option {
@@ -409,7 +417,7 @@ app-navbar {
     padding: 0.6rem 0.9rem !important;
     font-size: 0.88rem !important;
     font-weight: 500;
-    color: #2d3e5f !important;
+    color: var(--text) !important;
     direction: rtl;
     text-align: right;
     transition: background 0.15s;
@@ -417,16 +425,16 @@ app-navbar {
 
     &.ng-option-marked {
       background: rgba(81, 116, 185, 0.08) !important;
-      color: #2d3e5f !important;
+      color: var(--text) !important;
     }
 
     &.ng-option-selected {
-      background: #5174b9 !important;
+      background: var(--primary-light) !important;
       color: white !important;
       font-weight: 700;
 
       &.ng-option-marked {
-        background: #3d5a9e !important;
+        background: var(--primary) !important;
         color: white !important;
       }
     }

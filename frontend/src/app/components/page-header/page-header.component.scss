@@ -47,11 +47,11 @@
 }
 
 .title-first {
-  color: #fff;
+  color: #fff; // always on dark photo overlay
 }
 
 .title-second {
-  color: var(--primary-light);
+  color: var(--gold); // gold accent on dark overlay
 }
 
 // Logo peeking from the bottom center — smaller so it doesn't overwhelm
@@ -64,13 +64,13 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 3px solid rgba(255, 255, 255, 0.9);
+  border: 3px solid var(--border);
 
   img {
     width: 80%;
