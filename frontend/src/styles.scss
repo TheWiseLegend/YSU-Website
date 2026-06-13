@@ -492,3 +492,74 @@ app-navbar {
     }
   }
 }
+
+/* ─── ng-select dark mode ──────────────────────────────────── */
+/* The dropdown panel is appended to <body> so it can't be
+   styled from within the component. Global overrides are needed. */
+
+:root[data-theme="dark"] {
+  /* The dropdown panel container */
+  .ng-dropdown-panel {
+    background: #1e2d4a;
+    border: 1px solid rgba(81, 116, 185, 0.28);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .ng-dropdown-panel .ng-dropdown-panel-items {
+    background: #1e2d4a;
+  }
+
+  .ng-dropdown-panel .ng-option {
+    background: #1e2d4a;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Tajawal', sans-serif;
+
+    &:hover,
+    &.ng-option-marked {
+      background: rgba(81, 116, 185, 0.18);
+      color: #fff;
+    }
+
+    &.ng-option-selected,
+    &.ng-option-selected.ng-option-marked {
+      background: rgba(81, 116, 185, 0.3);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    &.ng-option-disabled {
+      color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  /* The trigger/control itself */
+  .ng-select .ng-select-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(81, 116, 185, 0.28);
+    color: rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+  }
+
+  .ng-select.ng-select-opened .ng-select-container {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(81, 116, 185, 0.5);
+  }
+
+  .ng-select .ng-select-container .ng-value-container .ng-placeholder {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .ng-select .ng-select-container .ng-value-container .ng-value {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .ng-select .ng-arrow-wrapper .ng-arrow {
+    border-color: rgba(255, 255, 255, 0.5) transparent transparent;
+  }
+
+  .ng-select.ng-select-opened .ng-arrow-wrapper .ng-arrow {
+    border-color: transparent transparent rgba(255, 255, 255, 0.5);
+  }
+}
