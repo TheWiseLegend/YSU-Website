@@ -66,6 +66,114 @@
 
 
 // ═══════════════════════════════════════════════════════════
+// LOADING SCREEN
+// ═══════════════════════════════════════════════════════════
+
+.hero-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background: var(--bg, #0d1526);
+  opacity: 1;
+  transition: opacity 700ms ease-in-out;
+
+  &--hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.hero-loader__text {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-muted, #9fb0c9);
+  animation: hero-loader-in 600ms ease-out both, hero-loader-text-pulse 2s ease-in-out 600ms infinite;
+}
+
+@keyframes hero-loader-text-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+.hero-loader__emblem {
+  width: min(240px, 60vw);
+  animation: hero-loader-in 600ms ease-out both;
+}
+
+@keyframes hero-loader-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+// Emblem internals — mirrors the about-page orbital emblem (scoped styles
+// from the about component don't reach here, so redeclare what we need).
+.hero-loader {
+  .about-emblem {
+    position: relative;
+    aspect-ratio: 1;
+    margin: 0 auto;
+  }
+
+  .about-emblem__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+
+    &--outer { border: 1px solid var(--border); }
+
+    &--dashed {
+      inset: 24px;
+      border: 1px dashed rgba(201, 168, 76, 0.55);
+    }
+  }
+
+  .about-emblem__orbital-dot {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 14px rgba(201, 168, 76, 0.9);
+  }
+
+  .about-emblem__glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(122, 157, 212, 0.3), transparent 70%);
+    filter: blur(24px);
+  }
+
+  .about-emblem__circle {
+    position: absolute;
+    inset: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 0 60px rgba(122, 157, 212, 0.45);
+    overflow: hidden;
+
+    img {
+      width: 82%;
+      height: 82%;
+      object-fit: contain;
+    }
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════════
 // HERO SECTION
 // ═══════════════════════════════════════════════════════════
 

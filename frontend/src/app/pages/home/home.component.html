@@ -1,4 +1,26 @@
 <!-- ═══════════════════════════════════════════════════════════
+     LOADING SCREEN
+════════════════════════════════════════════════════════════ -->
+<div class="hero-loader" [class.hero-loader--hidden]="!isLoading" [attr.aria-hidden]="!isLoading">
+  <div class="about-emblem hero-loader__emblem">
+    <!-- Pulsing glow -->
+    <div class="about-emblem__glow pulse-glow"></div>
+    <!-- Outer solid ring + traveling gold orbital dot -->
+    <div class="about-emblem__ring about-emblem__ring--outer spin-slow">
+      <span class="about-emblem__orbital-dot"></span>
+    </div>
+    <!-- Inner dashed gold ring (reverse spin) -->
+    <div class="about-emblem__ring about-emblem__ring--dashed spin-reverse"></div>
+    <!-- Core with logo -->
+    <div class="about-emblem__circle">
+      <img src="/logo/ysu_logo.webp" alt="شعار اتحاد الطلبة اليمنيين في ماليزيا" />
+    </div>
+  </div>
+
+  <p class="hero-loader__text">جاري تحضير الموقع...</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
      HERO SECTION
 ════════════════════════════════════════════════════════════ -->
 <section class="hero-section">
