@@ -132,7 +132,7 @@ export class AdminMembersComponent implements OnInit {
       },
       error: () => {
         // Fallback: open image in new tab (always works on mobile)
-        window.open(member.profileImageUrl, '_blank');
+        if (member.profileImageUrl) window.open(member.profileImageUrl, '_blank');
       }
     });
   }
