@@ -8,6 +8,7 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { Throttle, seconds } from '@nestjs/throttler';
 import { MemberAuthService } from './member-auth.service';
 import { RegisterDto, MemberLoginDto } from './dto';
 import { validate } from 'class-validator';
@@ -60,6 +61,7 @@ export class MemberAuthController {
   constructor(private memberAuthService: MemberAuthService) {}
 
   @Post('register')
+  @Throttle({ default: { limit: 3, ttl: seconds(60) } })
   async register(@Req() req: any) {
     try {
       const parts = req.parts();
@@ -120,36 +122,42 @@ export class MemberAuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: seconds(60) } })
   login(@Body() dto: MemberLoginDto) {
     return this.memberAuthService.login(dto);
   }
 
   @Post('verify-otp')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: seconds(60) } })
   verifyOtp(@Body() dto: VerifyOtpDto) {
     return this.memberAuthService.verifyOtp(dto.email, dto.otp);
   }
 
   @Post('resend-otp')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 3, ttl: seconds(300) } })
   resendOtp(@Body() dto: ResendOtpDto) {
     return this.memberAuthService.resendOtp(dto.email);
   }
 
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 3, ttl: seconds(300) } })
   forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.memberAuthService.requestPasswordReset(dto.email);
   }
 
   @Post('verify-reset-code')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: seconds(60) } })
   verifyResetCode(@Body() dto: VerifyResetCodeDto) {
     return this.memberAuthService.verifyResetCode(dto.email, dto.code);
   }
 
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: seconds(60) } })
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.memberAuthService.resetPassword(
       dto.email,

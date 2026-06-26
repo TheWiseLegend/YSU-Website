@@ -169,7 +169,9 @@ export class MemberAuthService {
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'حدث خطأ غير متوقع';
-    if (error.status === 401) {
+    if (error.status === 429) {
+      errorMessage = 'لقد قمت بعدد كبير من المحاولات، يرجى المحاولة بعد قليل';
+    } else if (error.status === 401) {
       if (error.error?.message === 'email_not_verified') {
         errorMessage = 'email_not_verified';
       } else if (error.error?.message === 'رمز التحقق غير صحيح') {
