@@ -2,8 +2,8 @@
   <div class="container">
     <div class="navbar-content">
 
-      <!-- Hamburger (mobile) -->
-      <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle mobile menu">
+      <!-- Hamburger (mobile) — hidden on membership pages -->
+      <button class="menu-toggle" *ngIf="!isMembershipArea" (click)="toggleMenu()" aria-label="Toggle mobile menu">
         <span></span>
         <span></span>
         <span></span>
