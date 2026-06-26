@@ -36,6 +36,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     { src: '/assets/hero_section/image_slider1.webp' },
     { src: '/assets/hero_section/image_slider2.webp' },
     { src: '/assets/hero_section/image_slider3.webp' },
+    { src: '/assets/hero_section/image_slider4.webp' },
+    { src: '/assets/hero_section/image_slider5.webp' },
+    { src: '/assets/hero_section/image_slider6.webp' },
+    { src: '/assets/hero_section/image_slider7.webp' },
+    { src: '/assets/hero_section/image_slider8.webp' },
+    { src: '/assets/hero_section/image_slider9.webp' },
+    { src: '/assets/hero_section/image_slider10.webp' },
+    { src: '/assets/hero_section/image_slider11.webp' },
   ];
 
   currentIndex = 0;
