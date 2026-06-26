@@ -43,7 +43,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     { src: '/assets/hero_section/image_slider7.webp' },
     { src: '/assets/hero_section/image_slider8.webp' },
     { src: '/assets/hero_section/image_slider9.webp' },
-    { src: '/assets/hero_section/image_slider10.webp' },
     { src: '/assets/hero_section/image_slider11.webp' },
   ];
 
