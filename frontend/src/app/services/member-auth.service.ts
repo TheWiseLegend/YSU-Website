@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 
@@ -33,7 +33,17 @@ export class MemberAuthService {
   private apiUrl = environment.apiUrl;
   private tokenKey = 'member_token';
 
+  private loggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
+  loggedIn$ = this.loggedInSubject.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  private hasToken(): boolean {
+    return !!(
+      localStorage.getItem(this.tokenKey) ??
+      sessionStorage.getItem(this.tokenKey)
+    );
+  }
 
   register(data: RegisterRequest): Observable<RegisterResponse> {
     const formData = new FormData();
@@ -67,8 +77,7 @@ export class MemberAuthService {
       );
   }
 
-  resendOtp(email: string): Observable<{ message: string }> {
-    return this.http
+  resendOtp(email: string): Observable<{ message: string }> {    return this.http
       .post<{
         message: string;
       }>(`${this.apiUrl}/member-auth/resend-otp`, { email })
@@ -130,6 +139,7 @@ export class MemberAuthService {
           } else {
             sessionStorage.setItem(this.tokenKey, response.access_token);
           }
+          this.loggedInSubject.next(true);
         }),
         catchError(this.handleError),
       );
@@ -137,6 +147,7 @@ export class MemberAuthService {
 
   setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
+    this.loggedInSubject.next(true);
   }
 
   getToken(): string | null {
@@ -153,6 +164,7 @@ export class MemberAuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     sessionStorage.removeItem(this.tokenKey);
+    this.loggedInSubject.next(false);
   }
 
   private handleError(error: HttpErrorResponse) {

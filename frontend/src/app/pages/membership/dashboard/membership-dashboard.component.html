@@ -1,11 +1,6 @@
 <div class="dashboard" dir="rtl">
-  <!-- ─── Header ──────────────────────────────────────────────────────────── -->
-  <app-membership-header
-    [member]="member"
-    (changeProfilePhoto)="openChangeProfileModal()"
-    (changePassword)="openChangePasswordModal()"
-  >
-  </app-membership-header>
+  <!-- ─── Header (shared site navbar) ─────────────────────────────────────── -->
+  <app-navbar></app-navbar>
 
   <!-- Loading -->
   <div class="loading-state" *ngIf="isLoading">

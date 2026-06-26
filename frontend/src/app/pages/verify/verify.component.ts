@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
 interface VerifyResult {
@@ -59,8 +59,13 @@ export class VerifyComponent implements OnInit {
         this.result = data;
         this.isLoading = false;
       },
-      error: () => {
-        this.errorMessage = 'لم يتم العثور على عضو بهذا الرمز';
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 429) {
+          this.errorMessage =
+            'لقد أرسلت عدداً كبيراً من الطلبات، يرجى المحاولة بعد قليل';
+        } else {
+          this.errorMessage = 'لم يتم العثور على عضو بهذا الرمز';
+        }
         this.isLoading = false;
       }
     });

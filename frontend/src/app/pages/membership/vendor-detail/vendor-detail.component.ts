@@ -9,12 +9,12 @@ import { MembershipService } from '../../../services/membership.service';
 import { PublicVendor } from '../../../models/vendor.model';
 import { Member } from '../../../models/member.model';
 import { ALL_VENDOR_LUCIDE_ICONS, getVendorIcon } from '../../../data/vendor-icons';
-import { MembershipHeaderComponent } from '../shared/membership-header/membership-header.component';
+import { NavbarComponent } from '../../../components/navbar/navbar.component';
 
 @Component({
   selector: 'app-membership-vendor-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideDynamicIcon, MembershipHeaderComponent],
+  imports: [CommonModule, RouterModule, LucideDynamicIcon, NavbarComponent],
   providers: [provideLucideIcons(...ALL_VENDOR_LUCIDE_ICONS)],
   templateUrl: './vendor-detail.component.html',
   styleUrls: ['./vendor-detail.component.scss'],

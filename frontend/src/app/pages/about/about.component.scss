@@ -167,12 +167,11 @@
   position: absolute;
   inset: 40px;
   border-radius: 50%;
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.95);
   display: grid;
   place-items: center;
-  box-shadow: var(--shadow-elegant);
+  box-shadow: 0 0 60px rgba(122, 157, 212, 0.45);
   overflow: hidden;
-  border: 1px solid var(--border);
 
   img {
     width: 82%;
@@ -497,85 +496,6 @@
   }
 }
 
-// ── Website Section (dark navy overlay) ─────────────────
-.website-section {
-  position: relative;
-  padding: 96px 0;
-  overflow: hidden;
-  background: var(--secondary);
-
-  .container { position: relative; z-index: 2; }
-}
-
-.website-section__bg {
-  position: absolute;
-  inset: 0;
-  background-image: url('/assets/about/general_Assembly_meeting.jpg');
-  background-size: cover;
-  background-position: center;
-}
-
-.website-section__overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(20, 30, 48, 0.88); // intentional: image overlay, theme-independent
-  z-index: 1;
-}
-
-.website-info {
-  max-width: 760px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.website-info__text {
-  // This section always has a dark image overlay — always needs light text
-  color: rgba(255, 255, 255, 0.80);
-  line-height: 1.9;
-  font-size: 1.05rem;
-  margin-bottom: 40px;
-}
-
-.website-info__details {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.website-info__detail {
-  padding: 16px 28px;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.06); // always dark-glass — section has dark photo overlay
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(6px);
-  text-align: center;
-  transition: background 0.3s ease, border-color 0.3s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: var(--gold);
-  }
-}
-
-.website-info__label {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--gold);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.website-info__value {
-  display: block;
-  font-size: 1.1rem;
-  font-weight: 700;
-  // Always on dark photo overlay — always white
-  color: #fff;
-}
-
 // ── Dot pattern overlay (decorative) ────────────────────
 .about-mission__dots,
 .about-vision__dots {
@@ -614,8 +534,7 @@
   .about-mission,
   .about-vision,
   .team-section,
-  .historical-section,
-  .website-section {
+  .historical-section {
     padding: 56px 0;
   }
 

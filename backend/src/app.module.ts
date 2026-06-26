@@ -1,6 +1,8 @@
 // src/app.module.ts
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard, seconds } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NewsModule } from './news/news.module';
@@ -29,6 +31,9 @@ import { VendorModule } from './vendor/vendor.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot([
+      { name: 'default', ttl: seconds(60), limit: 100 },
+    ]),
     NewsModule,
     PrismaModule,
     EventsModule,
@@ -49,6 +54,9 @@ import { VendorModule } from './vendor/vendor.module';
     VendorModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
 })
 export class AppModule {}

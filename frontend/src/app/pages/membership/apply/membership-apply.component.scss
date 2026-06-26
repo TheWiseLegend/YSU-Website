@@ -186,6 +186,14 @@
   &:hover { border-color: var(--primary-light); color: var(--primary-light); }
 }
 
+.file-label__text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+
+  svg { flex-shrink: 0; }
+}
+
 .file-upload.has-file .file-label {
   border-color: #48bb78;
   color: #276749;
@@ -292,4 +300,152 @@
   box-shadow: var(--shadow-glow);
 
   &:hover { background: var(--primary); transform: translateY(-2px); }
+}
+
+// ─── Terms & Conditions ───────────────────────────────────────────────────────
+
+.terms-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.terms-trigger {
+  background: transparent;
+  border: 1px solid var(--primary-light);
+  color: var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: 0.7rem 1.1rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover:not(:disabled) { background: var(--primary-light); color: #fff; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.terms-granted {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--primary-light);
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  svg { flex-shrink: 0; }
+}
+
+// ─── Terms Modal (reuses the dashboard .profile-modal pattern) ─────────────────
+
+.profile-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.profile-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  box-shadow: var(--shadow-elegant);
+  animation: modalSlideIn 0.3s ease;
+
+  &__close {
+    position: absolute;
+    top: 1rem; left: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+    &:hover { background: var(--bg-muted); color: var(--text); }
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    h2 { font-size: 1.15rem; font-weight: 700; color: var(--text); margin: 0.5rem 1.5rem; line-height: 1.5; }
+  }
+
+  &__actions { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+
+  &__btn {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 44px;
+
+    &--primary {
+      background: var(--primary-light);
+      color: #fff;
+      border: none;
+      box-shadow: var(--shadow-glow);
+      &:hover:not(:disabled) { background: var(--primary); }
+    }
+
+    &--ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      &:hover { background: var(--bg-muted); }
+    }
+  }
+}
+
+// Terms modal is wider and scrollable for the long content
+.terms-modal {
+  max-width: 640px;
+
+  &__body {
+    max-height: 45vh;
+    overflow-y: auto;
+    text-align: right;
+    padding-left: 0.5rem;
+
+    section { margin-bottom: 1.25rem; }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary-light);
+      margin: 0 0 0.4rem;
+    }
+
+    p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin: 0;
+      white-space: pre-line;
+    }
+  }
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import {
 } from '@lucide/angular';
 
 import { NgSelectModule } from '@ng-select/ng-select';
+import { Subscription } from 'rxjs';
 import { MembershipService } from '../../../services/membership.service';
 import { MemberAuthService } from '../../../services/member-auth.service';
 import { VendorService } from '../../../services/vendor.service';
@@ -23,7 +24,8 @@ import {
   ALL_VENDOR_LUCIDE_ICONS,
   getVendorIcon,
 } from '../../../data/vendor-icons';
-import { MembershipHeaderComponent } from '../shared/membership-header/membership-header.component';
+import { MemberProfileActionsService } from '../../../services/member-profile-actions.service';
+import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { VendorNameSizePipe } from './vendor-name-size.pipe';
 
 @Component({
@@ -36,14 +38,14 @@ import { VendorNameSizePipe } from './vendor-name-size.pipe';
     LucideDynamicIcon,
     DatePipe,
     NgSelectModule,
-    MembershipHeaderComponent,
+    NavbarComponent,
     VendorNameSizePipe,
   ],
   providers: [provideLucideIcons(...ALL_VENDOR_LUCIDE_ICONS)],
   templateUrl: './membership-dashboard.component.html',
   styleUrls: ['./membership-dashboard.component.scss'],
 })
-export class MembershipDashboardComponent implements OnInit {
+export class MembershipDashboardComponent implements OnInit, OnDestroy {
   member: Member | null = null;
   isLoading = true;
   errorMessage = '';
@@ -97,6 +99,8 @@ export class MembershipDashboardComponent implements OnInit {
 
   imageErrors: Set<string> = new Set();
 
+  private profileActionSubs: Subscription[] = [];
+
   // Mobile filter panel toggle
   showFilters = false;
 
@@ -113,9 +117,16 @@ export class MembershipDashboardComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
+    private profileActions: MemberProfileActionsService,
   ) {}
 
   ngOnInit(): void {
+    // Profile-menu actions raised by the shared navbar open the local modals
+    this.profileActionSubs.push(
+      this.profileActions.changePhoto$.subscribe(() => this.openChangeProfileModal()),
+      this.profileActions.changePassword$.subscribe(() => this.openChangePasswordModal()),
+    );
+
     // Restore filter state from query params
     const qp = this.route.snapshot.queryParams;
     if (qp['q']) this.searchQuery = qp['q'];
@@ -142,6 +153,10 @@ export class MembershipDashboardComponent implements OnInit {
     });
 
     this.loadVendors();
+  }
+
+  ngOnDestroy(): void {
+    this.profileActionSubs.forEach((s) => s.unsubscribe());
   }
 
   private async generateQrCode(): Promise<void> {
