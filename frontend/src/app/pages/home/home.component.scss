@@ -1477,6 +1477,20 @@
   .about-features {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  // Too many slides (11) to show a dot per slide on a phone — it overflows.
+  // Hide the dots and keep just the "01 / 11" counter.
+  .hero-dots {
+    gap: 0;
+  }
+
+  .hero-dot {
+    display: none;
+  }
+
+  .hero-counter {
+    margin-right: 0;
+  }
 }
 
 @media (max-width: 480px) {
