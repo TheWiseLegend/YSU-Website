@@ -85,17 +85,77 @@
             <a routerLink="/contact" routerLinkActive="active" (click)="isMenuOpen = false">تواصل معنا</a>
           </div>
 
-          <!-- Membership pill at bottom of mobile menu -->
-          <a routerLink="/membership" class="mobile-membership-btn" (click)="isMenuOpen = false">
-            العضوية
-          </a>
+          <!-- Membership pill / profile actions at bottom of mobile menu -->
+          @if (showProfile) {
+            <div class="mobile-profile">
+              <div class="mobile-profile__info">
+                <span class="profile-avatar">
+                  <img *ngIf="member?.profileImageUrl && !imageFailed" [src]="member!.profileImageUrl" alt="صورة شخصية" (error)="imageFailed = true" />
+                  <span *ngIf="!member?.profileImageUrl || imageFailed">{{ memberInitials }}</span>
+                </span>
+                <div class="mobile-profile__text">
+                  <p class="mobile-profile__name">{{ member?.fullNameAr }}</p>
+                  <p class="mobile-profile__id">{{ member?.membershipId }}</p>
+                </div>
+              </div>
+              <button class="mobile-profile__item" (click)="isMenuOpen = false; onChangePhoto()">تغيير الصورة الشخصية</button>
+              <button class="mobile-profile__item" (click)="isMenuOpen = false; onChangePassword()">تغيير كلمة المرور</button>
+              <button class="mobile-profile__item mobile-profile__item--logout" (click)="isMenuOpen = false; logout()">تسجيل الخروج</button>
+            </div>
+          } @else {
+            <a [routerLink]="isLoggedIn ? '/membership/dashboard' : '/membership'" class="mobile-membership-btn" (click)="isMenuOpen = false">
+              العضوية
+            </a>
+          }
         </div>
       </div>
 
-      <!-- Desktop: Membership CTA -->
-      <a routerLink="/membership" class="membership-btn">
-        <span>العضوية</span>
-      </a>
+      <!-- Desktop: Membership CTA / profile menu -->
+      @if (showProfile) {
+        <div class="profile-wrapper">
+          <button class="profile-btn" (click)="toggleProfileMenu($event)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" [class.rotated]="showProfileMenu">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="profile-btn__name" *ngIf="!member?.profileImageUrl">{{ memberInitials }}</span>
+            <span class="profile-avatar">
+              <img *ngIf="member?.profileImageUrl && !imageFailed" [src]="member!.profileImageUrl" alt="صورة شخصية" (error)="imageFailed = true" />
+              <span *ngIf="!member?.profileImageUrl || imageFailed">{{ memberInitials }}</span>
+            </span>
+          </button>
+
+          <div class="profile-dropdown" *ngIf="showProfileMenu">
+            <div class="profile-dropdown__info">
+              <p class="profile-dropdown__name">{{ member?.fullNameAr }}</p>
+              <p class="profile-dropdown__id">{{ member?.membershipId }}</p>
+            </div>
+            <hr />
+            <button class="profile-dropdown__item" (click)="onChangePhoto()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
+              </svg>
+              تغيير الصورة الشخصية
+            </button>
+            <button class="profile-dropdown__item" (click)="onChangePassword()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              تغيير كلمة المرور
+            </button>
+            <button class="profile-dropdown__item profile-dropdown__item--logout" (click)="logout()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              تسجيل الخروج
+            </button>
+          </div>
+        </div>
+      } @else {
+        <a [routerLink]="isLoggedIn ? '/membership/dashboard' : '/membership'" class="membership-btn">
+          <span>العضوية</span>
+        </a>
+      }
 
       <!-- Desktop: Theme toggle — to the left of العضوية (further left in RTL) -->
       <button class="theme-toggle theme-toggle--desktop" (click)="toggleTheme()" [attr.aria-label]="'تبديل الوضع الليلي'">

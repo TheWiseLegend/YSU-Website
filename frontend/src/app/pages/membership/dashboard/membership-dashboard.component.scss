@@ -2,6 +2,8 @@
   min-height: 100vh;
   background: var(--bg-muted);
   direction: rtl;
+  // Offset for the fixed site navbar (80px tall)
+  padding-top: 80px;
 }
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
