@@ -158,6 +158,19 @@
           white-space: nowrap;
           user-select: none;
         }
+
+        .input-suffix-select {
+          padding: 0 0.75rem;
+          background-color: #f0f2f8;
+          border: 1px solid #e5e7eb;
+          border-left: none;
+          border-radius: 10px 0 0 10px;
+          font-weight: 700;
+          font-size: 1rem;
+          color: var(--primary-color, #5174b9);
+          white-space: nowrap;
+          cursor: pointer;
+        }
       }
 
       .field-hint {

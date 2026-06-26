@@ -45,11 +45,16 @@
           <label>الخصم <span class="required">*</span></label>
           <div class="input-group">
             <input type="number" formControlName="discount" class="form-control"
-              placeholder="15" min="1" max="100" />
-            <span class="input-suffix">%</span>
+              placeholder="15" min="1" />
+            <select formControlName="discountUnit" class="input-suffix-select">
+              <option value="%">%</option>
+              <option value="RM">RM</option>
+            </select>
           </div>
           <small class="field-error" *ngIf="vendorForm.get('discount')?.invalid && vendorForm.get('discount')?.touched">
-            أدخل نسبة صحيحة بين 1 و 100
+            {{ vendorForm.get('discountUnit')?.value === '%'
+              ? 'أدخل نسبة صحيحة بين 1 و 100'
+              : 'أدخل مبلغاً صحيحاً أكبر من 0' }}
           </small>
         </div>
 

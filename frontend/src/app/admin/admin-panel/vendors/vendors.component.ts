@@ -71,12 +71,19 @@ export class AdminVendorsComponent implements OnInit {
       name:               ['', [Validators.required, Validators.maxLength(100)]],
       categoryId:         ['', Validators.required],
       discount:           [null, [Validators.required, Validators.min(1), Validators.max(100)]],
+      discountUnit:       ['%', Validators.required],
       location:           ['', Validators.maxLength(100)],
       imageUrl:           ['', Validators.maxLength(500)],
       mapsUrl:            ['', Validators.maxLength(500)],
       phone:              ['', Validators.maxLength(20)],
       notes:              [''],
       discountExpiresAt:  [''],
+    });
+
+    // Discount validation adapts to the selected unit: percentages are capped
+    // at 100, fixed RM amounts have no upper bound.
+    this.vendorForm.get('discountUnit')!.valueChanges.subscribe((unit) => {
+      this.applyDiscountValidators(unit);
     });
 
     this.categoryForm = this.fb.group({
@@ -120,7 +127,7 @@ export class AdminVendorsComponent implements OnInit {
   }
 
   resetVendorForm(): void {
-    this.vendorForm.reset();
+    this.vendorForm.reset({ discountUnit: '%' });
     this.isEditingVendor = false;
     this.editingVendorId = null;
     this.selectedFile = null;
@@ -140,10 +147,16 @@ export class AdminVendorsComponent implements OnInit {
       ? new Date(vendor.discountExpiresAt).toISOString().split('T')[0]
       : '';
 
+    // Parse the stored discount string (e.g. "15%" or "100 RM") into value + unit
+    const discountStr = vendor.discount ?? '';
+    const discountValue = parseInt(discountStr, 10) || null;
+    const discountUnit = discountStr.includes('%') ? '%' : 'RM';
+
     this.vendorForm.patchValue({
       name:              vendor.name,
       categoryId:        vendor.categoryId,
-      discount:          parseInt(vendor.discount, 10) || null,
+      discount:          discountValue,
+      discountUnit:      discountUnit,
       location:          vendor.location ?? '',
       imageUrl:          vendor.imageUrl ?? '',
       mapsUrl:           vendor.mapsUrl ?? '',
@@ -424,6 +437,15 @@ export class AdminVendorsComponent implements OnInit {
     return new Date(dateStr) < new Date();
   }
 
+  // Percentages cap at 100; fixed RM amounts only need a sensible upper bound.
+  private applyDiscountValidators(unit: string): void {
+    const control = this.vendorForm.get('discount');
+    if (!control) return;
+    const max = unit === '%' ? 100 : 100000;
+    control.setValidators([Validators.required, Validators.min(1), Validators.max(max)]);
+    control.updateValueAndValidity();
+  }
+
   private normalizeOptionalField(value: unknown): string | undefined {
     if (typeof value !== 'string') return undefined;
     const trimmed = value.trim();
@@ -435,6 +457,7 @@ export class AdminVendorsComponent implements OnInit {
       name: string;
       categoryId: string;
       discount: number;
+      discountUnit: string;
       location?: string;
       imageUrl?: string;
       mapsUrl?: string;
@@ -444,10 +467,15 @@ export class AdminVendorsComponent implements OnInit {
     },
     imageUrls: string[]
   ): CreateVendorDto {
+    const discount =
+      formValue.discountUnit === '%'
+        ? `${formValue.discount}%`
+        : `${formValue.discount} RM`;
+
     return {
       name:              formValue.name,
       categoryId:        formValue.categoryId,
-      discount:          `${formValue.discount}%`,
+      discount,
       location:          this.normalizeOptionalField(formValue.location),
       imageUrl:          this.normalizeOptionalField(formValue.imageUrl),
       mapsUrl:           this.normalizeOptionalField(formValue.mapsUrl),
