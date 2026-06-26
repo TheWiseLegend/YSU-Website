@@ -15,6 +15,7 @@ import { PublicNewsService } from '../../services/public-news.service';
 import { Event } from '../../services/events.service';
 import { OptimizedImageComponent } from '../../components/optimized-image/optimized-image.component';
 import { News } from '../../models/news.interface';
+import { AppLoaderService } from '../../services/app-loader.service';
 
 interface Stat {
   value: number;
@@ -52,19 +53,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly transitionInterval = 6000;
 
   // ── Loading screen ──────────────────────────────────────────
-  // The loader covers the hero from the very first paint so the text/template
-  // never flashes before it. Anti-flicker semantics:
-  //  - cached fast-path : if the first N images are already cached, the loader
-  //                       is skipped entirely → no loader flash on repeat visits.
-  //  - `minimum`        : once the loader is on screen, keep it at least this
-  //                       long so it never blinks in-and-out.
-  isLoading = true;                         // cover content from first paint
+  // The single loader lives in index.html (#ysu-app-loader) and is shown from
+  // the very first browser paint. This page holds it until the first hero
+  // images are ready, then tells AppLoaderService to remove it. On cached
+  // loads the images resolve synchronously → the loader is gone almost at once.
   private readonly preloadCount = 3;        // wait for first N hero images
-  private readonly loaderMinimumMs = 700;   // min on-screen time once shown
   private readonly loaderSafetyMs = 6000;   // hard ceiling so it never hangs
-  private safetyTimer: any;                 // fires loaderSafetyMs → force-finish
-  private shownAt = 0;                      // timestamp the loader became visible
-  private isSettled = false;                // first N images done (or timed out)
+  private safetyTimer: any;
+  private isSettled = false;
 
   // ── Events ──────────────────────────────────────────────────
   upcomingEvents: Event[] = [];
@@ -81,6 +77,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   statsAnimated = false;
   private statsObserver?: IntersectionObserver;
 
+  // ── About emblem reveal ──────────────────────────────────────
+  // The emblem sits among heavy blur layers + infinite GPU animations, which
+  // mobile browsers rasterize lazily → it pops in blank when scrolled to.
+  // Reveal it with a fade so the paint is intentional, not jarring.
+  @ViewChild('aboutEmblem') aboutEmblem!: ElementRef<HTMLElement>;
+  emblemRevealed = false;
+  private emblemObserver?: IntersectionObserver;
+
   stats: Stat[] = [
     { value: 7000, suffix: '+', label: 'طالب وطالبة', current: 0 },
     { value: 19,   suffix: '',  label: 'فرعاً جامعياً', current: 0 },
@@ -92,7 +96,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private publicEventsService: PublicEventsService,
     private publicNewsService: PublicNewsService,
     private cdr: ChangeDetectorRef,
-  ) {}
+    private appLoader: AppLoaderService,
+  ) {
+    // Claim the pre-boot loader so AppComponent doesn't auto-hide it before
+    // our hero images are ready.
+    this.appLoader.hold();
+  }
 
   ngOnInit(): void {
     this.startImageTransition();
@@ -104,12 +113,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initStatsObserver();
+    this.initEmblemObserver();
   }
 
   ngOnDestroy(): void {
     this.clearImageTransition();
     clearTimeout(this.safetyTimer);
     this.statsObserver?.disconnect();
+    this.emblemObserver?.disconnect();
   }
 
   // ── Slider ──────────────────────────────────────────────────
@@ -132,8 +143,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       if (settled >= this.preloadCount) this.settle();
     };
 
-    // Check synchronously whether the first N images are already cached. If so,
-    // skip the loader entirely so repeat visits don't flash it.
+    // Check synchronously whether the first N images are already cached.
     let cachedCount = 0;
     const pending: HTMLImageElement[] = [];
     firstN.forEach((s) => {
@@ -144,16 +154,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     if (cachedCount >= this.preloadCount) {
-      // Everything already cached → never show the loader.
-      this.isLoading = false;
-      this.isSettled = true;
+      // All cached → drop the loader immediately.
+      this.settle();
       this.warmRemaining();
       return;
     }
 
-    // Loader is visible (isLoading starts true). Record when, and arm the
-    // minimum-on-screen + safety timers.
-    this.shownAt = Date.now();
+    // Safety ceiling so the loader can never hang.
     this.safetyTimer = setTimeout(() => this.settle(), this.loaderSafetyMs);
 
     settled = cachedCount;
@@ -178,14 +185,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.isSettled) return;
     this.isSettled = true;
     clearTimeout(this.safetyTimer);
-
-    // `minimum`: keep the loader on screen at least loaderMinimumMs to avoid flicker.
-    const elapsed = Date.now() - this.shownAt;
-    const remaining = Math.max(0, this.loaderMinimumMs - elapsed);
-    setTimeout(() => {
-      this.isLoading = false;
-      this.cdr.detectChanges();
-    }, remaining);
+    this.appLoader.hide();
   }
 
   startImageTransition(): void {
@@ -305,6 +305,31 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       { threshold: 0.3 },
     );
     this.statsObserver.observe(this.statsSection.nativeElement);
+  }
+
+  private initEmblemObserver(): void {
+    const el = this.aboutEmblem?.nativeElement;
+    if (!el) return;
+
+    // No IntersectionObserver (old browsers) → just show it.
+    if (!('IntersectionObserver' in window)) {
+      this.emblemRevealed = true;
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.emblemObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          this.emblemRevealed = true;
+          this.cdr.markForCheck();
+          this.emblemObserver?.disconnect();
+        }
+      },
+      // Reveal a bit before it enters the viewport so it's painted in time.
+      { threshold: 0.15, rootMargin: '200px 0px' },
+    );
+    this.emblemObserver.observe(el);
   }
 
   private animateStats(): void {
