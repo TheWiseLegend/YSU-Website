@@ -5,7 +5,7 @@ import { filter } from 'rxjs/operators';
 import { ThemeService } from '../../services/theme.service';
 
 // Routes where the navbar should always be solid (no dark hero behind it)
-const SOLID_NAV_ROUTES = ['/verify', '/digital-library'];
+const SOLID_NAV_ROUTES = ['/verify'];
 
 @Component({
   selector: 'app-navbar',

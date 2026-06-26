@@ -29,7 +29,6 @@ import { AdminUnionTeamComponent } from './admin/admin-panel/union-team/union-te
 import { AdminBranchesComponent } from './admin/admin-panel/branches/branches.component';
 import { BranchTeamComponent } from './admin/admin-panel/branch-team/branch-team.component';
 import { AdminBranchDetailComponent } from './admin/admin-panel/branch-detail/branch-detail.component';
-import { DigitalLibraryComponent } from './pages/digital-library/digital-library.component';
 import { AdminMembersComponent } from './admin/admin-panel/members/admin-members.component';
 import { VerifyComponent } from './pages/verify/verify.component';
 import { AdminVendorsComponent } from './admin/admin-panel/vendors/vendors.component';
@@ -63,7 +62,6 @@ export const routes: Routes = [
       { path: 'events/:id', component: EventDetailComponent }, // Added event detail route
       { path: 'about', component: AboutComponent },
       { path: 'contact', component: ContactComponent },
-      { path: 'digital-library', component: DigitalLibraryComponent },
       { path: 'verify', component: VerifyComponent },
       { path: 'verify/:code', component: VerifyComponent },
     ],
