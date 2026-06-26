@@ -52,16 +52,16 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly transitionInterval = 6000;
 
   // ── Loading screen ──────────────────────────────────────────
-  // Mirrors Angular's @loading (after; minimum) anti-flicker semantics:
-  //  - `after`  : don't reveal the loader unless loading is still going past
-  //               this delay → fast/cached loads never flash a loader.
-  //  - `minimum`: once revealed, keep it on screen at least this long → no flicker.
-  isLoading = false;
+  // The loader covers the hero from the very first paint so the text/template
+  // never flashes before it. Anti-flicker semantics:
+  //  - cached fast-path : if the first N images are already cached, the loader
+  //                       is skipped entirely → no loader flash on repeat visits.
+  //  - `minimum`        : once the loader is on screen, keep it at least this
+  //                       long so it never blinks in-and-out.
+  isLoading = true;                         // cover content from first paint
   private readonly preloadCount = 3;        // wait for first N hero images
-  private readonly loaderAfterMs = 250;     // delay before showing the loader
   private readonly loaderMinimumMs = 700;   // min on-screen time once shown
   private readonly loaderSafetyMs = 6000;   // hard ceiling so it never hangs
-  private revealTimer: any;                 // fires loaderAfterMs → reveal
   private safetyTimer: any;                 // fires loaderSafetyMs → force-finish
   private shownAt = 0;                      // timestamp the loader became visible
   private isSettled = false;                // first N images done (or timed out)
@@ -108,7 +108,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.clearImageTransition();
-    clearTimeout(this.revealTimer);
     clearTimeout(this.safetyTimer);
     this.statsObserver?.disconnect();
   }
@@ -127,35 +126,50 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   preloadHeroImages(): void {
     const firstN = this.slides.slice(0, this.preloadCount);
 
-    // `after`: only reveal the loader if we're still loading past this delay.
-    this.revealTimer = setTimeout(() => {
-      if (!this.isSettled) {
-        this.isLoading = true;
-        this.shownAt = Date.now();
-        this.cdr.detectChanges();
-      }
-    }, this.loaderAfterMs);
-
-    // Safety: never hang past the ceiling, regardless of image state.
-    this.safetyTimer = setTimeout(() => this.settle(), this.loaderSafetyMs);
-
     let settled = 0;
     const onOne = () => {
       settled += 1;
       if (settled >= this.preloadCount) this.settle();
     };
 
+    // Check synchronously whether the first N images are already cached. If so,
+    // skip the loader entirely so repeat visits don't flash it.
+    let cachedCount = 0;
+    const pending: HTMLImageElement[] = [];
     firstN.forEach((s) => {
       const img = new Image();
+      img.src = s.src;
+      if (img.complete) cachedCount += 1;
+      else pending.push(img);
+    });
+
+    if (cachedCount >= this.preloadCount) {
+      // Everything already cached → never show the loader.
+      this.isLoading = false;
+      this.isSettled = true;
+      this.warmRemaining();
+      return;
+    }
+
+    // Loader is visible (isLoading starts true). Record when, and arm the
+    // minimum-on-screen + safety timers.
+    this.shownAt = Date.now();
+    this.safetyTimer = setTimeout(() => this.settle(), this.loaderSafetyMs);
+
+    settled = cachedCount;
+    pending.forEach((img) => {
       let counted = false;
       const once = () => { if (!counted) { counted = true; onOne(); } };
       img.onload = once;
       img.onerror = once; // count errors too, so we never hang
-      img.src = s.src;
-      if (img.complete) once(); // already cached → resolves immediately
+      if (img.complete) once();
     });
 
-    // Warm the remaining slides in the background.
+    this.warmRemaining();
+  }
+
+  // Warm the remaining slides in the background.
+  private warmRemaining(): void {
     this.slides.slice(this.preloadCount).forEach((s) => { new Image().src = s.src; });
   }
 
@@ -163,10 +177,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private settle(): void {
     if (this.isSettled) return;
     this.isSettled = true;
-    clearTimeout(this.revealTimer);
     clearTimeout(this.safetyTimer);
-
-    if (!this.isLoading) return; // loader never shown (fast/cached) → nothing to do
 
     // `minimum`: keep the loader on screen at least loaderMinimumMs to avoid flicker.
     const elapsed = Date.now() - this.shownAt;
