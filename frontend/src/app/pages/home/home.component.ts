@@ -59,10 +59,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private statsObserver?: IntersectionObserver;
 
   stats: Stat[] = [
-    { value: 1500, suffix: '+', label: 'طالب وطالبة', current: 0 },
-    { value: 13,   suffix: '',  label: 'فرعاً جامعياً', current: 0 },
-    { value: 30,   suffix: '+', label: 'فعالية سنوية', current: 0 },
-    { value: 9,    suffix: '',  label: 'مؤتمرات عامة', current: 0 },
+    { value: 7000, suffix: '+', label: 'طالب وطالبة', current: 0 },
+    { value: 19,   suffix: '',  label: 'فرعاً جامعياً', current: 0 },
+    { value: 150,  suffix: '',  label: 'فعالية سنوية', current: 0 },
+    { value: 145,  suffix: '',  label: 'قيادات فروع', current: 0 },
   ];
 
   constructor(
