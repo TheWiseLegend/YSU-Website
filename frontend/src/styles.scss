@@ -21,6 +21,9 @@
   --radius-lg:  20px;
   --radius-xl:  28px;
   --radius-full: 9999px;
+
+  /* iOS Safari viewport fix — use dvh where supported, fall back to vh */
+  --full-height: 100vh;
 }
 
 /* Light theme (default) */

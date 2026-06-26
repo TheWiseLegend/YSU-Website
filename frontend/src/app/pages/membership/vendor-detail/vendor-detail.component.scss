@@ -1,5 +1,6 @@
 .page {
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg-muted);
   direction: rtl;
   // Offset for the fixed site navbar (80px tall)
