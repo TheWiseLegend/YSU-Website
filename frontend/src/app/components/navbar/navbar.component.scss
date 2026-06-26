@@ -50,6 +50,14 @@
         background: rgba(0, 0, 0, 0.05);
       }
     }
+
+    // Profile button (membership area) — themed on solid bg
+    .profile-btn {
+      background: var(--bg-muted);
+      border-color: var(--border);
+      color: var(--text);
+      &:hover { background: rgba(81, 116, 185, 0.1); }
+    }
   }
 
   // ── Mobile menu open — solid (tokens) ───────────────────
