@@ -12,7 +12,12 @@
   <!-- Success State -->
   <div class="success-state" *ngIf="isSubmitted">
     <div class="success-card">
-      <div class="success-icon">✅</div>
+      <div class="success-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
       <h2>تم إرسال طلبك بنجاح!</h2>
       <p>
         سيتم مراجعة طلبك من قِبل الاتحاد وستصلك رسالة على بريدك الإلكتروني عند
@@ -172,7 +177,7 @@
           <div class="payment-box">
             <div class="qr-section">
               <p class="payment-amount">
-                رسوم العضوية: <strong>100 RM</strong>
+                رسوم العضوية: <strong>{{ fee }} RM</strong>
               </p>
               <p class="payment-instruction">
                 قم بمسح رمز QR أدناه لإتمام عملية الدفع، ثم احتفظ بصورة الإيصال
@@ -201,12 +206,18 @@
                   [disabled]="isLoading"
                 />
                 <label for="enrollmentLetter" class="file-label">
-                  <span *ngIf="!enrollmentLetterPreview"
-                    >📎 اختر ملف PDF أو صورة</span
-                  >
-                  <span *ngIf="enrollmentLetterPreview"
-                    >✅ {{ enrollmentLetterPreview }}</span
-                  >
+                  <span *ngIf="!enrollmentLetterPreview" class="file-label__text">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                    </svg>
+                    اختر ملف PDF أو صورة
+                  </span>
+                  <span *ngIf="enrollmentLetterPreview" class="file-label__text">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    {{ enrollmentLetterPreview }}
+                  </span>
                 </label>
               </div>
             </div>
@@ -222,8 +233,18 @@
                   [disabled]="isLoading"
                 />
                 <label for="receipt" class="file-label">
-                  <span *ngIf="!receiptPreview">📎 اختر ملف PDF أو صورة</span>
-                  <span *ngIf="receiptPreview">✅ {{ receiptPreview }}</span>
+                  <span *ngIf="!receiptPreview" class="file-label__text">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                    </svg>
+                    اختر ملف PDF أو صورة
+                  </span>
+                  <span *ngIf="receiptPreview" class="file-label__text">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    {{ receiptPreview }}
+                  </span>
                 </label>
               </div>
             </div>
@@ -246,15 +267,52 @@
           </label>
         </div>
 
+        <!-- Terms & Conditions -->
+        <div class="terms-box">
+          <button type="button" class="terms-trigger" (click)="openTermsModal()" [disabled]="isLoading">
+            قراءة شروط وأحكام العضوية والموافقة عليها
+          </button>
+          <span class="terms-granted" *ngIf="termsAccepted">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            تمت الموافقة على الشروط والأحكام
+          </span>
+        </div>
+
         <button
           type="submit"
           class="submit-btn"
-          [disabled]="isLoading || !dataAgreement"
+          [disabled]="isLoading || !dataAgreement || !termsAccepted"
         >
           <span *ngIf="!isLoading">إرسال الطلب</span>
           <span *ngIf="isLoading" class="spinner"></span>
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- Terms & Conditions Modal -->
+  <div class="profile-modal-overlay" *ngIf="showTermsModal" (click)="dismissTermsModal()">
+    <div class="profile-modal terms-modal" (click)="$event.stopPropagation()" dir="rtl">
+      <button class="profile-modal__close" (click)="dismissTermsModal()">✕</button>
+      <div class="profile-modal__header">
+        <h2>{{ termsTitle }}</h2>
+      </div>
+      <div class="terms-modal__body">
+        <section *ngFor="let s of termsSections">
+          <h3>{{ s.heading }}</h3>
+          <p>{{ s.body }}</p>
+        </section>
+      </div>
+      <div class="profile-modal__actions">
+        <button class="profile-modal__btn profile-modal__btn--primary" (click)="acceptTerms()">
+          أوافق على الشروط والأحكام
+        </button>
+        <button class="profile-modal__btn profile-modal__btn--ghost" (click)="dismissTermsModal()">
+          إغلاق
+        </button>
+      </div>
     </div>
   </div>
 </div>

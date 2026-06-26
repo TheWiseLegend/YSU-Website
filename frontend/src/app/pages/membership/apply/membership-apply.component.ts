@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MembershipService } from '../../../services/membership.service';
+import { MEMBERSHIP_FEE_RM } from './membership-fee.constant';
+import { TERMS_TITLE, TERMS_SECTIONS, TermsSection } from './membership-terms.constant';
 
 @Component({
   selector: 'app-membership-apply',
@@ -15,6 +17,13 @@ export class MembershipApplyComponent implements OnInit {
   isLoading = false;
   isSubmitted = false;
   errorMessage = '';
+
+  // Terms & fee
+  readonly fee = MEMBERSHIP_FEE_RM;
+  readonly termsTitle = TERMS_TITLE;
+  readonly termsSections: TermsSection[] = TERMS_SECTIONS;
+  showTermsModal = false;
+  termsAccepted = false;
 
   // Form fields
   passportNumber = '';
@@ -90,8 +99,7 @@ export class MembershipApplyComponent implements OnInit {
     });
   }
 
-  onFileChange(event: Event, field: 'enrollmentLetter' | 'receipt'): void {
-    const input = event.target as HTMLInputElement;
+  onFileChange(event: Event, field: 'enrollmentLetter' | 'receipt'): void {    const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
 
@@ -102,6 +110,21 @@ export class MembershipApplyComponent implements OnInit {
       this.receiptFile = file;
       this.receiptPreview = file.name;
     }
+  }
+
+  // ── Terms modal ───────────────────────────────────────────
+  openTermsModal(): void {
+    this.showTermsModal = true;
+  }
+
+  dismissTermsModal(): void {
+    // Leaves termsAccepted unchanged — agreeing is the only path to granted.
+    this.showTermsModal = false;
+  }
+
+  acceptTerms(): void {
+    this.termsAccepted = true;
+    this.showTermsModal = false;
   }
 
   onSubmit(): void {
@@ -142,6 +165,12 @@ export class MembershipApplyComponent implements OnInit {
     // Agreement
     if (!this.dataAgreement) {
       this.setError('يجب الموافقة على إقرار صحة البيانات قبل إرسال الطلب');
+      return;
+    }
+
+    // Terms & conditions must be opened and accepted
+    if (!this.termsAccepted) {
+      this.setError('يجب فتح شروط وأحكام العضوية والموافقة عليها قبل إرسال الطلب');
       return;
     }
 
