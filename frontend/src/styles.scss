@@ -176,6 +176,27 @@
   backdrop-filter: var(--glass-blur);
 }
 
+/* ─── Mobile: kill backdrop-filter (fixes blank/empty repaint bug) ──────────
+   Mobile GPUs lazily rasterize backdrop-filter layers and drop them when
+   scrolled offscreen, repainting blank when scrolled back. Disable the blur
+   on small screens and swap the translucent glass surface for an opaque one
+   so cards stay visible without relying on the blur for contrast. */
+@media (max-width: 768px) {
+  :root[data-theme="dark"] {
+    --glass-bg:   rgba(30, 45, 74, 0.92); // opaque card, based on --bg-card
+    --glass-blur: none;
+  }
+
+  // Neutralize all remaining backdrop-filters (chips, badges, modal overlays).
+  // Component SCSS sets these via classes, not inline styles, so target broadly.
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
 // Eyebrow label: gold in dark mode, primary blue in light mode
 :root[data-theme="light"] .section-label__text {
   color: var(--primary-light);
