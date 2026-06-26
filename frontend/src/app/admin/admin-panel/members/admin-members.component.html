@@ -166,6 +166,7 @@
     <table class="members-table" *ngIf="members.length > 0">
       <thead>
         <tr>
+          <th>الصورة</th>
           <th>رقم العضوية</th>
           <th>الاسم</th>
           <th>البريد الإلكتروني</th>
@@ -177,6 +178,19 @@
       </thead>
       <tbody>
         <tr *ngFor="let member of members">
+          <td class="pfp-cell">
+            <div class="pfp-wrap" *ngIf="member.profileImageUrl; else noPfp">
+              <img [src]="member.profileImageUrl" alt="صورة العضو" class="pfp-img" />
+              <button class="download-pfp-btn" (click)="downloadProfileImage(member)" title="تنزيل الصورة">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                تنزيل
+              </button>
+            </div>
+            <ng-template #noPfp><span class="pfp-placeholder">—</span></ng-template>
+          </td>
           <td>{{ member.membershipId }}</td>
           <td>{{ member.fullNameAr }}</td>
           <td>{{ member.email }}</td>
