@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { AdminMembershipService } from '../../../services/admin-membership.service';
 import { Member, MembershipApplication } from '../../../models/member.model';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +23,7 @@ export class AdminMembersComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
 
-  constructor(private adminMembershipService: AdminMembershipService) {}
+  constructor(private adminMembershipService: AdminMembershipService, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.loadMembers();
@@ -111,32 +112,29 @@ export class AdminMembersComponent implements OnInit {
   downloadProfileImage(member: Member): void {
     if (!member.profileImageUrl) return;
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      ctx.drawImage(img, 0, 0);
-      canvas.toBlob((blob) => {
-        if (!blob) return;
+    this.http.get(member.profileImageUrl, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
         const objectUrl = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = objectUrl;
-        link.download = `${member.membershipId}_${member.fullNameEn}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(objectUrl);
-      }, 'image/png');
-    };
-    img.onerror = () => {
-      this.errorMessage = 'تعذر تنزيل الصورة';
-      setTimeout(() => (this.errorMessage = ''), 3000);
-    };
-    img.src = member.profileImageUrl;
+        link.download = `${member.membershipId}_${member.fullNameEn}.webp`;
+
+        // iOS Safari doesn't support <a download> — open in new tab instead
+        if (typeof link.download === 'undefined') {
+          window.open(objectUrl, '_blank');
+        } else {
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 10000);
+      },
+      error: () => {
+        // Fallback: open image in new tab (always works on mobile)
+        window.open(member.profileImageUrl, '_blank');
+      }
+    });
   }
 
   showCancelModal = false;
