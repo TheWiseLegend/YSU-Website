@@ -1,4 +1,5 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 type Theme = 'dark' | 'light';
 
@@ -11,7 +12,7 @@ function readStoredTheme(): Theme {
       return stored;
     }
   } catch {
-    // localStorage unavailable (private mode, disabled storage)
+    // localStorage unavailable (private mode, disabled storage, or SSR)
   }
   return 'dark';
 }
@@ -25,12 +26,14 @@ function persistTheme(theme: Theme): void {
 }
 
 function applyThemeToDOM(theme: Theme): void {
+  if (typeof document === 'undefined') return;
   document.documentElement.setAttribute('data-theme', theme);
 }
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private readonly _theme = signal<Theme>(readStoredTheme());
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly _theme = signal<Theme>(this.isBrowser ? readStoredTheme() : 'dark');
 
   /** Readonly signal — current theme value. */
   readonly theme = this._theme.asReadonly();

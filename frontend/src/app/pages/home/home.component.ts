@@ -7,8 +7,10 @@ import {
   ViewChild,
   AfterViewInit,
   ChangeDetectorRef,
+  PLATFORM_ID,
+  Inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PublicEventsService } from '../../services/public-events.service';
 import { PublicNewsService } from '../../services/public-news.service';
@@ -87,17 +89,24 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private publicEventsService: PublicEventsService,
     private publicNewsService: PublicNewsService,
     private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   ngOnInit(): void {
-    this.startImageTransition();
-    this.preloadHeroImages();
+    // Data fetches run on both server and browser (HttpClient is universal),
+    // but events/news are below the fold and effectively hydrate client-side.
     this.loadUpcomingEvents();
     this.loadLatestNews();
+
+    // Browser-only work: timers, image preload, window/document access.
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.startImageTransition();
+    this.preloadHeroImages();
     this.setVhVariable();
   }
 
   ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.initStatsObserver();
     this.initEmblemObserver();
   }

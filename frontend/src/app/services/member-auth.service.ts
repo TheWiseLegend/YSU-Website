@@ -39,6 +39,7 @@ export class MemberAuthService {
   constructor(private http: HttpClient) {}
 
   private hasToken(): boolean {
+    if (typeof localStorage === 'undefined') return false;
     return !!(
       localStorage.getItem(this.tokenKey) ??
       sessionStorage.getItem(this.tokenKey)
