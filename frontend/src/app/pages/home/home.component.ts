@@ -15,7 +15,6 @@ import { PublicNewsService } from '../../services/public-news.service';
 import { Event } from '../../services/events.service';
 import { OptimizedImageComponent } from '../../components/optimized-image/optimized-image.component';
 import { News } from '../../models/news.interface';
-import { AppLoaderService } from '../../services/app-loader.service';
 
 interface Stat {
   value: number;
@@ -51,15 +50,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   isPaused = false;
   readonly transitionInterval = 6000;
 
-  // ── Loading screen ──────────────────────────────────────────
-  // The single loader lives in index.html (#ysu-app-loader) and is shown from
-  // the very first browser paint. This page holds it until the first hero
-  // images are ready, then tells AppLoaderService to remove it. On cached
-  // loads the images resolve synchronously → the loader is gone almost at once.
-  private readonly preloadCount = 3;        // wait for first N hero images
-  private readonly loaderSafetyMs = 6000;   // hard ceiling so it never hangs
-  private safetyTimer: any;
-  private isSettled = false;
+  // ── Hero image preload ──────────────────────────────────────
+  // Warm the first hero images so the slider paints fast on first view.
 
   // ── Events ──────────────────────────────────────────────────
   upcomingEvents: Event[] = [];
@@ -95,12 +87,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private publicEventsService: PublicEventsService,
     private publicNewsService: PublicNewsService,
     private cdr: ChangeDetectorRef,
-    private appLoader: AppLoaderService,
-  ) {
-    // Claim the pre-boot loader so AppComponent doesn't auto-hide it before
-    // our hero images are ready.
-    this.appLoader.hold();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.startImageTransition();
@@ -117,7 +104,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.clearImageTransition();
-    clearTimeout(this.safetyTimer);
     this.statsObserver?.disconnect();
     this.emblemObserver?.disconnect();
   }
@@ -134,57 +120,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   preloadHeroImages(): void {
-    const firstN = this.slides.slice(0, this.preloadCount);
-
-    let settled = 0;
-    const onOne = () => {
-      settled += 1;
-      if (settled >= this.preloadCount) this.settle();
-    };
-
-    // Check synchronously whether the first N images are already cached.
-    let cachedCount = 0;
-    const pending: HTMLImageElement[] = [];
-    firstN.forEach((s) => {
-      const img = new Image();
-      img.src = s.src;
-      if (img.complete) cachedCount += 1;
-      else pending.push(img);
-    });
-
-    if (cachedCount >= this.preloadCount) {
-      // All cached → drop the loader immediately.
-      this.settle();
-      this.warmRemaining();
-      return;
-    }
-
-    // Safety ceiling so the loader can never hang.
-    this.safetyTimer = setTimeout(() => this.settle(), this.loaderSafetyMs);
-
-    settled = cachedCount;
-    pending.forEach((img) => {
-      let counted = false;
-      const once = () => { if (!counted) { counted = true; onOne(); } };
-      img.onload = once;
-      img.onerror = once; // count errors too, so we never hang
-      if (img.complete) once();
-    });
-
-    this.warmRemaining();
-  }
-
-  // Warm the remaining slides in the background.
-  private warmRemaining(): void {
-    this.slides.slice(this.preloadCount).forEach((s) => { new Image().src = s.src; });
-  }
-
-  // Called once the first N images are ready (or on safety timeout).
-  private settle(): void {
-    if (this.isSettled) return;
-    this.isSettled = true;
-    clearTimeout(this.safetyTimer);
-    this.appLoader.hide();
+    // Warm all hero images in the background so the slider paints fast.
+    this.slides.forEach((s) => { new Image().src = s.src; });
   }
 
   startImageTransition(): void {
