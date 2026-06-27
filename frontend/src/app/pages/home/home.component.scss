@@ -26,8 +26,11 @@
 
   // ── About section: reduce dot pattern on white bg ──
   .about-section::before { opacity: 0.1 !important; }
-  .about-blob--top  { background: rgba(61,95,168,0.08) !important; }
-  .about-blob--bottom { background: rgba(201,168,76,0.02) !important; }
+  // Hide the decorative emblem blobs entirely in light mode. They exist as
+  // soft blur(160px) glows for the dark hero look; on light bg they add nothing
+  // and — with blur disabled on iOS Safari — collapse into a hard-edged blue
+  // disc behind the emblem. Remove them so light mode stays clean.
+  .about-blob { display: none !important; }
   // Outer emblem ring barely visible on light bg — use primary tint
   .about-emblem__ring--outer { border-color: rgba(61,95,168,0.25) !important; }
   // Kill the gold glow on the orbital dot — too harsh on white bg
