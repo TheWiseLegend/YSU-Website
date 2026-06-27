@@ -1,6 +1,6 @@
-import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, Inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, ViewEncapsulation } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ThemeService } from '../../services/theme.service';
@@ -60,6 +60,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private membershipService: MembershipService,
     private profileActions: MemberProfileActionsService,
     private zone: NgZone,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd)
@@ -91,6 +92,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Browser-only: window/scroll APIs don't exist during SSR prerender.
+    if (!isPlatformBrowser(this.platformId)) return;
     // Bind scroll OUTSIDE Angular's zone so it doesn't trigger a full app
     // change-detection pass on every scroll tick (the main source of scroll
     // jank, worst on Safari). Only re-enter the zone when isScrolled actually
@@ -111,7 +114,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.authSub?.unsubscribe();
-    window.removeEventListener('scroll', this.onScrollHandler);
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('scroll', this.onScrollHandler);
+    }
   }
 
   toggleTheme(): void {
