@@ -200,6 +200,41 @@
   }
 }
 
+/* ─── Safari/WebKit: kill backdrop-filter + tame heavy blurs ───────────────
+   Desktop Safari rasterizes backdrop-filter and large filter:blur() layers
+   synchronously on the GPU process with tight memory caps. Scrolling up/down
+   repeatedly over the stacked glass cards + giant section glows (e.g. the
+   Events/الفعاليات section: .events-glow blur(140px) + per-card backdrop-filter
+   + .event-card__date backdrop-filter) exhausts the WebKit tile buffers, so
+   the section fails to repaint and renders blank, eventually locking the page.
+   Mirror the mobile fix on Safari: drop the blur, use an opaque glass surface,
+   and shrink the decorative blur radii so they stay cheap to composite.
+   @supports (-webkit-hyphens:none) matches only Safari among major browsers. */
+@supports (-webkit-hyphens: none) {
+  :root[data-theme="dark"] {
+    --glass-bg:   rgba(30, 45, 74, 0.92); // opaque card, based on --bg-card
+    --glass-blur: none;
+  }
+
+  // Neutralize every backdrop-filter (glass cards, date badges, chips, modals).
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  // Cap the oversized decorative section glows. blur(140-160px) is the single
+  // most expensive thing for WebKit to composite during scroll; 40px reads the
+  // same visually but costs a fraction of the GPU memory.
+  .events-glow,
+  .news-glow,
+  .about-blob,
+  .hero-glow {
+    filter: blur(40px) !important;
+  }
+}
+
 // Eyebrow label: gold in dark mode, primary blue in light mode
 :root[data-theme="light"] .section-label__text {
   color: var(--primary-light);

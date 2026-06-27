@@ -106,16 +106,21 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.clearImageTransition();
     this.statsObserver?.disconnect();
     this.emblemObserver?.disconnect();
+    if (this.vhResizeHandler) {
+      window.removeEventListener('resize', this.vhResizeHandler);
+    }
   }
 
   // ── Slider ──────────────────────────────────────────────────
   // Set --vh to actual window.innerHeight so mobile hero fills the screen
+  private vhResizeHandler?: () => void;
   setVhVariable(): void {
     const setVh = () => {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     };
     setVh();
+    this.vhResizeHandler = setVh;
     window.addEventListener('resize', setVh);
   }
 
