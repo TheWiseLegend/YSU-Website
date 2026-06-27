@@ -250,17 +250,14 @@
   // Any other stray blur layer (emblem core glow etc.) → drop the filter pass.
   .about-emblem__glow { filter: none !important; }
 
-  // 3. Stop infinite decorative animations. These never end, so the compositor
-  //    never goes idle and every scroll frame competes with them. Purely visual
-  //    — freezing them is invisible to users but frees the GPU for scrolling.
-  //    (Finite entrance animations like fade-up/count-up are left intact.)
+  // 3. Stop the EXPENSIVE infinite animations only. ken-burns continuously
+  //    transforms a full-screen image, and pulse-glow scales a blur(24px)
+  //    layer (re-runs the blur pass every frame) — both keep the compositor
+  //    busy. The cheap rotate()-only animations (spin-slow/spin-reverse/orbit)
+  //    are GPU-composited with no paint, so they're left running for testing.
   .ken-burns,
   .hero-slide__img,
-  .spin-slow,
-  .spin-reverse,
-  .pulse-glow,
-  .orbit,
-  .about-emblem__orbital-dot {
+  .pulse-glow {
     animation: none !important;
   }
 
