@@ -125,8 +125,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   preloadHeroImages(): void {
-    // Warm all hero images in the background so the slider paints fast.
-    this.slides.forEach((s) => { new Image().src = s.src; });
+    // Warm only the first few slides so the slider paints fast without
+    // saturating bandwidth on load. The rest load lazily as they're shown
+    // (each <img> already has loading="lazy").
+    this.slides.slice(0, 3).forEach((s) => { new Image().src = s.src; });
   }
 
   startImageTransition(): void {

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, NgZone, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -20,7 +20,7 @@ const SOLID_NAV_ROUTES = ['/verify', '/membership'];
   styleUrls: ['./navbar.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class NavbarComponent implements OnDestroy {
+export class NavbarComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   isMoreOpen = false;
   isMobileMoreOpen = false;
@@ -59,6 +59,7 @@ export class NavbarComponent implements OnDestroy {
     private memberAuthService: MemberAuthService,
     private membershipService: MembershipService,
     private profileActions: MemberProfileActionsService,
+    private zone: NgZone,
   ) {
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd)
@@ -89,8 +90,28 @@ export class NavbarComponent implements OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    // Bind scroll OUTSIDE Angular's zone so it doesn't trigger a full app
+    // change-detection pass on every scroll tick (the main source of scroll
+    // jank, worst on Safari). Only re-enter the zone when isScrolled actually
+    // flips — which happens once around the 20px threshold.
+    this.zone.runOutsideAngular(() => {
+      window.addEventListener('scroll', this.onScrollHandler, { passive: true });
+    });
+  }
+
+  private onScrollHandler = (): void => {
+    const scrolled = window.scrollY > 20;
+    if (scrolled !== this.isScrolled) {
+      this.zone.run(() => {
+        this.isScrolled = scrolled;
+      });
+    }
+  };
+
   ngOnDestroy(): void {
     this.authSub?.unsubscribe();
+    window.removeEventListener('scroll', this.onScrollHandler);
   }
 
   toggleTheme(): void {
@@ -136,11 +157,6 @@ export class NavbarComponent implements OnDestroy {
     this.showProfileMenu = false;
     this.memberAuthService.logout();
     this.router.navigate(['/membership/login']);
-  }
-
-  @HostListener('window:scroll')
-  onScroll(): void {
-    this.isScrolled = window.scrollY > 20;
   }
 
   @HostListener('document:click', ['$event'])
