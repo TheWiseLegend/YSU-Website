@@ -38,7 +38,11 @@
   <!-- Member Detail Modal -->
   <div class="modal-overlay" *ngIf="selectedMember" (click)="closeDetail()">
     <div class="modal" (click)="$event.stopPropagation()">
-      <button class="modal-close" (click)="closeDetail()">✕</button>
+      <button class="modal-close" (click)="closeDetail()" aria-label="إغلاق">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
 
       <h3 class="modal-title">تفاصيل العضو</h3>
 
@@ -129,10 +133,18 @@
         <h4 class="modal-subtitle">المستندات</h4>
         <div class="documents">
           <a [href]="app.enrollmentLetterUrl" target="_blank" class="doc-link">
-            📄 خطاب القبول الجامعي
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            خطاب القبول الجامعي
           </a>
           <a [href]="app.receiptUrl" target="_blank" class="doc-link">
-            🧾 إيصال الدفع
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            إيصال الدفع
           </a>
         </div>
 
@@ -143,14 +155,20 @@
             [disabled]="isApproving"
             (click)="approve(app.id)"
         >
-            {{ isApproving ? 'جاري...' : 'الموافقة على العضوية ✓' }}
+            {{ isApproving ? 'جاري...' : 'الموافقة على العضوية' }}
+            <svg *ngIf="!isApproving" width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         </button>
         <button
             class="cancel-application-btn"
             [disabled]="isApproving"
             (click)="openCancelModal(app.id)"
         >
-            رفض الطلب ✕
+            رفض الطلب
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         </button>
         </div>
       </ng-container>
@@ -167,6 +185,7 @@
       <thead>
         <tr>
           <th>الصورة</th>
+          <th>رمز QR</th>
           <th>رقم العضوية</th>
           <th>الاسم</th>
           <th>البريد الإلكتروني</th>
@@ -190,6 +209,15 @@
               </button>
             </div>
             <ng-template #noPfp><span class="pfp-placeholder">—</span></ng-template>
+          </td>
+          <td class="qr-cell">
+            <button class="open-qr-btn" (click)="openQrModal(member)" title="فتح رمز QR">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M3 3h7v7H3V3zM14 3h7v7h-7V3zM3 14h7v7H3v-7zM14 14h3v3h-3v-3zM18 18h3v3h-3v-3z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              فتح رمز QR
+            </button>
           </td>
           <td>{{ member.membershipId }}</td>
           <td>{{ member.fullNameAr }}</td>
@@ -247,5 +275,54 @@
         </div>
     </div>
     </div>
+
+  <!-- QR Code Modal -->
+  <div class="modal-overlay" *ngIf="showQrModal" (click)="closeQrModal()">
+    <div class="modal qr-modal" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeQrModal()" aria-label="إغلاق">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <h3 class="modal-title">رمز QR للعضوية</h3>
+      <p class="qr-member-name" *ngIf="qrMember">
+        {{ qrMember.fullNameAr }} — {{ qrMember.membershipId }}
+      </p>
+
+      <div class="qr-display">
+        <div class="qr-loading" *ngIf="isGeneratingQr">
+          <span class="qr-spinner"></span>
+          <span>جاري إنشاء الرمز...</span>
+        </div>
+        <img *ngIf="!isGeneratingQr && qrCodeDataUrl" [src]="qrCodeDataUrl" alt="رمز QR" class="qr-image" />
+      </div>
+
+      <div class="qr-link-row" *ngIf="qrVerifyUrl">
+        <input type="text" class="qr-link-input" [value]="qrVerifyUrl" readonly />
+        <button class="copy-link-btn" (click)="copyQrLink()">
+          <svg *ngIf="!qrLinkCopied" width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <svg *ngIf="qrLinkCopied" width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ qrLinkCopied ? 'تم النسخ' : 'نسخ الرابط' }}
+        </button>
+      </div>
+
+      <div class="qr-modal-actions">
+        <button class="download-qr-btn" [disabled]="!qrCodeDataUrl" (click)="downloadQrCode()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          تنزيل الرمز
+        </button>
+        <button class="dismiss-btn" (click)="closeQrModal()">إغلاق</button>
+      </div>
+    </div>
+  </div>
 
 </div>

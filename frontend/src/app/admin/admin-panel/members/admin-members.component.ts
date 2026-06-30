@@ -5,6 +5,7 @@ import { AdminMembershipService } from '../../../services/admin-membership.servi
 import { Member, MembershipApplication } from '../../../models/member.model';
 import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
+import QRCode from 'qrcode';
 
 @Component({
   selector: 'app-admin-members',
@@ -177,7 +178,6 @@ confirmCancel(): void {
 
 exportToExcel(): void {
   if (this.members.length === 0) return;
-
   const tabLabel: Record<string, string> = {
     pending: 'قيد المراجعة',
     active: 'نشط',
@@ -211,4 +211,87 @@ exportToExcel(): void {
   const fileName = `أعضاء_${tabLabel[this.activeTab] ?? 'الكل'}_${new Date().toISOString().slice(0, 10)}.xlsx`;
   XLSX.writeFile(workbook, fileName);
 }
+
+  // ─── QR Code modal (on-demand) ────────────────────────────
+  showQrModal = false;
+  qrMember: Member | null = null;
+  qrCodeDataUrl = '';
+  qrVerifyUrl = '';
+  isGeneratingQr = false;
+  qrLinkCopied = false;
+
+  async openQrModal(member: Member): Promise<void> {
+    this.qrMember = member;
+    this.showQrModal = true;
+    this.qrLinkCopied = false;
+    this.qrCodeDataUrl = '';
+    this.qrVerifyUrl = `${window.location.origin}/verify/${member.membershipId}`;
+    this.isGeneratingQr = true;
+
+    try {
+      this.qrCodeDataUrl = await QRCode.toDataURL(this.qrVerifyUrl, {
+        width: 300,
+        margin: 2,
+        color: { dark: '#2E3F6E', light: '#FFFFFF' },
+      });
+    } catch {
+      this.errorMessage = 'حدث خطأ أثناء إنشاء رمز QR';
+    } finally {
+      this.isGeneratingQr = false;
+    }
+  }
+
+  closeQrModal(): void {
+    this.showQrModal = false;
+    this.qrMember = null;
+    this.qrCodeDataUrl = '';
+    this.qrVerifyUrl = '';
+    this.qrLinkCopied = false;
+  }
+
+  downloadQrCode(): void {
+    if (!this.qrCodeDataUrl || !this.qrMember) return;
+
+    // Convert data URL → Blob → object URL (same flow as profile image download,
+    // which works on iOS Safari where direct data-URL downloads fail).
+    const blob = this.dataUrlToBlob(this.qrCodeDataUrl);
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = `QR_${this.qrMember.membershipId}.png`;
+
+    if (typeof link.download === 'undefined') {
+      window.open(objectUrl, '_blank');
+    } else {
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 10000);
+  }
+
+  private dataUrlToBlob(dataUrl: string): Blob {
+    const [header, base64] = dataUrl.split(',');
+    const mime = header.match(/:(.*?);/)?.[1] ?? 'image/png';
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return new Blob([bytes], { type: mime });
+  }
+
+  copyQrLink(): void {
+    if (!this.qrVerifyUrl) return;
+    navigator.clipboard.writeText(this.qrVerifyUrl).then(
+      () => {
+        this.qrLinkCopied = true;
+        setTimeout(() => (this.qrLinkCopied = false), 2000);
+      },
+      () => {
+        this.errorMessage = 'تعذّر نسخ الرابط';
+      }
+    );
+  }
 }

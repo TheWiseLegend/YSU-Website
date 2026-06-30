@@ -232,11 +232,14 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
-  font-size: 1.2rem;
   cursor: pointer;
   color: #6c757d;
+  padding: 0.25rem;
   &:hover { color: #1a202c; }
 }
 
@@ -315,6 +318,10 @@
 }
 
 .approve-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   padding: 0.85rem 3rem;
   background: #38a169;
   color: white;
@@ -337,6 +344,10 @@
 }
 
 .cancel-application-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   padding: 0.85rem 2rem;
   background: #e53e3e;
   color: white;
@@ -423,4 +434,169 @@
   transition: all 0.3s;
 
   &:hover { background: #e2e8f0; }
+}
+
+// QR column + modal
+.qr-cell {
+  .open-qr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    transition: background 0.2s;
+
+    svg { flex-shrink: 0; }
+
+    &:hover { background: #3f5a8f; }
+  }
+}
+
+.qr-modal {
+  max-width: 420px;
+  text-align: center;
+
+  .qr-member-name {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .qr-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    margin-bottom: 1.25rem;
+
+    .qr-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      color: #6c757d;
+      font-size: 0.95rem;
+    }
+
+    .qr-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid #e2e8f0;
+      border-top-color: var(--primary-color);
+      border-radius: 50%;
+      animation: qr-spin 0.7s linear infinite;
+    }
+
+    .qr-image {
+      width: 280px;
+      height: 280px;
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+    }
+  }
+
+  .qr-link-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+
+    .qr-link-input {
+      flex: 1;
+      min-width: 0;
+      padding: 0.6rem 0.75rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: #4a5568;
+      background: #f7fafc;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .copy-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.6rem 1rem;
+      background: #f7fafc;
+      color: var(--primary-color);
+      border: 1.5px solid var(--primary-color);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+
+      &:hover { background: var(--primary-color); color: white; }
+    }
+  }
+
+  .qr-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .download-qr-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover:not(:disabled) { background: #3f5a8f; }
+      &:disabled { opacity: 0.5; cursor: not-allowed; }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.5rem 1.25rem;
+
+    .qr-display {
+      min-height: 240px;
+
+      .qr-image {
+        width: 220px;
+        height: 220px;
+      }
+    }
+
+    .qr-link-row {
+      flex-direction: column;
+
+      .qr-link-input { text-align: center; }
+      .copy-link-btn { justify-content: center; }
+    }
+
+    .qr-modal-actions {
+      flex-direction: column;
+
+      .download-qr-btn,
+      .dismiss-btn { width: 100%; }
+    }
+  }
+}
+
+@keyframes qr-spin {
+  to { transform: rotate(360deg); }
 }
